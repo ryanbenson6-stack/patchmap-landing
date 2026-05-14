@@ -1,0 +1,9 @@
+{
+  "name": "patchmap-landing",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.103.3",
+    "resend": "^4.0.0"
+  }
+}
