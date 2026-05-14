@@ -815,6 +815,35 @@
     .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.12em; color: var(--text-dimmer); }
     .footer-copy { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-dimmer); letter-spacing: 0.06em; }
 
+    /* ── SHARE BUTTONS ── */
+    .share-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .share-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border: 1px solid var(--border-bright);
+      background: transparent;
+      padding: 5px 12px;
+      border-radius: 2px;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.15s, border-color 0.15s;
+      white-space: nowrap;
+    }
+
+    .share-btn:hover { color: var(--amber); border-color: var(--amber); }
+    .share-btn.copied { color: var(--green); border-color: var(--green); }
+
     /* ── THEATER MODE ── */
     .feature-media { cursor: pointer; }
 
@@ -896,7 +925,13 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo">PatchMap</div>
-  <div class="nav-badge">Early Access</div>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="nav-badge">Early Access</div>
+    <div class="share-group">
+      <a class="share-btn" id="nav-x-share" href="#" target="_blank" rel="noopener">↗ Share</a>
+      <button class="share-btn" id="nav-copy-link" onclick="copyLink(this)">⎘ Copy Link</button>
+    </div>
+  </div>
 </nav>
 
 <!-- ═══════════════════════════════════════════
@@ -1203,6 +1238,11 @@
     <button class="email-btn" onclick="handleSignup('cta-email', 'cta-success')">Get Early Access</button>
   </div>
   <div class="success-msg" id="cta-success" style="text-align:center; margin-top:16px;">✓ You're on the list. We'll be in touch.</div>
+  <div class="share-group reveal" style="justify-content:center;margin-top:32px;">
+    <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dimmer);letter-spacing:0.1em;text-transform:uppercase;margin-right:4px;">Share with your crew</span>
+    <a class="share-btn" id="cta-x-share" href="#" target="_blank" rel="noopener">↗ Share on X</a>
+    <button class="share-btn" id="cta-copy-link" onclick="copyLink(this)">⎘ Copy Link</button>
+  </div>
 </section>
 
 <footer>
@@ -1319,19 +1359,56 @@
 
   backdrop.addEventListener('click', closeTheater);
 
-  function handleSignup(inputId, successId) {
+  async function handleSignup(inputId, successId) {
     const input = document.getElementById(inputId);
     const success = document.getElementById(successId);
+    const btn = input.parentElement.querySelector('button');
     const email = input.value.trim();
+
     if (!email || !email.includes('@')) {
       input.style.borderColor = 'var(--red)';
       setTimeout(() => input.style.borderColor = '', 1200);
       return;
     }
-    // TODO: Wire to app.patchmap.app/api/waitlist
-    console.log('Signup:', email);
-    input.parentElement.style.display = 'none';
-    success.style.display = 'block';
+
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+
+    try {
+      const res = await fetch('https://app.patchmap.app/api/waitlist', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: inputId === 'hero-email' ? 'hero-form' : 'cta-form' }),
+      });
+
+      if (!res.ok) throw new Error('Request failed');
+
+      input.parentElement.style.display = 'none';
+      success.style.display = 'block';
+    } catch (e) {
+      btn.textContent = 'Try Again';
+      btn.disabled = false;
+      input.style.borderColor = 'var(--red)';
+      setTimeout(() => input.style.borderColor = '', 1200);
+    }
+  }
+
+  // ── Share buttons ──
+  const shareText = encodeURIComponent('Finally, a stage plot tool built for working audio engineers — not spreadsheet users. Check out PatchMap:');
+  const shareUrl = encodeURIComponent('https://patchmap.app');
+  const xUrl = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`;
+
+  document.querySelectorAll('#nav-x-share, #cta-x-share').forEach(el => el.href = xUrl);
+
+  function copyLink(btn) {
+    navigator.clipboard.writeText('https://patchmap.app').then(() => {
+      btn.textContent = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => {
+        btn.textContent = '⎘ Copy Link';
+        btn.classList.remove('copied');
+      }, 2000);
+    });
   }
 </script>
 </body>
