@@ -1,5 +1,5 @@
-import { createClient } from '@supabase/supabase-js'
-import { Resend } from 'resend'
+const { createClient } = require('@supabase/supabase-js')
+const { Resend } = require('resend')
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL,
@@ -8,7 +8,7 @@ const supabase = createClient(
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' })
   }
@@ -68,7 +68,7 @@ const welcomeHtml = `<!DOCTYPE html>
           </td>
         </tr>
         <tr>
-          <td style="padding:36px 0 0 0;border-top:1px solid #2a2a2e;margin-top:36px;">
+          <td style="padding:36px 0 0 0;border-top:1px solid #2a2a2e;">
             <p style="margin:0 0 8px 0;font-size:11px;color:#55555e;letter-spacing:0.06em;">© 2026 PatchMap — Built by Indiesoft.app</p>
             <p style="margin:0;font-size:11px;color:#55555e;">You're receiving this because you signed up at patchmap.app.</p>
           </td>
