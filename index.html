@@ -403,7 +403,6 @@
       color: var(--amber);
     }
 
-    /* Each feature block: text left, media right (alternates) */
     .feature-block {
       display: grid;
       grid-template-columns: 9fr 11fr;
@@ -446,8 +445,10 @@
     }
 
     .tier-free  { background: rgba(74,222,128,0.08); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+    .tier-plus  { background: rgba(56,189,248,0.08); color: #38bdf8; border: 1px solid rgba(56,189,248,0.2); }
     .tier-pro   { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(245,166,35,0.25); }
     .tier-tour  { background: rgba(139,92,246,0.08); color: var(--purple); border: 1px solid rgba(139,92,246,0.2); }
+    .tier-combo { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(245,166,35,0.25); }
 
     .feature-text h3 {
       font-family: 'Bebas Neue', sans-serif;
@@ -455,6 +456,15 @@
       letter-spacing: 0.04em;
       line-height: 1.0;
       margin-bottom: 20px;
+    }
+
+    .feature-subhead {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      color: var(--amber);
+      margin-bottom: 16px;
+      margin-top: -8px;
     }
 
     .feature-text p {
@@ -491,7 +501,6 @@
     }
 
     /* ── FEATURE MEDIA ── */
-    /* Each .feature-media is a placeholder for a video or screenshot */
     .feature-media {
       aspect-ratio: 1920/1000;
       border: 1px solid var(--border-bright);
@@ -895,7 +904,466 @@
 
     .reveal.visible { opacity: 1; transform: translateY(0); }
 
+    /* ── SOCIAL PROOF ── */
+    .social-proof-section {
+      position: relative;
+      z-index: 1;
+      padding: 80px 48px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .social-proof-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dimmer);
+      margin-bottom: 48px;
+    }
+
+    .quotes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .quote-block {
+      background: var(--near-black);
+      padding: 36px 32px;
+    }
+
+    .quote-mark {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      color: var(--amber);
+      opacity: 0.3;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .quote-text {
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text-dim);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .quote-attribution {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      color: var(--text-dimmer);
+    }
+
+    /* ── CASE STUDY ── */
+    .case-study-section {
+      position: relative;
+      z-index: 1;
+      padding: 0 48px 80px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .case-study-inner {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 48px;
+      position: relative;
+      opacity: 0.6;
+    }
+
+    .case-study-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dimmer);
+      margin-bottom: 20px;
+    }
+
+    .case-study-headline {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(24px, 3vw, 36px);
+      letter-spacing: 0.04em;
+      margin-bottom: 16px;
+      color: var(--text-dimmer);
+    }
+
+    .case-study-body {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text-dimmer);
+      max-width: 680px;
+      margin-bottom: 24px;
+    }
+
+    .case-study-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.1em;
+      color: var(--text-dimmer);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border-bright);
+      padding-bottom: 2px;
+    }
+
+    .coming-soon-tag {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dimmer);
+      border: 1px solid var(--border-bright);
+      padding: 4px 10px;
+      border-radius: 2px;
+    }
+
+    /* ── PRICING ── */
+    .pricing-section {
+      position: relative;
+      z-index: 1;
+      padding: 100px 48px;
+      max-width: 1260px;
+      margin: 0 auto;
+    }
+
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+
+    .pricing-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(40px, 6vw, 72px);
+      letter-spacing: 0.03em;
+      margin-bottom: 16px;
+    }
+
+    .pricing-header p {
+      font-size: 16px;
+      color: var(--text-dim);
+      max-width: 460px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .pricing-toggle-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 48px;
+    }
+
+    .pricing-toggle-btn {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 8px 20px;
+      border: 1px solid var(--border-bright);
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pricing-toggle-btn.active {
+      background: var(--amber-glow);
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    .save-badge {
+      font-size: 9px;
+      background: rgba(74,222,128,0.12);
+      color: var(--green);
+      border: 1px solid rgba(74,222,128,0.2);
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .pricing-card {
+      background: var(--near-black);
+      padding: 36px 24px;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.2s;
+    }
+
+    .pricing-card:hover { background: var(--surface); }
+
+    .pricing-card.featured {
+      background: var(--surface-2);
+      outline: 1px solid var(--border-bright);
+      outline-offset: -1px;
+    }
+
+    .pricing-card.featured:hover { background: var(--surface); }
+
+    .tier-name {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .new-badge {
+      font-size: 9px;
+      background: rgba(56,189,248,0.12);
+      color: #38bdf8;
+      border: 1px solid rgba(56,189,248,0.2);
+      padding: 2px 6px;
+      border-radius: 2px;
+      letter-spacing: 0.08em;
+    }
+
+    .tier-tagline {
+      font-size: 12px;
+      color: var(--text-dimmer);
+      margin-bottom: 24px;
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .tier-price-block {
+      margin-bottom: 28px;
+      min-height: 80px;
+    }
+
+    .price-main {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 52px;
+      letter-spacing: 0.02em;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .price-per {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dimmer);
+      letter-spacing: 0.08em;
+      margin-top: 4px;
+    }
+
+    .price-equiv {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dimmer);
+      letter-spacing: 0.06em;
+      margin-top: 6px;
+      opacity: 0.6;
+    }
+
+    .tier-section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-dimmer);
+      margin-bottom: 8px;
+    }
+
+    .tier-features-list {
+      list-style: none;
+      margin-bottom: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      flex: 1;
+    }
+
+    .tier-features-list li {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.03em;
+      color: var(--text-dimmer);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+    }
+
+    .tier-features-list li::before {
+      content: '→';
+      color: var(--amber);
+      font-size: 10px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .dev-badge {
+      display: inline-block;
+      font-size: 8px;
+      background: rgba(167,139,250,0.1);
+      color: var(--purple);
+      border: 1px solid rgba(167,139,250,0.2);
+      padding: 1px 5px;
+      border-radius: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      vertical-align: middle;
+      margin-left: 4px;
+    }
+
+    .tier-cta-btn {
+      display: block;
+      width: 100%;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 12px 16px;
+      border-radius: 2px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      transition: all 0.15s;
+      margin-top: auto;
+    }
+
+    .tier-cta-btn.primary {
+      background: var(--amber);
+      color: var(--black);
+      border: none;
+      font-weight: 500;
+    }
+
+    .tier-cta-btn.primary:hover { background: #ffc04a; }
+
+    .tier-cta-btn.secondary {
+      background: transparent;
+      color: var(--text-dim);
+      border: 1px solid var(--border-bright);
+      margin-top: 8px;
+    }
+
+    .tier-cta-btn.secondary:hover { color: var(--amber); border-color: var(--amber); }
+
+    .pricing-footnote {
+      margin-top: 36px;
+      text-align: center;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dimmer);
+      letter-spacing: 0.04em;
+      line-height: 1.8;
+    }
+
+    .pricing-footnote a {
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border-bright);
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .pricing-footnote a:hover { color: var(--amber); border-color: var(--amber); }
+
+    /* ── FAQ ── */
+    .faq-section {
+      position: relative;
+      z-index: 1;
+      padding: 80px 48px;
+      max-width: 860px;
+      margin: 0 auto;
+    }
+
+    .faq-header {
+      margin-bottom: 48px;
+    }
+
+    .faq-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(36px, 5vw, 56px);
+      letter-spacing: 0.04em;
+    }
+
+    .faq-item {
+      border-top: 1px solid var(--border);
+      padding: 0;
+    }
+
+    .faq-item:last-child { border-bottom: 1px solid var(--border); }
+
+    .faq-q {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      padding: 24px 0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      list-style: none;
+      user-select: none;
+    }
+
+    .faq-q::after {
+      content: '+';
+      font-family: 'DM Mono', monospace;
+      font-size: 20px;
+      color: var(--amber);
+      flex-shrink: 0;
+      line-height: 1;
+      transition: transform 0.2s;
+    }
+
+    .faq-item.open .faq-q::after { transform: rotate(45deg); }
+
+    .faq-a {
+      font-size: 14px;
+      line-height: 1.8;
+      color: var(--text-dim);
+      display: none;
+      padding-bottom: 24px;
+      max-width: 720px;
+    }
+
+    .faq-item.open .faq-a { display: block; }
+
     /* ── RESPONSIVE ── */
+    @media (max-width: 1100px) {
+      .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
     @media (max-width: 900px) {
       nav { padding: 16px 24px; }
       .hero { padding: 120px 24px 60px; }
@@ -914,6 +1382,20 @@
       .email-input { border-right: 1px solid var(--border-bright); border-bottom: none; border-radius: 3px 3px 0 0; }
       .email-btn { border-radius: 0 0 3px 3px; padding: 14px; }
       footer { flex-direction: column; gap: 12px; text-align: center; }
+      .social-proof-section { padding: 60px 24px; }
+      .case-study-section { padding: 0 24px 60px; }
+      .case-study-inner { padding: 32px; }
+      .pricing-section { padding: 60px 24px; }
+      .faq-section { padding: 60px 24px; }
+      .quotes-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 700px) {
+      .pricing-grid { grid-template-columns: 1fr; }
+      .pricing-card:nth-child(1) { order: 2; }
+      .pricing-card:nth-child(2) { order: 3; }
+      .pricing-card:nth-child(3) { order: 1; }
+      .pricing-card:nth-child(4) { order: 4; }
     }
   </style>
 </head>
@@ -926,7 +1408,7 @@
 <nav>
   <div class="nav-logo">PatchMap</div>
   <div style="display:flex;align-items:center;gap:12px;">
-    <div class="nav-badge">Early Access</div>
+    <div class="nav-badge">Launching July 15</div>
     <div class="share-group">
       <a class="share-btn" id="nav-x-share" href="#" target="_blank" rel="noopener">↗ Share</a>
       <button class="share-btn" id="nav-copy-link" onclick="copyLink(this)">⎘ Copy Link</button>
@@ -965,12 +1447,11 @@
 
     <div class="email-form">
       <input class="email-input" id="hero-email" type="email" placeholder="your@email.com" autocomplete="email" />
-      <button class="email-btn" onclick="handleSignup('hero-email', 'hero-success')">Get Early Access</button>
+      <button class="email-btn" onclick="handleSignup('hero-email', 'hero-success')">Join the Waitlist</button>
     </div>
-    <p class="form-note">No spam. No launch hype. Just a note when it's ready — and your input on what gets built.</p>
-    <div class="success-msg" id="hero-success">✓ You're on the list. We'll be in touch.</div>
+    <p class="form-note">Going live July 15, 2026 — join now and you're in from day one.</p>
+    <div class="success-msg" id="hero-success">✓ You're on the list. See you on July 15.</div>
   </div>
-
 </section>
 
 <hr class="section-divider" />
@@ -1044,9 +1525,6 @@
        FEATURE 1 — Stage Plot Canvas
        ASSET #2: Screen recording or screenshot
        File: /public/assets/feat-canvas.mp4
-       What to capture: Dragging an instrument onto
-       the canvas, labeling it, seeing it snap into place.
-       10–15 sec loop. No audio needed.
   ───────────────────────────────────────── -->
   <div class="feature-block reveal">
     <div class="feature-text">
@@ -1069,10 +1547,6 @@
        FEATURE 2 — Input List + Auto-Patch
        ASSET #3: Screen recording
        File: /public/assets/feat-autopatch.mp4
-       What to capture: Assigning a box/rack to a channel
-       and watching signal flow populate automatically.
-       Show the "before" (empty) and "after" (resolved) state.
-       10–15 sec loop.
   ───────────────────────────────────────── -->
   <div class="feature-block reverse reveal">
     <div class="feature-text">
@@ -1092,8 +1566,54 @@
   </div>
 
   <!-- ─────────────────────────────────────────
-       FEATURE 2b — PDF Export
-       File: /assets/3a.mp4
+       FEATURE — Wireless Workbench Import (Plus)
+       ASSET: /assets/Video_Plus_Workbench.mp4
+       Placeholder — insert when available
+  ───────────────────────────────────────── -->
+  <div class="feature-block reveal">
+    <div class="feature-text">
+      <div class="feature-tier-tag tier-plus">Plus</div>
+      <h3>Your Wireless Rig. Already In Your Show.</h3>
+      <p class="feature-subhead">Import your Workbench or WSM file once. PatchMap does the rest.</p>
+      <p>Export a CSV from Shure Wireless Workbench or Sennheiser Wireless Systems Manager and drop it into PatchMap. It parses your wireless data — mics, IEMs, transmitters, and receivers — matches anything already in your show file, creates what's missing, and places everything on your canvas and in your master I/O sheet automatically.</p>
+      <p><strong>No manual entry. No cross-referencing two windows.</strong> Your wireless rig shows up exactly where it belongs.</p>
+      <ul class="detail-list">
+        <li>CSV import from Shure Wireless Workbench</li>
+        <li>CSV import from Sennheiser Wireless Systems Manager</li>
+        <li>Auto-matches existing items in your show — creates missing ones</li>
+        <li>Receivers, transmitters, IEMs, and mics all placed automatically</li>
+        <li>Export back to Workbench-compatible CSV at any time</li>
+      </ul>
+    </div>
+    <div class="feature-media">
+      <!-- PLACEHOLDER: Video_Plus_Workbench.mp4 — insert when available -->
+      <video src="assets/Video_Plus_Workbench.mp4" autoplay muted loop playsinline></video>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────
+       FEATURE — Rental List (Plus · Pro · Tour)
+  ───────────────────────────────────────── -->
+  <div class="feature-block no-media reveal">
+    <div class="feature-text">
+      <div class="feature-tier-tag tier-combo">Plus · Pro · Tour</div>
+      <h3>Your Canvas Builds Your Rental List.</h3>
+      <p class="feature-subhead">We are aggressively anti-data entry.</p>
+      <p>As you build your canvas, PatchMap pulls from your mic locker automatically. Go over your available inventory? Those channels don't just get flagged — they move directly into a rental list. Confirm the rentals or swap in something from your locker. Either way, your rental list is done before you've typed a single line.</p>
+      <p><strong>Your canvas is the source of truth.</strong> The rental list, the input list, the patch document — they all follow from the one thing you actually built.</p>
+      <ul class="detail-list">
+        <li>Mic locker populated by CSV import or manual entry</li>
+        <li>Canvas draws from locker automatically as you assign inputs</li>
+        <li>Overdraw detection builds rental list without manual flagging</li>
+        <li>Confirm rentals or substitute from locker — one step</li>
+        <li>Available on Plus, Pro, and Tour</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────────────────────
+       FEATURE — PDF Export
+       File: /assets/Video_3_pdf Export.mp4
   ───────────────────────────────────────── -->
   <div class="feature-block reveal">
     <div class="feature-text">
@@ -1114,15 +1634,11 @@
   </div>
 
   <!-- ─────────────────────────────────────────
-       FEATURE 3 — Live Crew Collaboration
+       FEATURE — Live Crew Collaboration
        ASSET #4: Screen recording
        File: /public/assets/feat-crew.mp4
-       What to capture: A1 view on desktop, a flag
-       coming in from a stage tech, routing to the right
-       person. Show the crew panel populating with names.
-       15–20 sec loop.
   ───────────────────────────────────────── -->
-  <div class="feature-block reveal">
+  <div class="feature-block reverse reveal">
     <div class="feature-text">
       <div class="feature-tier-tag tier-pro">Pro</div>
       <h3>Your Crew, In the Room With You</h3>
@@ -1140,16 +1656,11 @@
   </div>
 
   <!-- ─────────────────────────────────────────
-       FEATURE 4 — Musician Portal
+       FEATURE — Musician Portal
        ASSET #5: Phone screen recording
        File: /public/assets/feat-musician.mp4
-       What to capture: QR code scan → musician sees
-       their single channel → sends a monitor request →
-       it appears on the monitor engineer's screen.
-       This is the money shot. Make it feel like magic.
-       20 sec loop, phone screen preferred.
   ───────────────────────────────────────── -->
-  <div class="feature-block reverse reveal">
+  <div class="feature-block reveal">
     <div class="feature-text">
       <div class="feature-tier-tag tier-tour">Tour</div>
       <h3>One QR Code. Whole Ensemble.</h3>
@@ -1167,13 +1678,9 @@
   </div>
 
   <!-- ─────────────────────────────────────────
-       FEATURE 5 — Show Record
+       FEATURE — Show Record
        ASSET #6: Screen recording
        File: /public/assets/feat-record.mp4
-       What to capture: Record running — timeline ticking,
-       a scene marker being dropped, an issue being resolved
-       and appearing in the log. Export button at the end.
-       15–20 sec loop.
   ───────────────────────────────────────── -->
   <div class="feature-block no-media reveal">
     <div class="feature-text">
@@ -1192,6 +1699,55 @@
     </div>
   </div>
 
+</section>
+
+<hr class="section-divider" />
+
+<!-- SOCIAL PROOF -->
+<!-- PLACEHOLDER: Replace quotes with real feedback after Houston's First Baptist beta — target late July 2026 -->
+<section class="social-proof-section">
+  <div class="social-proof-inner">
+    <div class="section-label reveal">From the field</div>
+    <div class="quotes-grid reveal">
+
+      <!-- PLACEHOLDER: Replace with real quote from Houston's First Baptist beta — target late July 2026 -->
+      <div class="quote-block">
+        <div class="quote-mark">"</div>
+        <p class="quote-text">I've never had a tool that actually understood how a show file works. This is what we've needed.</p>
+        <div class="quote-attribution">— [Name], A1 · [Church/Organization] · Houston, TX</div>
+      </div>
+
+      <!-- PLACEHOLDER: Populate after Beth Moore tour — target September 2026 -->
+      <!-- <div class="quote-block">
+        <div class="quote-mark">"</div>
+        <p class="quote-text">[Quote TBD from tour crew]</p>
+        <div class="quote-attribution">— [Name], [Role] · Beth Moore Ministries Tour</div>
+      </div> -->
+
+      <!-- PLACEHOLDER: Third quote TBD -->
+      <!-- <div class="quote-block">
+        <div class="quote-mark">"</div>
+        <p class="quote-text">[Quote TBD]</p>
+        <div class="quote-attribution">— [Name], [Role] · [Organization]</div>
+      </div> -->
+
+    </div>
+  </div>
+</section>
+
+<!-- CASE STUDY -->
+<!-- PLACEHOLDER: Populate after Houston's First Baptist Christmas production — target January 2027 -->
+<section class="case-study-section">
+  <div class="case-study-inner reveal">
+    <div class="coming-soon-tag">Coming Soon</div>
+    <div class="case-study-label">In production</div>
+    <div class="case-study-headline">Houston's First Baptist — Christmas Production 2026</div>
+    <!-- PLACEHOLDER: Case study TBD. Cover: show scale, number of inputs, crew size, specific problems solved,
+         quote from Jonathan or production director. Target length: 3–4 sentences + one pull quote.
+         Populate after production — target January 2027. -->
+    <p class="case-study-body">[Case study content coming after the production. To cover: show scale, number of inputs, crew size, specific problems solved, and a quote from the production director.]</p>
+    <a href="/case-studies/houstons-first" class="case-study-cta">Read the full case study →</a>
+  </div>
 </section>
 
 <hr class="section-divider" />
@@ -1226,18 +1782,194 @@
   </div>
 </section>
 
+<!-- PRICING -->
+<section class="pricing-section">
+  <div class="pricing-header reveal">
+    <h2>Simple Pricing. Start Free.</h2>
+    <p>Every show you've ever built in one place. Upgrade when your workflow demands it.</p>
+  </div>
+
+  <div class="pricing-toggle-wrap reveal">
+    <button class="pricing-toggle-btn active" data-billing="annual" onclick="setPricingBilling('annual')">
+      Billed Annually <span class="save-badge">Save 2 months</span>
+    </button>
+    <button class="pricing-toggle-btn" data-billing="monthly" onclick="setPricingBilling('monthly')">
+      Billed Monthly
+    </button>
+  </div>
+
+  <div class="pricing-grid reveal">
+
+    <!-- FREE -->
+    <div class="pricing-card">
+      <div class="tier-name">Free</div>
+      <div class="tier-tagline">Start here. No credit card.</div>
+      <div class="tier-price-block">
+        <div class="price-annual">
+          <div class="price-main">$0</div>
+          <div class="price-per">Free forever</div>
+        </div>
+        <div class="price-monthly" style="display:none;">
+          <div class="price-main">$0</div>
+          <div class="price-per">Free forever</div>
+        </div>
+      </div>
+      <ul class="tier-features-list">
+        <li>1 saved show file</li>
+        <li>Full canvas — 50+ instrument types</li>
+        <li>Drag-and-drop with snap-to-grid</li>
+        <li>Auto-resolved signal flow</li>
+        <li>Professional PDF export</li>
+        <li>Shareable QR code — live-updating show view</li>
+        <li>Read-only share link</li>
+        <li>Mic locker (manual entry)</li>
+      </ul>
+      <a href="#waitlist" class="tier-cta-btn primary">Join the Waitlist</a>
+    </div>
+
+    <!-- PLUS -->
+    <div class="pricing-card">
+      <div class="tier-name">Plus <span class="new-badge">New</span></div>
+      <div class="tier-tagline">For engineers managing a season of shows.</div>
+      <div class="tier-price-block">
+        <div class="price-annual">
+          <div class="price-main">$79</div>
+          <div class="price-per">per year</div>
+          <div class="price-equiv">~$6.58/mo</div>
+        </div>
+        <div class="price-monthly" style="display:none;">
+          <div class="price-main">$9</div>
+          <div class="price-per">per month</div>
+        </div>
+      </div>
+      <div class="tier-section-label">Everything in Free, plus:</div>
+      <ul class="tier-features-list">
+        <li>20 saved show files</li>
+        <li>CSV import from Shure Wireless Workbench</li>
+        <li>CSV import from Sennheiser Wireless Systems Manager</li>
+        <li>Wireless Workbench-compatible CSV export</li>
+        <li>Master CSV export</li>
+        <li>Automatic rental list from canvas</li>
+        <li>Mic locker CSV import</li>
+      </ul>
+      <a href="#waitlist" class="tier-cta-btn primary">Join the Waitlist</a>
+    </div>
+
+    <!-- PRO (featured) -->
+    <div class="pricing-card featured">
+      <div class="tier-name">Pro</div>
+      <div class="tier-tagline">For the working A1 who runs live productions.</div>
+      <div class="tier-price-block">
+        <div class="price-annual">
+          <div class="price-main">$199</div>
+          <div class="price-per">per year</div>
+          <div class="price-equiv">~$16.58/mo</div>
+        </div>
+        <div class="price-monthly" style="display:none;">
+          <div class="price-main">$24</div>
+          <div class="price-per">per month</div>
+        </div>
+      </div>
+      <div class="tier-section-label">Everything in Plus, plus:</div>
+      <ul class="tier-features-list">
+        <li>Unlimited saved show files</li>
+        <li>Live Patch Session — open a room, crew joins by link or QR</li>
+        <li>Role-based views — A1, Monitor Engineer, Stage Tech</li>
+        <li>Issue flagging with role-based routing</li>
+        <li>Crew memory persists across sessions on a show</li>
+        <li>Session timeline and post-show log</li>
+        <li>No account required for crew to join</li>
+      </ul>
+      <a href="#waitlist" class="tier-cta-btn primary">Join the Waitlist</a>
+    </div>
+
+    <!-- TOUR -->
+    <div class="pricing-card">
+      <div class="tier-name">Tour</div>
+      <div class="tier-tagline">For touring productions and institutional buyers.</div>
+      <div class="tier-price-block">
+        <div class="price-annual">
+          <div class="price-main">$1,099</div>
+          <div class="price-per">per year</div>
+          <div class="price-equiv">~$91.58/mo</div>
+        </div>
+        <div class="price-monthly" style="display:none;">
+          <div class="price-main">$89</div>
+          <div class="price-per">per month</div>
+        </div>
+      </div>
+      <div class="tier-section-label">Everything in Pro, plus:</div>
+      <ul class="tier-features-list">
+        <li>Musician portal — up to 100 positions live in the room</li>
+        <li>Single QR code — entire ensemble self-assigns</li>
+        <li>Monitor requests route direct to engineer, not through MD</li>
+        <li>Touring continuity — unresolved issues carry forward show to show</li>
+        <li>Scene markers — soundcheck, set 1, set 2, strike</li>
+        <li>Hand-off PDF — next crew walks in knowing everything</li>
+        <li>AI-powered show summary and tour summary <span class="dev-badge">In development</span></li>
+        <li>Per-show history tied to show file, not the engineer</li>
+      </ul>
+      <a href="#waitlist" class="tier-cta-btn primary">Join the Waitlist</a>
+    </div>
+
+  </div>
+
+  <div class="pricing-footnote reveal">
+    All paid plans include a 14-day free trial. Cancel or downgrade anytime.<br/>
+    Annual plans are billed once per year. Need something custom for your organization? <a href="mailto:hello@patchmap.app">Contact us →</a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="faq-header reveal">
+    <h2>Questions</h2>
+  </div>
+
+  <div class="faq-item reveal">
+    <div class="faq-q" onclick="toggleFaq(this)">Is PatchMap web-based or do I need to download an app?</div>
+    <div class="faq-a">PatchMap runs entirely in your browser — nothing to download, nothing to install. It's optimized for the way each role actually uses it: full canvas on desktop for building and managing your show, streamlined views on tablet and phone for crew on stage.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <div class="faq-q" onclick="toggleFaq(this)">Does it work with Shure Wireless Workbench and Sennheiser Wireless Systems Manager?</div>
+    <div class="faq-a">Yes. PatchMap imports CSV exports from Shure Wireless Workbench and Sennheiser Wireless Systems Manager directly into your show file. It parses your wireless data — mics, IEMs, transmitters, and receivers — matches anything already in your show, creates what's missing, and places everything on your canvas and master I/O sheet automatically. Available on Plus, Pro, and Tour.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <div class="faq-q" onclick="toggleFaq(this)">How does crew joining work — do they need a PatchMap account?</div>
+    <div class="faq-a">No account needed. Your crew joins via a role-specific QR code or link — Stage Tech scans theirs, Monitor Engineer scans theirs, everyone lands in the same live document instantly. No app, no shared network, no login required. If someone closes the page mid-show, they rejoin on the same device and pick up exactly where they left off — PatchMap remembers them automatically. Available on Pro and Tour.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <div class="faq-q" onclick="toggleFaq(this)">How does the musician portal work — won't musicians have too much access?</div>
+    <div class="faq-a">The musician portal is designed for your crew, not against them. Musicians flag technical issues and monitor requests from their phones. Engineers see a clean, assignable, resolvable queue — nothing arrives as a shout across the stage or a message through the MD. Everyone has a shared record of what was flagged and what was handled. It's not about giving musicians more visibility into your workflow. It's about giving your crew less to hold in their heads and more to act on their screens. Up to 100 positions can be live simultaneously. Available on Tour.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <div class="faq-q" onclick="toggleFaq(this)">What's the shareable QR code on the free tier — what does it actually show?</div>
+    <div class="faq-a">Every PatchMap show file generates a QR code you can print, tape to a road case, or drop in a group chat. Anyone who scans it gets a live-updating view of your input list, mic assignments, and stage layout on their phone — no app, no account, no session required. It updates automatically as you make changes. Higher tiers unlock per-channel signal chain detail, but the core live show view is free, forever.</div>
+  </div>
+
+  <div class="faq-item reveal">
+    <div class="faq-q" onclick="toggleFaq(this)">What happens to my show data if I downgrade?</div>
+    <div class="faq-a">Your show files are never deleted. If you downgrade from Pro to Plus, your live session features deactivate but your show data, canvas, and patch documentation stay exactly as you left them. Upgrade again anytime to reactivate.</div>
+  </div>
+
+</section>
+
 <!-- BOTTOM CTA -->
-<section class="cta-section">
+<section class="cta-section" id="waitlist">
   <h2 class="reveal">
-    Get Early Access<br/>
-    <span>Before We Launch.</span>
+    Built for the Engineer.<br/>
+    <span>Ready for the Show.</span>
   </h2>
-  <p class="reveal">We're building PatchMap for working engineers. If that's you, we want your input — not just your email.</p>
+  <p class="reveal">Launching July 15, 2026. Join the waitlist — your first show file in ten minutes from day one.</p>
   <div class="cta-form reveal">
     <input class="email-input" id="cta-email" type="email" placeholder="your@email.com" autocomplete="email" />
-    <button class="email-btn" onclick="handleSignup('cta-email', 'cta-success')">Get Early Access</button>
+    <button class="email-btn" onclick="handleSignup('cta-email', 'cta-success')">Join the Waitlist</button>
   </div>
-  <div class="success-msg" id="cta-success" style="text-align:center; margin-top:16px;">✓ You're on the list. We'll be in touch.</div>
+  <div class="success-msg" id="cta-success" style="text-align:center; margin-top:16px;">✓ You're on the list. See you on July 15.</div>
   <div class="share-group reveal" style="justify-content:center;margin-top:32px;">
     <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dimmer);letter-spacing:0.1em;text-transform:uppercase;margin-right:4px;">Share with your crew</span>
     <a class="share-btn" id="cta-x-share" href="#" target="_blank" rel="noopener">↗ Share on X</a>
@@ -1247,7 +1979,7 @@
 
 <footer>
   <div class="footer-logo">PatchMap</div>
-  <div class="footer-copy">© 2026 PatchMap — Built by <a href="https://indiesoft.app" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--border-bright);">Indiesoft.app</a></div>
+  <div class="footer-copy">© 2026 PatchMap — A product of <a href="https://indiesoft.app" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--border-bright);">IndieSoft</a></div>
 </footer>
 
 <script>
@@ -1309,7 +2041,6 @@
       }
     });
 
-    // Signal path summary
     const resolved = document.createElement('div');
     resolved.className = 'sf-resolved';
     resolved.innerHTML = `
@@ -1379,7 +2110,6 @@
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, source: inputId === 'hero-email' ? 'hero-form' : 'cta-form' }),
-
       });
 
       if (!res.ok) throw new Error('Request failed');
@@ -1410,6 +2140,27 @@
         btn.classList.remove('copied');
       }, 2000);
     });
+  }
+
+  // ── Pricing toggle ──
+  function setPricingBilling(mode) {
+    document.querySelectorAll('.pricing-toggle-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.billing === mode);
+    });
+    document.querySelectorAll('.price-annual').forEach(el => {
+      el.style.display = mode === 'annual' ? 'block' : 'none';
+    });
+    document.querySelectorAll('.price-monthly').forEach(el => {
+      el.style.display = mode === 'monthly' ? 'block' : 'none';
+    });
+  }
+
+  // ── FAQ accordion ──
+  function toggleFaq(el) {
+    const item = el.parentElement;
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+    if (!isOpen) item.classList.add('open');
   }
 </script>
 </body>
