@@ -29,13 +29,17 @@ module.exports = async function handler(req, res) {
   }
 
   if (!error) {
-    await resend.emails.send({
-      from: 'Indie at PatchMap <hello@indiesoft.app>',
-      to: email,
-      subject: "You're patched in.",
-      html: welcomeHtml,
-      text: welcomeText,
-    })
+    try {
+      await resend.emails.send({
+        from: 'Indie at PatchMap <hello@indiesoft.app>',
+        to: email,
+        subject: "You're patched in.",
+        html: welcomeHtml,
+        text: welcomeText,
+      })
+    } catch (emailErr) {
+      console.error('Welcome email failed:', emailErr)
+    }
   }
 
   return res.status(200).json({ success: true })
