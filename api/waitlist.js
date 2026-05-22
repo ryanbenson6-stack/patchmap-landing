@@ -60,15 +60,14 @@ const welcomeHtml = `<!DOCTYPE html>
         <tr>
           <td style="padding:36px 0 0 0;">
             <p style="margin:0 0 20px 0;font-size:16px;line-height:1.7;color:#e8e8ea;">Hey —</p>
-            <p style="margin:0 0 20px 0;font-size:16px;line-height:1.7;color:#e8e8ea;">You're on the list. No intake form, no beta access hoops.</p>
-            <p style="margin:0 0 20px 0;font-size:16px;line-height:1.7;color:#e8e8ea;">We're building PatchMap for A1s, TDs, and monitor engineers who are tired of doing professional work in a spreadsheet. <strong style="color:#ffffff;">July 2026 is the target.</strong> When we open the doors, you'll be first through them.</p>
-            <p style="margin:0 0 36px 0;font-size:16px;line-height:1.7;color:#e8e8ea;">We'll send a few notes between now and then — what the tiers look like, what's in v1, and a heads up before launch day. Nothing you didn't sign up for.</p>
+            <p style="margin:0 0 20px 0;font-size:16px;line-height:1.7;color:#e8e8ea;">You're on the list.</p>
+            <p style="margin:0 0 20px 0;font-size:16px;line-height:1.7;color:#e8e8ea;">PatchMap launches July 15th. I'll send two more notes before then — one with a feature overview, and one the day we open for signup.</p>
+            <p style="margin:0 0 36px 0;font-size:16px;line-height:1.7;color:#e8e8ea;">Free tier is real and useful, not a trial. More on that in the next one.</p>
             <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:36px;">
               <tr><td style="height:1px;background:#2a2a2e;"></td></tr>
             </table>
-            <p style="margin:0 0 4px 0;font-size:15px;color:#e8e8ea;">Talk soon,</p>
-            <p style="margin:0 0 4px 0;font-size:15px;color:#e8e8ea;">Indie</p>
-            <p style="margin:0;font-size:13px;color:#888890;">Founder, PatchMap</p>
+            <p style="margin:0 0 4px 0;font-size:15px;color:#e8e8ea;">Ryan</p>
+            <p style="margin:0;font-size:13px;color:#888890;">Founder, PatchMap — <a href="https://patchmap.app" style="color:#888890;">patchmap.app</a><br>hello@indiesoft.app</p>
           </td>
         </tr>
         <tr>
@@ -85,15 +84,15 @@ const welcomeHtml = `<!DOCTYPE html>
 
 const welcomeText = `Hey —
 
-You're on the list. No intake form, no beta access hoops.
+You're on the list.
 
-We're building PatchMap for A1s, TDs, and monitor engineers who are tired of doing professional work in a spreadsheet. July 2026 is the target. When we open the doors, you'll be first through them.
+PatchMap launches July 15th. I'll send two more notes before then — one with a feature overview, and one the day we open for signup.
 
-We'll send a few notes between now and then — what the tiers look like, what's in v1, and a heads up before launch day.
+Free tier is real and useful, not a trial. More on that in the next one.
 
-Talk soon,
-Indie
-Founder, PatchMap
+Ryan
+Founder, PatchMap — patchmap.app
+hello@indiesoft.app
 
 ---
 © 2026 PatchMap — Built by Indiesoft.app
