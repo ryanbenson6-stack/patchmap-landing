@@ -334,7 +334,7 @@
 
     .pain-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 1px;
       background: var(--border);
       border: 1px solid var(--border);
@@ -1461,19 +1461,24 @@
   <div class="pain-label reveal">The Current Workflow</div>
   <div class="pain-grid reveal">
     <div class="pain-card">
-      <div class="pain-icon">Sheets or Nothing</div>
-      <h3>Built Wrong from the Start</h3>
-      <p>A stage plot has never been a spreadsheet problem. Engineers force their shows into Sheets and columns because nothing better existed. Until now.</p>
+      <div class="pain-icon">The Current Workflow</div>
+      <h3>Built for Spreadsheets. Not for Shows.</h3>
+      <p>A stage plot has never been a data entry problem. But that's what it became when nothing better existed. Patch Map's canvas auto-populates labeling, channel assignments, and signal flow as you build — so you spend less time on paperwork and more time on the actual show.</p>
     </div>
     <div class="pain-card">
-      <div class="pain-icon">Change One Thing</div>
-      <h3>Start Over Every Time</h3>
-      <p>The venue swaps an input. The band adds a keyboard. You're back in Sheets at midnight reformatting a PDF you'll email to four people who won't open it until load-in.</p>
+      <div class="pain-icon">Three Documents. One Problem.</div>
+      <h3>Your Analog Patch, RF, and Dante Don't Talk to Each Other.</h3>
+      <p>Right now they live in three different places. When you're troubleshooting at showtime, you're jumping between windows, cross-referencing documents, hoping nothing's out of sync. Patch Map puts all three under one roof. Not a replacement — a single source of truth.</p>
     </div>
     <div class="pain-card">
       <div class="pain-icon">Day of Show</div>
-      <h3>Verbal and Lossy</h3>
-      <p>Every issue flagged by shouting across the stage. Every fix agreed to verbally. Nothing documented. Nothing recoverable. Same problems, next show, every time.</p>
+      <h3>Verbal and Lossy.</h3>
+      <p>A mix issue gets called out. Someone shouts it over comms. Maybe it gets fixed. Maybe it gets forgotten. Either way, nothing was documented and the same problem shows up next week. Patch Map gives your whole crew a shared live ticketing system — everyone on their own device, same list, every flag routed to the right person and logged when it's resolved.</p>
+    </div>
+    <div class="pain-card">
+      <div class="pain-icon">Next Season</div>
+      <h3>It Walked Out the Door With Your Last Engineer.</h3>
+      <p>Every fix, every resolved ticket, every pattern across your show run — gone when the person who held it in their head moves on. Patch Map collects that data around you while you work. Walk into Christmas rehearsals knowing what failed last year, what gear keeps throwing problems, and what got resolved. Nobody had to remember it.</p>
     </div>
   </div>
 </section>
@@ -1570,7 +1575,7 @@
        ASSET: /assets/Video_Plus_Workbench.mp4
        Placeholder — insert when available
   ───────────────────────────────────────── -->
-  <div class="feature-block reveal">
+  <div class="feature-block no-media reveal">
     <div class="feature-text">
       <div class="feature-tier-tag tier-plus">Plus</div>
       <h3>Your Wireless Rig. Already In Your Show.</h3>
@@ -1585,10 +1590,6 @@
         <li>Export back to Workbench-compatible CSV at any time</li>
       </ul>
     </div>
-    <div class="feature-media">
-      <!-- PLACEHOLDER: Video_Plus_Workbench.mp4 — insert when available -->
-      <video src="assets/Video_Plus_Workbench.mp4" autoplay muted loop playsinline></video>
-    </div>
   </div>
 
   <!-- ─────────────────────────────────────────
@@ -1596,7 +1597,7 @@
   ───────────────────────────────────────── -->
   <div class="feature-block no-media reveal">
     <div class="feature-text">
-      <div class="feature-tier-tag tier-combo">Plus · Pro · Tour</div>
+      <div class="feature-tier-tag tier-plus">Plus</div>
       <h3>Your Canvas Builds Your Rental List.</h3>
       <p class="feature-subhead">We are aggressively anti-data entry.</p>
       <p>As you build your canvas, PatchMap pulls from your mic locker automatically. Go over your available inventory? Those channels don't just get flagged — they move directly into a rental list. Confirm the rentals or swap in something from your locker. Either way, your rental list is done before you've typed a single line.</p>
@@ -1606,7 +1607,6 @@
         <li>Canvas draws from locker automatically as you assign inputs</li>
         <li>Overdraw detection builds rental list without manual flagging</li>
         <li>Confirm rentals or substitute from locker — one step</li>
-        <li>Available on Plus, Pro, and Tour</li>
       </ul>
     </div>
   </div>
@@ -1642,12 +1642,12 @@
     <div class="feature-text">
       <div class="feature-tier-tag tier-pro">Pro</div>
       <h3>Your Crew, In the Room With You</h3>
-      <p>Open a Room. Your crew joins on their phones. Issue flagging, channel detail, role-based views — all live, all documented, all in one place.</p>
+      <p>Open a Live Room. Your crew joins on their phones. Flagging, channel detail, role-based views — all live, all documented, all in one place.</p>
       <p><strong>Every flag routed to the right person. Every fix logged.</strong> Not shouted across the stage and forgotten by soundcheck.</p>
       <ul class="detail-list">
         <li>Role-based views — A1, Monitor Eng, Stage Tech</li>
-        <li>Issue flagging with push routing by role</li>
-        <li>Crew memory persists across every Room on a Show</li>
+        <li>Flagging with push routing by role</li>
+        <li>Crew memory persists across every Live Room on a Show</li>
       </ul>
     </div>
     <div class="feature-media">
@@ -1686,7 +1686,7 @@
     <div class="feature-text">
       <div class="feature-tier-tag tier-tour">Tour</div>
       <h3>Your Production Has a Memory Now.</h3>
-      <p>Timestamped show log. Scene markers. Carry-forward issues. <strong>The record travels with the show</strong> — the next city starts where this one left off, with every unresolved flag already queued.</p>
+      <p>Timestamped Session Log. Scene markers. Carry-forward issues. <strong>The record travels with the show</strong> — the next city starts where this one left off, with every unresolved flag already queued.</p>
       <p>When your engineer moves to the next gig, the show file stays. <strong>Institutional knowledge that doesn't walk out the door.</strong></p>
       <ul class="detail-list">
         <li>Every flag and fix timestamped — nothing slips between shows</li>
@@ -1872,11 +1872,11 @@
       <div class="tier-section-label">Everything in Plus, plus:</div>
       <ul class="tier-features-list">
         <li>Unlimited saved show files</li>
-        <li>Live Patch Session — open a room, crew joins by link or QR</li>
+        <li>Live Room — crew joins by link or QR</li>
         <li>Role-based views — A1, Monitor Engineer, Stage Tech</li>
-        <li>Issue flagging with role-based routing</li>
-        <li>Crew memory persists across sessions on a show</li>
-        <li>Session timeline and post-show log</li>
+        <li>Flagging with role-based routing</li>
+        <li>Crew memory persists across Live Rooms on a show</li>
+        <li>Session timeline and Session Log</li>
         <li>No account required for crew to join</li>
       </ul>
       <a href="#waitlist" class="tier-cta-btn primary">Join the Waitlist</a>
@@ -1928,12 +1928,12 @@
 
   <div class="faq-item reveal">
     <div class="faq-q" onclick="toggleFaq(this)">Does it work with Shure Wireless Workbench and Sennheiser Wireless Systems Manager?</div>
-    <div class="faq-a">Yes. PatchMap imports CSV exports from Shure Wireless Workbench and Sennheiser Wireless Systems Manager directly into your show file. It parses your wireless data — mics, IEMs, transmitters, and receivers — matches anything already in your show, creates what's missing, and places everything on your canvas and master I/O sheet automatically. Available on Plus, Pro, and Tour.</div>
+    <div class="faq-a">Yes. PatchMap imports CSV exports from Shure Wireless Workbench and Sennheiser Wireless Systems Manager directly into your show file. It parses your wireless data — mics, IEMs, transmitters, and receivers — matches anything already in your show, creates what's missing, and places everything on your canvas and master I/O sheet automatically. Available on Plus.</div>
   </div>
 
   <div class="faq-item reveal">
     <div class="faq-q" onclick="toggleFaq(this)">How does crew joining work — do they need a PatchMap account?</div>
-    <div class="faq-a">No account needed. Your crew joins via a role-specific QR code or link — Stage Tech scans theirs, Monitor Engineer scans theirs, everyone lands in the same live document instantly. No app, no shared network, no login required. If someone closes the page mid-show, they rejoin on the same device and pick up exactly where they left off — PatchMap remembers them automatically. Available on Pro and Tour.</div>
+    <div class="faq-a">No account needed. Your crew joins via a role-specific QR code or link — Stage Tech scans theirs, Monitor Engineer scans theirs, everyone lands in the same live document instantly. No app, no shared network, no login required. If someone closes the page mid-show, they rejoin on the same device and pick up exactly where they left off — PatchMap remembers them automatically. Available on Pro.</div>
   </div>
 
   <div class="faq-item reveal">
