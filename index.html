@@ -2107,6 +2107,7 @@
 
       input.parentElement.style.display = 'none';
       success.style.display = 'block';
+      if (window.pmTrack) window.pmTrack('signup', 'waitlist');
     } catch (e) {
       btn.textContent = 'Try Again';
       btn.disabled = false;
@@ -2153,6 +2154,55 @@
     document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
     if (!isOpen) item.classList.add('open');
   }
+
+  // ── Landing analytics beacon (patchmap.app → dashboard) ──
+  // Fire-and-forget pageviews + conversions to /api/pageview. Tracks new vs
+  // returning visitors and UTM source so the dashboard can show visit→signup
+  // conversion and overlay ad spend on the traffic timeline.
+  (function () {
+    function getUTM() {
+      var p = new URLSearchParams(location.search);
+      return {
+        source: p.get('utm_source'), medium: p.get('utm_medium'),
+        campaign: p.get('utm_campaign'), content: p.get('utm_content'), term: p.get('utm_term'),
+      };
+    }
+    var existing = null;
+    try { existing = localStorage.getItem('pm_vid'); } catch (e) {}
+    var isReturning = !!existing;
+    var vid = existing || (Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
+    if (!existing) { try { localStorage.setItem('pm_vid', vid); } catch (e) {} }
+    var utm = getUTM();
+
+    function track(type, target) {
+      var payload = JSON.stringify({
+        type: type, target: target || null, path: location.pathname,
+        visitorId: vid, isReturning: isReturning,
+        referrer: document.referrer || null, utm: utm,
+      });
+      try {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/pageview', new Blob([payload], { type: 'application/json' }));
+          return;
+        }
+      } catch (e) {}
+      try { fetch('/api/pageview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }); } catch (e) {}
+    }
+    window.pmTrack = track;
+
+    track('pageview');
+
+    // Forward-compatible: at launch, any click toward the app counts as a signup
+    // conversion — no code change needed when CTAs point at app.patchmap.app.
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a) return;
+      var href = a.getAttribute('href') || '';
+      if (href.indexOf('app.patchmap.app') !== -1 || a.hasAttribute('data-conversion')) {
+        track('signup', 'app.patchmap.app');
+      }
+    }, true);
+  })();
 </script>
 </body>
 </html>
