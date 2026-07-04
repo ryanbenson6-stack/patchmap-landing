@@ -478,27 +478,158 @@
   ];
 
   /* ═══════════════════════════════════════════════════════════════════════════
-     ANALYTICS CHOKEPOINT (§2) — single abstraction. Everything funnels through
-     track(); the destination can be swapped/extended without touching call
-     sites. Reuses the landing beacon (window.pmTrack → /api/pageview) when
-     present; otherwise no-ops safely.
-     // TODO: wire to indiesoft dashboard  (extend /api/pageview or add a
-     //       /api/track endpoint that writes rich {event, payload} rows to the
-     //       IndieSoft dashboard Supabase pipeline).
+     ATTRIBUTION + ANALYTICS  (Analytics Addendum §2 + §3)
+       §2  FIRST-TOUCH ATTRIBUTION — the spine. Captured once on first load and
+           NEVER overwritten, so original discovery keeps channel credit. The
+           anonymous_id + first-touch UTMs / referrer / channel live in a
+           first-party cookie.
+       §3  BEHAVIOURAL EVENTS — everything funnels through ONE track() chokepoint.
+           Every payload auto-carries anonymous_id and user_id (once known). The
+           chokepoint fans out to (1) the full-fidelity /api/track events sink,
+           (2) the existing landing beacon for the attribution spine, (3) PostHog.
+     // INTEGRATION: indiesoft/dashboard — behavioural events + attribution land here.
      ═══════════════════════════════════════════════════════════════════════════ */
-  function track(event, payload) {
+  const ATTR_COOKIE = 'pm_attr';     // first-party — first-touch attribution + anonymous_id
+  const COOKIE_DAYS = 400;
+  const pageLoadedAt = Date.now();
+
+  function readCookie(name) {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+  function writeCookie(name, value, days) {
+    const exp = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + exp + '; path=/; SameSite=Lax';
+  }
+  function uuid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+  }
+
+  // Channel derived from referrer when no utm_source is present (§2). Raw
+  // referrer is always kept regardless.
+  function deriveChannel(ref, utmSource) {
+    if (utmSource) return utmSource;
+    if (!ref) return 'direct';
     try {
-      // Preferred path: dedicated event beacon (added when the dashboard pipe
-      // lands). Falls back to the existing landing pmTrack shim so nothing is
-      // lost in the meantime.
-      const body = JSON.stringify({ type: 'sales_event', event: event, payload: payload || {}, path: location.pathname, ts: Date.now() });
-      if (navigator.sendBeacon) {
-        navigator.sendBeacon('/api/pageview', new Blob([body], { type: 'application/json' }));
-      } else {
-        fetch('/api/pageview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true }).catch(function(){});
+      const host = new URL(ref).hostname.replace(/^www\./, '');
+      if (host === location.hostname) return 'internal';
+      if (/(^|\.)(google|bing|duckduckgo|yahoo|ecosia|brave|baidu|yandex)\./.test(host)) return 'organic-search';
+      return 'referral:' + host;
+    } catch (e) { return 'direct'; }
+  }
+
+  // §2 — establish or read the first-touch record. Returns { attr, isReturning }.
+  function resolveAttribution() {
+    const params = new URLSearchParams(location.search);
+    const utm = {
+      source: params.get('utm_source'), medium: params.get('utm_medium'),
+      campaign: params.get('utm_campaign'), content: params.get('utm_content'),
+      term: params.get('utm_term'),
+    };
+    let stored = null;
+    try { stored = JSON.parse(readCookie(ATTR_COOKIE) || 'null'); } catch (e) {}
+
+    if (stored && stored.anonymous_id) {
+      // Returning visitor: DO NOT overwrite first-touch. Record last-touch only.
+      if (Object.keys(utm).some(function (k) { return utm[k]; }) || document.referrer) {
+        stored.last_touch = {
+          utm_source: utm.source || null, utm_campaign: utm.campaign || null,
+          utm_content: utm.content || null, referrer: document.referrer || null,
+          at: new Date().toISOString(),
+        };
+        writeCookie(ATTR_COOKIE, JSON.stringify(stored), COOKIE_DAYS); // refresh expiry
       }
+      return { attr: stored, isReturning: true };
+    }
+
+    // First load ever — this is the authoritative channel credit.
+    const attr = {
+      anonymous_id: uuid(),
+      utm_source: utm.source || null, utm_medium: utm.medium || null,
+      utm_campaign: utm.campaign || null, utm_content: utm.content || null,
+      utm_term: utm.term || null,
+      referrer: document.referrer || null,
+      channel: deriveChannel(document.referrer, utm.source),
+      landing_page: location.pathname,
+      first_seen_at: new Date().toISOString(),
+    };
+    writeCookie(ATTR_COOKIE, JSON.stringify(attr), COOKIE_DAYS);
+    return { attr: attr, isReturning: false };
+  }
+
+  const _resolved = resolveAttribution();
+  const ATTR = _resolved.attr;
+  const IS_RETURNING = _resolved.isReturning;
+  let userId = null;   // set at signup in the app (§4 identity bridge)
+
+  // §4 — carry anonymous_id across the domain hop so the app can alias
+  // anonymous_id → user_id on account creation. Decorates outbound app links.
+  function decorateAppLinks() {
+    document.querySelectorAll('a[href^="https://app.patchmap.app"]').forEach(function (a) {
+      try {
+        const u = new URL(a.href);
+        u.searchParams.set('aid', ATTR.anonymous_id);
+        if (ATTR.utm_campaign) u.searchParams.set('utm_campaign', ATTR.utm_campaign);
+        if (ATTR.utm_source) u.searchParams.set('utm_source', ATTR.utm_source);
+        a.href = u.toString();
+      } catch (e) {}
+    });
+  }
+
+  // PostHog seam — inert until a project key is wired (window.posthog). Kept
+  // behind the chokepoint so call sites never change when it goes live.
+  // INTEGRATION: indiesoft/dashboard — PostHog capture (behaviour + replay + anon→id alias).
+  const POSTHOG = (typeof window !== 'undefined' && window.posthog) ? window.posthog : null;
+  function sendToPostHog(event, payload) {
+    if (!POSTHOG) return;
+    try { POSTHOG.capture(event, payload); } catch (e) {}
+  }
+
+  function beacon(url, obj) {
+    try {
+      const body = JSON.stringify(obj);
+      if (navigator.sendBeacon) navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }));
+      else fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true }).catch(function () {});
+    } catch (e) {}
+  }
+
+  // Events the existing /api/pageview → landing_events store already understands.
+  // These carry the attribution spine and persist TODAY with no schema change;
+  // the full behavioural stream goes to /api/track (rich {event, payload} rows).
+  const LANDING_TYPES = { page_view: 'pageview', cta_click: 'cta_click', signup: 'signup' };
+
+  function track(event, payload) {
+    const enriched = Object.assign({ anonymous_id: ATTR.anonymous_id, user_id: userId }, payload || {});
+    try {
+      // (1) Full-fidelity behavioural stream → dedicated events sink.
+      beacon('/api/track', {
+        event: event, payload: enriched, path: location.pathname,
+        anonymous_id: ATTR.anonymous_id, user_id: userId,
+        attribution: ATTR, is_returning: IS_RETURNING, ts: Date.now(),
+      });
+      // (2) Attribution spine → existing landing_events (no schema change).
+      if (LANDING_TYPES[event]) {
+        beacon('/api/pageview', {
+          type: LANDING_TYPES[event], event: event, path: location.pathname,
+          visitorId: ATTR.anonymous_id, isReturning: IS_RETURNING, referrer: ATTR.referrer,
+          utm: { source: ATTR.utm_source, medium: ATTR.utm_medium, campaign: ATTR.utm_campaign, content: ATTR.utm_content, term: ATTR.utm_term },
+          target: (payload && (payload.cta_type || payload.to_tier || payload.tier)) || null,
+          ts: Date.now(),
+        });
+      }
+      // (3) Behavioural analytics + replay.
+      sendToPostHog(event, enriched);
     } catch (e) { /* analytics must never break the page */ }
   }
+
+  // §4 identity bridge hook — the app calls this at signup (or reads ?aid=).
+  window.pmIdentify = function (uid) {
+    userId = uid || null;
+    if (POSTHOG && POSTHOG.identify) { try { POSTHOG.identify(uid); } catch (e) {} }
+  };
 
   /* ═══════════════════════════════════════════════════════════════════════════
      RENDER + TOGGLE
@@ -510,6 +641,9 @@
   let billing = 'annual';           // rev §6 — annual is the default view
   let tierEnteredAt = Date.now();
   let strikeSvg = null;             // §7 — live conductor-bundle overlay, if any
+  let lastSection = 'hero';         // addendum §3 — last landmark reached, for exit
+  let cardObserver = null;          // addendum §3 — pricing_card_view observer
+  const seenCards = {};             // fire pricing_card_view once per tier
 
   function accentHexFor(t) {
     return getComputedStyle(document.documentElement).getPropertyValue(tierContent[t].accentVar).trim();
@@ -590,6 +724,7 @@
     // Re-theme: copy the tier accent into the live --accent tokens.
     tierBlock.style.setProperty('--accent', accentHexFor(t));
     tierBlock.style.setProperty('--accent-rgb', c.accentRgb);
+    decorateAppLinks();   // §4 — carry anonymous_id onto the freshly rendered CTAs
   }
 
   /* Venue explainer tooltip (rev §9) — short form lives on the pricing card next
@@ -638,6 +773,8 @@
         '</ul>' + cta +
       '</div>';
     }).join('');
+    decorateAppLinks();     // §4 — carry anonymous_id onto pricing CTAs
+    observePricingCards();  // §3 — (re)watch cards for pricing_card_view
   }
 
   function highlightPricing(t) {
@@ -761,10 +898,10 @@
     if (!tierContent[t]) t = 'free';
     if (t === activeTier) return;
 
-    // §2: log dwell time on the tier we're leaving.
+    // §3: log dwell (seconds) on the tier we're leaving, then the toggle.
     if (activeTier && userInitiated) {
-      track('tier_dwell', { tier: activeTier, ms: Date.now() - tierEnteredAt });
-      track('tier_toggle', { to: t, from: activeTier });
+      track('tier_dwell', { tier: activeTier, seconds: Math.round((Date.now() - tierEnteredAt) / 1000) });
+      track('tier_toggle', { to_tier: t, from_tier: activeTier });
     }
 
     const prev = activeTier;
@@ -795,14 +932,16 @@
     history.replaceState(null, '', url);
   }
 
-  /* CTA click instrumentation (delegated). */
+  /* CTA click instrumentation (delegated) — §3 normalises cta_type. */
   document.addEventListener('click', function (e) {
     const el = e.target.closest ? e.target.closest('[data-track-cta]') : null;
     if (!el) return;
-    track('cta_click', { cta: el.dataset.trackCta, tier: activeTier, label: el.textContent.trim() });
+    const raw = el.dataset.trackCta || '';
+    const ctaType = /watch/i.test(raw) ? 'watch_it_built' : 'purchase';
+    track('cta_click', { tier: activeTier, cta_type: ctaType, cta: raw, label: el.textContent.trim() });
   }, true);
 
-  /* Scroll depth (§2) — fire each 25% bucket once. */
+  /* Scroll depth (§3) — fire each 25% milestone once. */
   (function () {
     const seen = {};
     window.addEventListener('scroll', function () {
@@ -810,32 +949,56 @@
       if (h <= 0) return;
       const pct = Math.round((window.scrollY / h) * 100);
       [25, 50, 75, 100].forEach(function (b) {
-        if (pct >= b && !seen[b]) { seen[b] = true; track('scroll_depth', { bucket: b, tier: activeTier }); }
+        if (pct >= b && !seen[b]) { seen[b] = true; track('scroll_depth', { milestone: b, tier: activeTier }); }
       });
     }, { passive: true });
   })();
 
-  /* Pricing-table view (§2) — first time it enters the viewport. */
+  /* Pricing CARD views (§3) — fire once per tier card as it scrolls in. Cards are
+     re-created on the billing toggle, so this re-runs after each render; seenCards
+     keeps it to one event per tier. */
+  function observePricingCards() {
+    if (!('IntersectionObserver' in window)) return;
+    if (!cardObserver) {
+      cardObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          const tier = en.target.dataset.tier;
+          if (tier && !seenCards[tier]) { seenCards[tier] = true; track('pricing_card_view', { tier: tier }); }
+          cardObserver.unobserve(en.target);
+        });
+      }, { threshold: 0.5 });
+    }
+    document.querySelectorAll('.pcard').forEach(function (c) {
+      if (!seenCards[c.dataset.tier]) cardObserver.observe(c);
+    });
+  }
+
+  /* Last section reached (§3) — feeds the exit event. */
   (function () {
-    const target = document.getElementById('pricing');
-    if (!('IntersectionObserver' in window) || !target) return;
+    if (!('IntersectionObserver' in window)) return;
+    const marks = [['hero', 'header.u-hero'], ['problems', '.pains'], ['demo', '.demo'],
+      ['tiers', '#tier-block'], ['pricing', '#pricing'], ['faq', '#faq'], ['footer', 'footer']];
     const io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
-        if (en.isIntersecting) { track('pricing_view', { tier: activeTier }); io.disconnect(); }
+        if (!en.isIntersecting) return;
+        const m = marks.find(function (x) { return en.target.matches(x[1]); });
+        if (m) lastSection = m[0];
       });
-    }, { threshold: 0.4 });
-    io.observe(target);
+    }, { threshold: 0.3 });
+    marks.forEach(function (m) { const el = document.querySelector(m[1]); if (el) io.observe(el); });
   })();
 
-  /* Exit (§2). */
+  /* Exit (§3) — last section reached + total time on page. */
   window.addEventListener('pagehide', function () {
-    track('page_exit', { tier: activeTier, dwell_ms: Date.now() - tierEnteredAt });
+    track('exit', { last_section: lastSection, seconds: Math.round((Date.now() - pageLoadedAt) / 1000), tier: activeTier });
   });
 
   /* ── BOOT ─────────────────────────────────────────────────────────────── */
   buildToggle();
   renderPricing();
   renderFaq();
+  decorateAppLinks();   // §4 — nav CTA + any static app links
 
   /* Billing period toggle (rev §6) — re-render cards, keep the active tier lit. */
   document.querySelectorAll('.billing-opt').forEach(function (b) {
@@ -847,13 +1010,13 @@
       });
       renderPricing();
       if (activeTier) highlightPricing(activeTier);
-      track('billing_toggle', { billing: billing });
+      track('pricing_toggle', { value: billing });   // §3 — monthly | annual
     });
   });
 
   const initialTier = (new URL(location.href)).searchParams.get('tier');
   selectTier(TIER_ORDER.indexOf(initialTier) >= 0 ? initialTier : 'free', false);
-  track('page_view', { tier: activeTier });
+  track('page_view', { path: location.pathname, tier: activeTier });
   </script>
 </body>
 </html>
