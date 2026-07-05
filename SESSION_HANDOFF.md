@@ -60,8 +60,10 @@ Also: the Supabase SQL editor shows **only the last statement's result** when yo
 ---
 
 ## What's NEXT (deferred — build order per Addendum §9)
-1. **Merge PR #1 + smoke test** (above).
-2. **Stripe conversion webhook (§4)** — highest-value next. Repo: patch-map, extend the existing `app/api/stripe/webhook/route.ts`. On active subscription, join first-touch attribution (via `identities`→`attribution` by user_id/anonymous_id) and insert a `conversions` row (`tier, amount, interval, converted_at` + `utm_source/campaign/content`). Closes the revenue-attribution loop. `conversions` table already staged.
+1. **Merge PR #1 (identity bridge) + smoke test** (above).
+2. **Stripe conversion webhook (§4)** — ✅ BUILT, 🟡 in **PR #2: https://github.com/ryanbenson6-stack/stage-plot-pro/pull/2** (branch `analytics/stripe-conversions`, off master). Extends `app/api/stripe/webhook/route.ts` with `recordConversion()` on `checkout.session.completed`. `tsc` passes.
+   - **Decisions locked (2026-07-05):** fire on `checkout.session.completed` **only** (one conversion per customer; guarded against retry double-count). `amount` = tier's recurring list price (not `amount_total`). Organic signups still record with null attribution.
+   - ⬜ **Before it's fully live:** (a) confirm `conversions` table exists in the shared Supabase project — `select to_regclass('public.conversions');` (user agreed to verify); (b) merge **PR #1** so the `identities` join resolves; (c) merge PR #2.
 3. **Campaign spend form (§4)** — dashboard: writes `campaign_spend` (already staged). CAC = spend ÷ conversions for that `utm_campaign`.
 4. **Rollups via Cron (§5)** — `channel_rollup`, `funnel_rollup`, `tier_engagement_rollup`. → `indiesoft/dashboard`.
 5. **Dashboard Views A–D (§6)** — scorecard/drill-down/funnel/insights. → `indiesoft/dashboard`.
