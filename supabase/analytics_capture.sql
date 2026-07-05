@@ -67,6 +67,16 @@ drop policy if exists sales_events_anon_insert on public.sales_events;
 create policy sales_events_anon_insert on public.sales_events
   for insert to anon with check (true);
 
+-- Base table privileges. An RLS policy gates WHICH rows the role may write, but
+-- the role still needs the underlying GRANT — tables created via the SQL editor
+-- don't always inherit Supabase's default anon/authenticated grants, which
+-- leaves inserts failing even with a correct policy.
+grant insert on public.sales_events to anon;
+grant insert, update on public.attribution to anon;
+
+-- Tell PostgREST (the REST API the app calls) to pick up the new tables/grants.
+notify pgrst, 'reload schema';
+
 -- ── §4 CONVERSIONS + CAMPAIGN SPEND (schema staged now; wiring lands in the app
 --      /dashboard — Stripe webhook writes conversions, dashboard form writes spend) ──
 create table if not exists public.conversions (
