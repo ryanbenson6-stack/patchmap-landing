@@ -34,13 +34,16 @@ Commits: `fe81a58` (capture), `da51c66` (pickup doc), `a1c64e9` (idempotent poli
 - App CTAs decorated with `?aid=<anonymous_id>` for the identity bridge.
 - **Verified:** live event `curl-test-0009` landed in `sales_events`. Working.
 
-### 3. Identity bridge (Addendum §4, step 1) — 🟡 CODE IN PR, MIGRATION RUN, NEEDS MERGE
-Repo: **patch-map**. Branch `analytics/identity-bridge`. **PR #1: https://github.com/ryanbenson6-stack/stage-plot-pro/pull/1**
+### 3. Identity bridge (Addendum §4, step 1) — ✅ MERGED & LIVE (PR #1, merged 2026-07-05)
+Repo: **patch-map**, on `master`. **PR #1** merged (`6c39bbb`).
 Files: `middleware.ts` (persists `?aid=` → httpOnly `pm_aid` cookie across OAuth), `app/auth/callback/route.ts` (aliases anonymous_id→user_id in `identities`, backfills `sales_events.user_id`; service-role, best-effort, never blocks login), `supabase/identity-bridge.sql`.
-- ✅ `identities` table created (migration run; `to_regclass('public.identities')` returns it).
-- ✅ `tsc --noEmit` passes.
-- ⬜ **TODO: merge PR #1** (nothing happens in prod until on master).
-- ⬜ **TODO: smoke test** — hit app with `?aid=test-bridge-123`, sign up throwaway acct, then `select * from identities where anonymous_id='test-bridge-123';`.
+- ✅ `identities` table created + migration run; `tsc` passes; merged to master (auto-deployed).
+- ⬜ **Still TODO: smoke test** — hit app with `?aid=test-bridge-123`, sign up throwaway acct, then `select * from identities where anonymous_id='test-bridge-123';`. (Merged but not yet verified in prod.)
+
+### 4. Stripe conversion webhook (Addendum §4, step 2) — ✅ MERGED & LIVE (PR #2, merged 2026-07-05)
+Repo: **patch-map**, on `master`. **PR #2** merged (`ea64c06`).
+File: `app/api/stripe/webhook/route.ts` — `recordConversion()` on `checkout.session.completed`; joins `identities`→`attribution`, writes one `conversions` row. `conversions` table confirmed to exist (empty, as expected — fills on first real paid checkout).
+- ⬜ **Not yet proven end-to-end** — needs a real (or test-mode) paid checkout to confirm a `conversions` row lands. Also note: Stripe Price IDs are env-driven and may still be blank (`isBillingConfigured()` / `tierForPriceId`), so verify billing is actually configured before expecting conversions.
 
 ---
 
