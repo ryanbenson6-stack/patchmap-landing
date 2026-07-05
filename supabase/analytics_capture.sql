@@ -54,10 +54,16 @@ create index if not exists sales_events_created_idx on public.sales_events (crea
 alter table public.attribution  enable row level security;
 alter table public.sales_events enable row level security;
 
+-- Idempotent: drop-then-create so re-running the whole file never errors on
+-- an already-existing policy (Supabase's SQL editor runs statements outside a
+-- transaction, so a mid-script error can otherwise leave RLS on with no policy).
+drop policy if exists attribution_anon_insert on public.attribution;
 create policy attribution_anon_insert on public.attribution
   for insert to anon with check (true);
+drop policy if exists attribution_anon_update on public.attribution;
 create policy attribution_anon_update on public.attribution
   for update to anon using (true) with check (true);
+drop policy if exists sales_events_anon_insert on public.sales_events;
 create policy sales_events_anon_insert on public.sales_events
   for insert to anon with check (true);
 
