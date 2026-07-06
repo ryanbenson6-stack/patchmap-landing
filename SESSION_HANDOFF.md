@@ -62,6 +62,26 @@ Also: the Supabase SQL editor shows **only the last statement's result** when yo
 
 ---
 
+## App-side: Show Chain redesign — ✅ SHIPPED (2026-07-06), 🟡 1 migration to run
+Repo: **patch-map** (`stage-plot-pro`), on `master`. Built to the "Show Chain Feature Spec"
+(a venue-agnostic pre-planned run + a two-option Advance). Show Chain already existed
+(shipped v1.10.51); this was the spec's refinement. Two PRs, both merged:
+- **PR #7 (v1.34.0)** — Advance is now a **dialog** (`components/AdvanceChainModal.tsx`), not a
+  name box. Two explicit copy-source options: instance the current show forward (default) OR
+  instance a **previous** show forward (pick any earlier show in the chain). Spells out the
+  record behavior (advancing closes the current show as editable history that never ripples).
+  `lib/showChain.ts` `advanceChain()` gained optional `sourceShowId`. No migration.
+- **PR #8 (v1.35.0)** — **pre-planned slots** (`lib/showSlots.ts`, `components/ChainSlotModal.tsx`).
+  A collapsible "Planned {stops|shows}" list under each chain on the venue dashboard. Road
+  slots = City/Venue/Date; static = Name/Time; both + optional Notes (informational only).
+  Next Show button reads the next slot ("Next: Waco"); advancing pre-fills name + surfaces the
+  note + activates the slot.
+- ⬜ **RUN THIS:** `patch-map/supabase/show-chain-slots.sql` in the Supabase SQL editor (whole
+  file, idempotent — table + RLS + grants + schema reload). Code is fail-soft (empty Planned
+  list) until it runs; slot saving errors until then. This is the only open step.
+
+---
+
 ## What's NEXT (deferred — build order per Addendum §9)
 1. **Merge PR #1 (identity bridge) + smoke test** (above).
 2. **Stripe conversion webhook (§4)** — ✅ BUILT, 🟡 in **PR #2: https://github.com/ryanbenson6-stack/stage-plot-pro/pull/2** (branch `analytics/stripe-conversions`, off master). Extends `app/api/stripe/webhook/route.ts` with `recordConversion()` on `checkout.session.completed`. `tsc` passes.
