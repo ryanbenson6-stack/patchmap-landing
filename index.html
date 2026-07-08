@@ -10,6 +10,10 @@
     src="https://www.facebook.com/tr?id=1053165947067170&ev=PageView&noscript=1"/></noscript>
   <!-- End Meta Pixel Code -->
 
+  <!-- Reddit Pixel -->
+  <script src="/assets/reddit-pixel.js"></script>
+  <!-- End Reddit Pixel -->
+
   <title>PatchMap — Stage Plots That Don't Suck</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -2120,6 +2124,8 @@
         content_name: 'waitlist',
         content_category: inputId === 'hero-email' ? 'hero-form' : 'cta-form',
       });
+      // Reddit Pixel: waitlist signup conversion.
+      if (window.rdt) rdt('track', 'SignUp');
     } catch (e) {
       btn.textContent = 'Try Again';
       btn.disabled = false;
