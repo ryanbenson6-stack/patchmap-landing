@@ -2115,6 +2115,11 @@
       input.parentElement.style.display = 'none';
       success.style.display = 'block';
       if (window.pmTrack) window.pmTrack('signup', 'waitlist');
+      // Meta Pixel: waitlist signup = a Lead. content_name tags which form converted.
+      if (window.fbq) fbq('track', 'Lead', {
+        content_name: 'waitlist',
+        content_category: inputId === 'hero-email' ? 'hero-form' : 'cta-form',
+      });
     } catch (e) {
       btn.textContent = 'Try Again';
       btn.disabled = false;
