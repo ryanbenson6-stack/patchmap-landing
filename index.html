@@ -2107,11 +2107,17 @@
     btn.textContent = 'Sending...';
     btn.disabled = true;
 
+    // One shared ID per signup: sent to both the browser pixels AND the server
+    // (CAPI) so Meta/Reddit dedupe the two reports into a single conversion.
+    const eventId = (self.crypto && crypto.randomUUID)
+      ? crypto.randomUUID()
+      : String(Date.now()) + '-' + Math.random().toString(36).slice(2);
+
     try {
       const res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: inputId === 'hero-email' ? 'hero-form' : 'cta-form' }),
+        body: JSON.stringify({ email, source: inputId === 'hero-email' ? 'hero-form' : 'cta-form', eventId }),
       });
 
       if (!res.ok) throw new Error('Request failed');
@@ -2119,13 +2125,15 @@
       input.parentElement.style.display = 'none';
       success.style.display = 'block';
       if (window.pmTrack) window.pmTrack('signup', 'waitlist');
-      // Meta Pixel: waitlist signup = a Lead. content_name tags which form converted.
+      // Meta Pixel: waitlist signup = a Lead. content_name tags which form
+      // converted. eventID (4th arg) dedupes against the server-side CAPI Lead.
       if (window.fbq) fbq('track', 'Lead', {
         content_name: 'waitlist',
         content_category: inputId === 'hero-email' ? 'hero-form' : 'cta-form',
-      });
-      // Reddit Pixel: waitlist signup conversion.
-      if (window.rdt) rdt('track', 'SignUp');
+      }, { eventID: eventId });
+      // Reddit Pixel: waitlist signup conversion. conversionId dedupes against
+      // the server-side CAPI SignUp event.
+      if (window.rdt) rdt('track', 'SignUp', { conversionId: eventId });
     } catch (e) {
       btn.textContent = 'Try Again';
       btn.disabled = false;

@@ -1,5 +1,68 @@
+const crypto = require('crypto')
 const { createClient } = require('@supabase/supabase-js')
 const { Resend } = require('resend')
+
+// SHA-256, normalized (trim + lowercase) — the format both Meta and Reddit
+// expect for hashed match keys like email.
+const sha256 = (v) => crypto.createHash('sha256').update(String(v).trim().toLowerCase()).digest('hex')
+
+// ── Server-side conversion reporting (CAPI) ─────────────────────────────────
+// Both calls no-op unless their token env var is set, so this stays dormant
+// until the tokens are added in Vercel. Each carries the same eventId as the
+// browser pixel so Meta/Reddit dedupe the two reports into one conversion.
+
+async function sendMetaCapi({ email, eventId, ip, ua, sourceUrl }) {
+  const token = process.env.META_CAPI_TOKEN
+  if (!token) return
+  const pixelId = process.env.META_PIXEL_ID || '1053165947067170'
+  const payload = {
+    data: [{
+      event_name: 'Lead',
+      event_time: Math.floor(Date.now() / 1000),
+      event_id: eventId,                 // dedupe key — matches fbq eventID
+      action_source: 'website',
+      event_source_url: sourceUrl,
+      user_data: {
+        em: [sha256(email)],
+        client_ip_address: ip,
+        client_user_agent: ua,
+      },
+    }],
+  }
+  const url = `https://graph.facebook.com/v21.0/${pixelId}/events?access_token=${encodeURIComponent(token)}`
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  if (!r.ok) console.error('Meta CAPI error:', r.status, await r.text())
+}
+
+async function sendRedditCapi({ email, eventId, ip, ua }) {
+  const token = process.env.REDDIT_CONVERSION_TOKEN
+  if (!token) return
+  const pixelId = process.env.REDDIT_PIXEL_ID || 'a2_j3utzpduugxz'
+  const payload = {
+    test_mode: process.env.REDDIT_CAPI_TEST === 'true',
+    events: [{
+      event_at: new Date().toISOString(),
+      event_type: { tracking_type: 'SignUp' },
+      event_metadata: { conversion_id: eventId },  // dedupe key — matches rdt conversionId
+      user: {
+        email: sha256(email),
+        ip_address: ip,
+        user_agent: ua,
+      },
+    }],
+  }
+  const url = `https://ads-api.reddit.com/api/v2.0/conversions/events/${pixelId}`
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  if (!r.ok) console.error('Reddit CAPI error:', r.status, await r.text())
+}
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -13,7 +76,7 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' })
   }
 
-  const { email, source } = req.body
+  const { email, source, eventId: bodyEventId } = req.body
 
   if (!email || !email.includes('@')) {
     return res.status(400).json({ error: 'Invalid email' })
@@ -41,6 +104,18 @@ module.exports = async function handler(req, res) {
       console.error('Welcome email failed:', emailErr)
     }
   }
+
+  // Server-side conversion reporting, deduped with the browser pixels via eventId.
+  // Fire both platforms; never let a CAPI failure break the signup response.
+  const eventId = bodyEventId || crypto.randomUUID()
+  const fwd = req.headers['x-forwarded-for'] || ''
+  const ip = fwd.split(',')[0].trim() || req.socket?.remoteAddress || undefined
+  const ua = req.headers['user-agent'] || undefined
+  const sourceUrl = req.headers.referer || req.headers.origin || 'https://patchmap.app'
+  await Promise.allSettled([
+    sendMetaCapi({ email, eventId, ip, ua, sourceUrl }),
+    sendRedditCapi({ email, eventId, ip, ua }),
+  ])
 
   return res.status(200).json({ success: true })
 }
