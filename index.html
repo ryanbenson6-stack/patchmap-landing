@@ -17,12 +17,21 @@
   <script src="/assets/reddit-pixel.js"></script>
   <!-- End Reddit Pixel -->
 
-  <title>PatchMap — Stage Plots That Don't Suck</title>
+  <title>PatchMap — The Patch Document That Stays Accurate</title>
+  <meta name="description" content="Every patching tool sped up the PDF. PatchMap is the only patch document that's still accurate at soundcheck — live, QR-shared, built for A1s, not spreadsheet users." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 
   <style>
+    /* ─────────────────────────────────────────────────────────────────────────
+       PatchMap tier-routed sales page — patchmap.app/main
+       Design language carried from the root landing (index.html): DM Mono /
+       Bebas Neue / DM Sans on the dark deck. Tier accent tokens are the SAME
+       hues already used by the landing's feature-tier tags (green / cyan /
+       amber / purple). --accent is a single swappable var the toggle rewrites
+       so the whole tier-content block re-themes in one move.
+       ───────────────────────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
@@ -37,9 +46,18 @@
       --text: #e8e8ea;
       --text-dim: #888890;
       --text-dimmer: #55555e;
-      --green: #4ade80;
-      --red: #f87171;
-      --purple: #a78bfa;
+
+      /* Tier accent hues — the ramp: cool → warm → deep (echoes the RF colour
+         convention). These four are the source of truth; the toggle copies the
+         active one into --accent / --accent-rgb. */
+      --tier-free: #4ade80;   --tier-free-rgb: 74,222,128;
+      --tier-plus: #38bdf8;   --tier-plus-rgb: 56,189,248;
+      --tier-pro:  #f5a623;   --tier-pro-rgb:  245,166,35;
+      --tier-tour: #a78bfa;   --tier-tour-rgb: 167,139,250;
+
+      /* Active accent — defaults to Free; JS rewrites these two on toggle. */
+      --accent: var(--tier-free);
+      --accent-rgb: 74,222,128;
     }
 
     html { scroll-behavior: smooth; }
@@ -54,2184 +72,1019 @@
 
     body::before {
       content: '';
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.6;
+      pointer-events: none; z-index: 0; opacity: 0.6;
     }
 
     .grid-bg {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
       background-image:
         linear-gradient(var(--border) 1px, transparent 1px),
         linear-gradient(90deg, var(--border) 1px, transparent 1px);
-      background-size: 60px 60px;
-      opacity: 0.25;
+      background-size: 60px 60px; opacity: 0.25;
       mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 100%);
     }
 
+    .wrap { max-width: 1100px; margin: 0 auto; padding-left: 48px; padding-right: 48px; }
+
     /* ── NAV ── */
     nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 20px 48px;
-      border-bottom: 1px solid var(--border);
-      background: rgba(10,10,10,0.88);
-      backdrop-filter: blur(12px);
-    }
-
-    .nav-logo {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px;
-      letter-spacing: 0.12em;
-      color: var(--amber);
-    }
-
-    .nav-badge {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--text-dim);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      border: 1px solid var(--border-bright);
-      padding: 4px 10px;
-      border-radius: 2px;
-    }
-
-    /* ── HERO ── */
-    .hero {
-      position: relative;
-      z-index: 1;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 140px 48px 80px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .hero-eyebrow {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--amber);
-      margin-bottom: 28px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      opacity: 0;
-      animation: fadeUp 0.6s ease forwards 0.2s;
-    }
-
-    .hero-eyebrow::before {
-      content: '';
-      display: block;
-      width: 32px;
-      height: 1px;
-      background: var(--amber);
-    }
-
-    h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(64px, 10vw, 128px);
-      line-height: 0.92;
-      letter-spacing: 0.02em;
-      color: var(--text);
-      margin-bottom: 32px;
-      opacity: 0;
-      animation: fadeUp 0.7s ease forwards 0.35s;
-    }
-
-    h1 span { color: var(--amber); display: block; }
-
-    .hero-sub {
-      font-size: 18px;
-      line-height: 1.65;
-      color: var(--text-dim);
-      max-width: 560px;
-      margin-bottom: 28px;
-      font-weight: 300;
-      opacity: 0;
-      animation: fadeUp 0.7s ease forwards 0.5s;
-    }
-
-    .hero-sub strong { color: var(--text); font-weight: 500; }
-
-    /* ── HERO VALUE PROPS ── */
-    .hero-props {
-      list-style: none;
-      margin-bottom: 40px;
-      max-width: 560px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      opacity: 0;
-      animation: fadeUp 0.7s ease forwards 0.57s;
-    }
-
-    .hero-props li {
-      font-family: 'DM Mono', monospace;
-      font-size: 13px;
-      letter-spacing: 0.06em;
-      color: var(--text-dim);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .hero-props li::before {
-      content: '→';
-      color: var(--amber);
-      font-size: 11px;
-      flex-shrink: 0;
-    }
-
-    /* ── HERO VIDEO PLACEHOLDER ── */
-    /* ASSET #1 — Hero video/screenshot */
-    .hero-media {
-      position: absolute;
-      right: 0;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 48%;
-      aspect-ratio: 1920/1000;
-      border: 1px solid var(--border-bright);
-      border-radius: 6px;
-      overflow: hidden;
-      opacity: 0;
-      animation: fadeUp 0.8s ease forwards 0.6s;
-    }
-
-    .hero-media video,
-    .hero-media img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .media-placeholder {
-      width: 100%;
-      height: 100%;
-      background: var(--surface);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-    }
-
-    .media-placeholder .ph-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-dimmer);
-      text-align: center;
-      padding: 0 24px;
-      line-height: 1.6;
-    }
-
-    .media-placeholder .ph-icon {
-      font-size: 28px;
-      opacity: 0.3;
-    }
-
-    .media-placeholder .ph-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--amber);
-      border: 1px solid rgba(245,166,35,0.3);
-      padding: 3px 8px;
-      border-radius: 2px;
-    }
-
-    .hero-inner {
-      max-width: 700px;
-    }
-
-    /* ── EMAIL FORM ── */
-    .email-form {
-      display: flex;
-      gap: 0;
-      max-width: 480px;
-      opacity: 0;
-      animation: fadeUp 0.7s ease forwards 0.65s;
-    }
-
-    .email-input {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--border-bright);
-      border-right: none;
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      padding: 14px 18px;
-      outline: none;
-      border-radius: 3px 0 0 3px;
-      transition: border-color 0.2s, background 0.2s;
-    }
-
-    .email-input::placeholder { color: var(--text-dimmer); }
-    .email-input:focus { border-color: var(--amber); background: var(--surface-2); }
-
-    .email-btn {
-      background: var(--amber);
-      color: var(--black);
-      border: none;
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      padding: 14px 24px;
-      cursor: pointer;
-      border-radius: 0 3px 3px 0;
-      transition: background 0.15s, transform 0.1s;
-      white-space: nowrap;
-    }
-
-    .email-btn:hover { background: #ffc04a; }
-    .email-btn:active { transform: scale(0.98); }
-
-    .form-note {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--text-dimmer);
-      margin-top: 12px;
-      letter-spacing: 0.04em;
-      opacity: 0;
-      animation: fadeUp 0.7s ease forwards 0.8s;
-    }
-
-    .success-msg {
-      display: none;
-      font-family: 'DM Mono', monospace;
-      font-size: 13px;
-      color: var(--green);
-      letter-spacing: 0.08em;
-      margin-top: 16px;
-    }
-
-    .section-divider { border: none; border-top: 1px solid var(--border); margin: 0; }
-
-    /* ── PAIN SECTION ── */
-    .pain-section {
-      position: relative;
-      z-index: 1;
-      padding: 100px 48px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .pain-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-dimmer);
-      margin-bottom: 48px;
-    }
-
-    .pain-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .pain-card {
-      background: var(--near-black);
-      padding: 36px 32px;
-      transition: background 0.2s;
-    }
-
-    .pain-card:hover { background: var(--surface); }
-
-    .pain-icon {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--red);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .pain-icon::before { content: '✕'; font-size: 10px; }
-
-    .pain-card h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 26px;
-      letter-spacing: 0.05em;
-      margin-bottom: 12px;
-    }
-
-    .pain-card p { font-size: 14px; line-height: 1.65; color: var(--text-dim); }
-
-    /* ── FEATURE SECTIONS ── */
-    .features-section {
-      position: relative;
-      z-index: 1;
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 100px 48px;
-    }
-
-    .section-header {
-      display: flex;
-      align-items: baseline;
-      gap: 20px;
-      margin-bottom: 80px;
-    }
-
-    .section-header h2 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(36px, 5vw, 56px);
-      letter-spacing: 0.04em;
-    }
-
-    .section-header .tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--amber);
-    }
-
-    .feature-block {
-      display: grid;
-      grid-template-columns: 9fr 11fr;
-      gap: 64px;
-      align-items: center;
-      padding: 64px 0;
-      border-top: 1px solid var(--border);
-    }
-
-    .feature-block:last-child { border-bottom: 1px solid var(--border); }
-
-    .feature-block.no-media {
-      grid-template-columns: 1fr;
-      max-width: 760px;
-    }
-
-    .feature-block.no-media .detail-list {
-      columns: 2;
-      column-gap: 40px;
-    }
-
-    .feature-block.no-media .detail-list li {
-      break-inside: avoid;
-    }
-
-    .feature-block.reverse { direction: rtl; }
-    .feature-block.reverse > * { direction: ltr; }
-
-    .feature-text {}
-
-    .feature-tier-tag {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      padding: 4px 10px;
-      border-radius: 2px;
-      display: inline-block;
-      margin-bottom: 20px;
-    }
-
-    .tier-free  { background: rgba(74,222,128,0.08); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
-    .tier-plus  { background: rgba(56,189,248,0.08); color: #38bdf8; border: 1px solid rgba(56,189,248,0.2); }
-    .tier-pro   { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(245,166,35,0.25); }
-    .tier-tour  { background: rgba(139,92,246,0.08); color: var(--purple); border: 1px solid rgba(139,92,246,0.2); }
-    .tier-combo { background: var(--amber-glow); color: var(--amber); border: 1px solid rgba(245,166,35,0.25); }
-
-    .feature-text h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(32px, 4vw, 44px);
-      letter-spacing: 0.04em;
-      line-height: 1.0;
-      margin-bottom: 20px;
-    }
-
-    .feature-subhead {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 0.06em;
-      color: var(--amber);
-      margin-bottom: 16px;
-      margin-top: -8px;
-    }
-
-    .feature-text p {
-      font-size: 15px;
-      line-height: 1.75;
-      color: var(--text-dim);
-      margin-bottom: 16px;
-    }
-
-    .feature-text p strong { color: var(--text); font-weight: 500; }
-
-    .feature-text .detail-list {
-      list-style: none;
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .feature-text .detail-list li {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 0.06em;
-      color: var(--text-dimmer);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .feature-text .detail-list li::before {
-      content: '→';
-      color: var(--amber);
-      font-size: 11px;
-    }
-
-    /* ── FEATURE MEDIA ── */
-    .feature-media {
-      aspect-ratio: 1920/1000;
-      border: 1px solid var(--border-bright);
-      border-radius: 6px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .feature-media video,
-    .feature-media img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* ── SIGNAL FLOW SECTION ── */
-    .signal-section {
-      position: relative;
-      z-index: 1;
-      padding: 100px 48px;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .signal-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
-
-    .signal-text h2 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(32px, 4vw, 48px);
-      letter-spacing: 0.04em;
-      line-height: 1.0;
-      margin-bottom: 20px;
-    }
-
-    .signal-text p {
-      font-size: 15px;
-      line-height: 1.75;
-      color: var(--text-dim);
-      margin-bottom: 12px;
-    }
-
-    .signal-text p strong { color: var(--text); font-weight: 500; }
-
-    .signal-text .detail-list {
-      list-style: none;
-      margin-top: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .signal-text .detail-list li {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 0.06em;
-      color: var(--text-dimmer);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .signal-text .detail-list li::before {
-      content: '→';
-      color: var(--amber);
-      font-size: 11px;
-    }
-
-    /* ── CHANNEL CARD ── */
-    .channel-card {
-      width: 100%;
-      max-width: 400px;
-      background: var(--near-black);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .channel-card::before {
-      content: '';
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 3px;
-      background: var(--amber);
-      border-radius: 8px 0 0 8px;
-    }
-
-    .ch-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 18px 20px 18px 24px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface-2);
-    }
-
-    .ch-number {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--amber);
-    }
-
-    .ch-status {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--green);
-    }
-
-    .ch-status::before {
-      content: '';
-      display: block;
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 6px rgba(74,222,128,0.6);
-      animation: sfpulse 2s ease-in-out infinite;
-    }
-
-    @keyframes sfpulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.4; }
-    }
-
-    .sf-body { padding: 8px 0 16px; }
-
-    .sf-row {
-      display: grid;
-      grid-template-columns: 24px 1fr;
-      align-items: stretch;
-      padding: 0 20px 0 24px;
-    }
-
-    .sf-line-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding-top: 18px;
-    }
-
-    .sf-dot {
-      width: 9px; height: 9px;
-      border-radius: 50%;
-      border: 2px solid var(--amber);
-      background: var(--black);
-      flex-shrink: 0;
-      z-index: 1;
-    }
-
-    .sf-dot.filled { background: var(--amber); }
-    .sf-dot.dim    { border-color: var(--border-bright); }
-
-    .sf-connector {
-      flex: 1;
-      width: 2px;
-      background: rgba(245,166,35,0.35);
-      min-height: 16px;
-    }
-
-    .sf-content { padding: 10px 0 10px 14px; }
-
-    .sf-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--text-dimmer);
-      margin-bottom: 3px;
-    }
-
-    .sf-value {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
-    }
-
-    .sf-sub {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--text-dim);
-      margin-top: 2px;
-    }
-
-    .sf-divider {
-      height: 1px;
-      background: var(--border);
-      margin: 0 20px 0 48px;
-    }
-
-    .sf-resolved {
-      margin: 4px 20px 0 48px;
-      padding: 10px 14px;
-      background: rgba(245,166,35,0.08);
-      border: 1px solid rgba(245,166,35,0.2);
-      border-radius: 4px;
-    }
-
-    .sf-resolved-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--amber);
-      margin-bottom: 5px;
-    }
-
-    .sf-resolved-string {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dim);
-      line-height: 1.6;
-    }
-
-    .sf-resolved-string span { color: var(--amber); }
-
-    /* ── WHO SECTION ── */
-    .who-section {
-      position: relative;
-      z-index: 1;
-      padding: 100px 48px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .who-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .who-card {
-      background: var(--near-black);
-      padding: 40px 36px;
-      transition: background 0.2s;
-    }
-
-    .who-card:hover { background: var(--surface); }
-
-    .who-role {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--amber);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .who-role::before { content: '▸'; }
-
-    .who-card h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 28px;
-      letter-spacing: 0.04em;
-      margin-bottom: 14px;
-    }
-
-    .who-card p { font-size: 14px; line-height: 1.7; color: var(--text-dim); }
-
-    /* ── CTA ── */
-    .cta-section {
-      position: relative;
-      z-index: 1;
-      padding: 120px 48px;
-      max-width: 1100px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
-    .cta-section h2 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(48px, 7vw, 88px);
-      letter-spacing: 0.03em;
-      line-height: 0.95;
-      margin-bottom: 24px;
-    }
-
-    .cta-section h2 span { color: var(--amber); }
-
-    .cta-section p {
-      font-size: 16px;
-      color: var(--text-dim);
-      max-width: 480px;
-      margin: 0 auto 48px;
-      line-height: 1.7;
-    }
-
-    .cta-form { display: flex; gap: 0; max-width: 440px; margin: 0 auto; }
-
-    footer {
-      position: relative;
-      z-index: 1;
-      border-top: 1px solid var(--border);
-      padding: 32px 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 0.12em; color: var(--text-dimmer); }
-    .footer-copy { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-dimmer); letter-spacing: 0.06em; }
-
-    /* ── SHARE BUTTONS ── */
-    .share-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .share-btn {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      border: 1px solid var(--border-bright);
-      background: transparent;
-      padding: 5px 12px;
-      border-radius: 2px;
-      cursor: pointer;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: color 0.15s, border-color 0.15s;
-      white-space: nowrap;
-    }
-
-    .share-btn:hover { color: var(--amber); border-color: var(--amber); }
-    .share-btn.copied { color: var(--green); border-color: var(--green); }
-
-    /* ── THEATER MODE ── */
-    .feature-media { cursor: pointer; }
-
-    #theater-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.85);
-      z-index: 499;
-      cursor: pointer;
-      backdrop-filter: blur(4px);
-    }
-
-    #theater-backdrop.active { display: block; animation: backdropIn 0.2s ease forwards; }
-
-    @keyframes backdropIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-
-    .feature-media.theater-active {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(1);
-      width: min(90vw, 1500px);
-      height: auto;
-      z-index: 500;
-      border-radius: 8px;
-      animation: theaterIn 0.22s ease forwards;
-    }
-
-    @keyframes theaterIn {
-      from { transform: translate(-50%, -50%) scale(0.88); opacity: 0.6; }
-      to   { transform: translate(-50%, -50%) scale(1);    opacity: 1; }
-    }
-
-    /* ── ANIMATIONS ── */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(18px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-
-    /* ── SOCIAL PROOF ── */
-    .social-proof-section {
-      position: relative;
-      z-index: 1;
-      padding: 80px 48px;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .social-proof-inner {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .section-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-dimmer);
-      margin-bottom: 48px;
-    }
-
-    .quotes-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .quote-block {
-      background: var(--near-black);
-      padding: 36px 32px;
-    }
-
-    .quote-mark {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 48px;
-      color: var(--amber);
-      opacity: 0.3;
-      line-height: 1;
-      margin-bottom: 12px;
-    }
-
-    .quote-text {
-      font-size: 15px;
-      line-height: 1.75;
-      color: var(--text-dim);
-      font-style: italic;
-      margin-bottom: 20px;
-    }
-
-    .quote-attribution {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      color: var(--text-dimmer);
-    }
-
-    /* ── CASE STUDY ── */
-    .case-study-section {
-      position: relative;
-      z-index: 1;
-      padding: 0 48px 80px;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .case-study-inner {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 48px;
-      position: relative;
-      opacity: 0.6;
-    }
-
-    .case-study-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-dimmer);
-      margin-bottom: 20px;
-    }
-
-    .case-study-headline {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(24px, 3vw, 36px);
-      letter-spacing: 0.04em;
-      margin-bottom: 16px;
-      color: var(--text-dimmer);
-    }
-
-    .case-study-body {
-      font-size: 14px;
-      line-height: 1.75;
-      color: var(--text-dimmer);
-      max-width: 680px;
-      margin-bottom: 24px;
-    }
-
-    .case-study-cta {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      letter-spacing: 0.1em;
-      color: var(--text-dimmer);
-      text-decoration: none;
-      border-bottom: 1px solid var(--border-bright);
-      padding-bottom: 2px;
-    }
-
-    .coming-soon-tag {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-dimmer);
-      border: 1px solid var(--border-bright);
-      padding: 4px 10px;
-      border-radius: 2px;
-    }
-
-    /* ── PRICING ── */
-    .pricing-section {
-      position: relative;
-      z-index: 1;
-      padding: 100px 48px;
-      max-width: 1260px;
-      margin: 0 auto;
-    }
-
-    .pricing-header {
-      text-align: center;
-      margin-bottom: 48px;
-    }
-
-    .pricing-header h2 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(40px, 6vw, 72px);
-      letter-spacing: 0.03em;
-      margin-bottom: 16px;
-    }
-
-    .pricing-header p {
-      font-size: 16px;
-      color: var(--text-dim);
-      max-width: 460px;
-      margin: 0 auto;
-      line-height: 1.7;
-    }
-
-    .pricing-toggle-wrap {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 48px;
-    }
-
-    .pricing-toggle-btn {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 8px 20px;
-      border: 1px solid var(--border-bright);
-      background: transparent;
-      color: var(--text-dim);
-      cursor: pointer;
-      border-radius: 2px;
-      transition: all 0.15s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .pricing-toggle-btn.active {
-      background: var(--amber-glow);
-      border-color: var(--amber);
-      color: var(--amber);
-    }
-
-    .save-badge {
-      font-size: 9px;
-      background: rgba(74,222,128,0.12);
-      color: var(--green);
-      border: 1px solid rgba(74,222,128,0.2);
-      padding: 2px 6px;
-      border-radius: 2px;
-    }
-
-    .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    .pricing-card {
-      background: var(--near-black);
-      padding: 36px 24px;
-      display: flex;
-      flex-direction: column;
-      transition: background 0.2s;
-    }
-
-    .pricing-card:hover { background: var(--surface); }
-
-    .pricing-card.featured {
-      background: var(--surface-2);
-      outline: 1px solid var(--border-bright);
-      outline-offset: -1px;
-    }
-
-    .pricing-card.featured:hover { background: var(--surface); }
-
-    .tier-name {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      display: inline-block;
-      padding: 4px 10px;
-      border-radius: 2px;
-    }
-
-    .new-badge {
-      font-size: 9px;
-      background: rgba(56,189,248,0.12);
-      color: #38bdf8;
-      border: 1px solid rgba(56,189,248,0.2);
-      padding: 2px 6px;
-      border-radius: 2px;
-      letter-spacing: 0.08em;
-    }
-
-    .tier-tagline {
-      font-size: 12px;
-      color: var(--text-dimmer);
-      margin-bottom: 24px;
-      font-style: italic;
-      line-height: 1.5;
-    }
-
-    .tier-price-block {
-      margin-bottom: 28px;
-      min-height: 80px;
-    }
-
-    .price-main {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 52px;
-      letter-spacing: 0.02em;
-      color: var(--text);
-      line-height: 1;
-    }
-
-    .price-per {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--text-dimmer);
-      letter-spacing: 0.08em;
-      margin-top: 4px;
-    }
-
-    .price-equiv {
-      font-family: 'DM Mono', monospace;
-      font-size: 10px;
-      color: var(--text-dimmer);
-      letter-spacing: 0.06em;
-      margin-top: 6px;
-      opacity: 0.6;
-    }
-
-    .tier-section-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--text-dimmer);
-      margin-bottom: 8px;
-    }
-
-    .tier-features-list {
-      list-style: none;
-      margin-bottom: 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      flex: 1;
-    }
-
-    .tier-features-list li {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.03em;
-      color: var(--text-dimmer);
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      line-height: 1.5;
-    }
-
-    .tier-features-list li::before {
-      content: '→';
-      color: var(--amber);
-      font-size: 10px;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
-    .dev-badge {
-      display: inline-block;
-      font-size: 8px;
-      background: rgba(167,139,250,0.1);
-      color: var(--purple);
-      border: 1px solid rgba(167,139,250,0.2);
-      padding: 1px 5px;
-      border-radius: 2px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      vertical-align: middle;
-      margin-left: 4px;
-    }
-
-    .tier-cta-btn {
-      display: block;
-      width: 100%;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 12px 16px;
-      border-radius: 2px;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      transition: all 0.15s;
-      margin-top: auto;
-    }
-
-    .tier-cta-btn.primary {
-      background: var(--amber);
-      color: var(--black);
-      border: none;
-      font-weight: 500;
-    }
-
-    .tier-cta-btn.primary:hover { background: #ffc04a; }
-
-    .tier-cta-btn.secondary {
-      background: transparent;
-      color: var(--text-dim);
-      border: 1px solid var(--border-bright);
-      margin-top: 8px;
-    }
-
-    .tier-cta-btn.secondary:hover { color: var(--amber); border-color: var(--amber); }
-
-    .pricing-footnote {
-      margin-top: 36px;
-      text-align: center;
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: var(--text-dimmer);
-      letter-spacing: 0.04em;
-      line-height: 1.8;
-    }
-
-    .pricing-footnote a {
-      color: var(--text-dim);
-      text-decoration: none;
-      border-bottom: 1px solid var(--border-bright);
-      transition: color 0.15s, border-color 0.15s;
-    }
-
-    .pricing-footnote a:hover { color: var(--amber); border-color: var(--amber); }
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 48px; border-bottom: 1px solid var(--border);
+      background: rgba(10,10,10,0.88); backdrop-filter: blur(12px);
+    }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 0.12em; color: var(--amber); text-decoration: none; }
+    .nav-cta {
+      font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--black); background: var(--amber);
+      padding: 8px 16px; border-radius: 3px; text-decoration: none; transition: background .15s;
+    }
+    .nav-cta:hover { background: #ffc04a; }
+
+    /* ── UNIVERSAL HERO ── */
+    .u-hero { position: relative; z-index: 1; padding: 150px 0 60px; }
+    .eyebrow {
+      font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--amber); margin-bottom: 24px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--amber); }
+    h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(56px, 9vw, 116px); line-height: 0.92; letter-spacing: 0.02em; color: var(--text); }
+    h1 em { font-style: normal; color: var(--text-dim); display: block; font-size: 0.42em; letter-spacing: 0.04em; margin-top: 14px; font-family: 'DM Sans', sans-serif; font-weight: 300; }
+    .u-hero-sub { font-size: 18px; line-height: 1.65; color: var(--text-dim); max-width: 620px; margin: 28px 0; }
+    .u-hero-sub strong { color: var(--text); font-weight: 500; }
+    .prop-list { list-style: none; max-width: 620px; display: flex; flex-direction: column; gap: 10px; }
+    .prop-list li { font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.05em; color: var(--text-dim); display: flex; gap: 12px; }
+    .prop-list li::before { content: '→'; color: var(--amber); flex-shrink: 0; }
+    .prop-list li.lede { font-family: 'DM Sans', sans-serif; font-size: 17px; letter-spacing: 0; color: var(--text); font-weight: 400; }
+    .prop-list li.lede::before { color: var(--amber); }
+    .u-hero .cta-row { margin-top: 32px; margin-bottom: 0; }
+    .hero-cta {
+      font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--black); background: var(--amber); border: 1px solid var(--amber);
+      padding: 14px 26px; border-radius: 3px; text-decoration: none; transition: background .15s, transform .1s;
+    }
+    .hero-cta:hover { background: #ffc04a; }
+    .hero-cta:active { transform: scale(0.98); }
+
+    hr.divider { border: none; border-top: 1px solid var(--border); margin: 0; }
+
+    /* ── STORY SECTIONS ── new narrative blocks (Smart Import, Show Chain) in the
+       page's existing language: accent eyebrow, Bebas headline, dim body, a quiet
+       tier note. Alternating dividers keep the pain→demo pacing. ── */
+    .story { position: relative; z-index: 1; padding: 72px 0; border-top: 1px solid var(--border); }
+    .story[data-accent="free"] { --story: var(--tier-free); --story-rgb: var(--tier-free-rgb); }
+    .story[data-accent="plus"] { --story: var(--tier-plus); --story-rgb: var(--tier-plus-rgb); }
+    .story[data-accent="pro"]  { --story: var(--tier-pro);  --story-rgb: var(--tier-pro-rgb); }
+    .story[data-accent="tour"] { --story: var(--tier-tour); --story-rgb: var(--tier-tour-rgb); }
+    .story-eyebrow { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--story); margin-bottom: 18px; display: flex; align-items: center; gap: 12px; }
+    .story-eyebrow::before { content: ''; display: block; width: 28px; height: 1px; background: var(--story); }
+    .story h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(30px, 5vw, 56px); line-height: 1.0; letter-spacing: 0.02em; color: var(--text); max-width: 880px; margin-bottom: 22px; }
+    .story p { font-size: 16px; line-height: 1.7; color: var(--text-dim); max-width: 720px; margin-bottom: 18px; }
+    .story p strong { color: var(--text); font-weight: 500; }
+    .story-note { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--story); border: 1px solid rgba(var(--story-rgb), 0.35); background: rgba(var(--story-rgb), 0.06); padding: 5px 11px; border-radius: 2px; display: inline-block; margin-top: 6px; }
+
+    /* ── PAIN SECTIONS ── compact, tier-accented running colour (rev §2) ── */
+    .pains { position: relative; z-index: 1; padding: 56px 0 40px; display: flex; flex-direction: column; gap: 6px; }
+    .pain { padding: 26px 0 26px 26px; border-left: 2px solid rgba(var(--pain-rgb), 0.5); }
+    .pain[data-accent="free"] { --pain: var(--tier-free); --pain-rgb: var(--tier-free-rgb); }
+    .pain[data-accent="plus"] { --pain: var(--tier-plus); --pain-rgb: var(--tier-plus-rgb); }
+    .pain[data-accent="pro"]  { --pain: var(--tier-pro);  --pain-rgb: var(--tier-pro-rgb); }
+    .pain[data-accent="tour"] { --pain: var(--tier-tour); --pain-rgb: var(--tier-tour-rgb); }
+    .pain-num { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--pain); margin-bottom: 12px; }
+    .pain h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(28px, 4vw, 46px); line-height: 1.02; letter-spacing: 0.02em; color: var(--text); max-width: 820px; margin-bottom: 12px; }
+    .pain p { font-size: 16px; line-height: 1.65; color: var(--text-dim); max-width: 720px; }
+    .pain p strong { color: var(--text); font-weight: 500; }
+
+    /* ── SIGNAL-FLOW DEMO MODULE ── */
+    .demo { position: relative; z-index: 1; padding: 90px 0; background: var(--near-black); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .demo h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(30px, 5vw, 56px); letter-spacing: 0.02em; color: var(--text); margin-bottom: 18px; }
+    .demo p { font-size: 16px; line-height: 1.7; color: var(--text-dim); max-width: 720px; margin-bottom: 40px; }
+    .demo-media { border: 1px solid var(--border-bright); border-radius: 6px; aspect-ratio: 1920/900; overflow: hidden; }
+    .media-ph { width: 100%; height: 100%; background: var(--surface); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; }
+    .media-ph .ph-icon { font-size: 30px; opacity: 0.3; }
+    .media-ph .ph-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-dimmer); text-align: center; padding: 0 24px; line-height: 1.6; }
+    .media-ph .ph-tag { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); border: 1px solid rgba(245,166,35,0.3); padding: 3px 8px; border-radius: 2px; }
+
+    /* ── TIER TOGGLE ── */
+    .toggle-wrap { position: sticky; top: 0; z-index: 90; background: rgba(10,10,10,0.92); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 14px 48px; }
+    .toggle { max-width: 1100px; margin: 0 auto; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+    .toggle-tab {
+      font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-dim); background: var(--surface); border: 1px solid var(--border);
+      padding: 9px 22px; border-radius: 3px; cursor: pointer; transition: color .18s, border-color .18s, background .18s;
+    }
+    .toggle-tab:hover { color: var(--text); }
+    .toggle-tab[aria-selected="true"] {
+      color: var(--tab-accent); border-color: var(--tab-accent);
+      background: rgba(var(--tab-accent-rgb), 0.08);
+    }
+
+    /* ── DYNAMIC TIER BLOCK ── */
+    #tier-block { position: relative; z-index: 1; padding: 70px 0 40px; }
+    /* §7 strike: sections render hidden, then reveal top-to-bottom as the front passes. */
+    #tier-block.striking > *:not(.strike-svg) { opacity: 0; transform: translateY(8px); transition: opacity .4s ease, transform .4s ease; }
+    .strike-svg { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; overflow: visible; }
+
+    .tier-badge {
+      display: inline-block; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--accent); border: 1px solid rgba(var(--accent-rgb), 0.35);
+      background: rgba(var(--accent-rgb), 0.08); padding: 5px 12px; border-radius: 2px; margin-bottom: 24px;
+    }
+    .tier-headline { font-family: 'Bebas Neue', sans-serif; font-size: clamp(40px, 6.5vw, 84px); line-height: 0.95; letter-spacing: 0.02em; color: var(--text); max-width: 900px; margin-bottom: 26px; }
+    .tier-body { font-size: 17px; line-height: 1.7; color: var(--text-dim); max-width: 680px; margin-bottom: 22px; }
+    .tier-kicker { font-size: 17px; line-height: 1.7; color: var(--text-dim); max-width: 680px; margin-bottom: 44px; }
+    .tier-kicker strong { color: var(--accent); font-weight: 500; }
+
+    /* CTAs */
+    .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .btn-primary {
+      font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--black); background: var(--accent); border: 1px solid var(--accent);
+      padding: 14px 26px; border-radius: 3px; cursor: pointer; text-decoration: none; transition: filter .15s, transform .1s;
+    }
+    .btn-primary:hover { filter: brightness(1.12); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-secondary {
+      font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent); background: transparent; border: 1px solid rgba(var(--accent-rgb), 0.4);
+      padding: 14px 26px; border-radius: 3px; cursor: pointer; text-decoration: none; transition: border-color .15s, background .15s;
+    }
+    .btn-secondary:hover { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.06); }
+    .price-line { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.06em; color: var(--text-dimmer); }
+
+    /* Spotlight */
+    .spotlight { margin-top: 72px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    .spotlight h3 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(28px, 4vw, 44px); letter-spacing: 0.02em; color: var(--text); margin-bottom: 18px; }
+    .spotlight p { font-size: 15px; line-height: 1.7; color: var(--text-dim); }
+    .spotlight-media { border: 1px solid var(--border-bright); border-radius: 6px; aspect-ratio: 4/3; overflow: hidden; }
+
+    /* Feature grid */
+    .fgrid { margin-top: 72px; }
+    .fgrid-lead { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-bottom: 22px; }
+    .fgrid-new { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .fcard { border: 1px solid var(--border); border-radius: 5px; padding: 22px; background: var(--surface); border-left: 2px solid var(--accent); }
+    .fcard h4 { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 8px; }
+    .fcard p { font-size: 13px; line-height: 1.6; color: var(--text-dim); }
+    .fgrid-inherited { margin-top: 28px; }
+    .inherited-label { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-dimmer); margin-bottom: 14px; display: flex; align-items: center; gap: 12px; }
+    .inherited-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .inherited-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .inherited-chip { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.04em; color: var(--text-dim); border: 1px solid var(--border); border-radius: 2px; padding: 5px 10px; opacity: 0.75; }
+
+    /* Number line + proof */
+    .numberline { margin-top: 60px; font-family: 'DM Mono', monospace; font-size: 14px; letter-spacing: 0.1em; color: var(--accent); }
+    .proof { margin-top: 18px; font-size: 15px; font-style: italic; color: var(--text-dim); max-width: 680px; line-height: 1.6; }
+
+    /* ── PRICING TABLE ── */
+    .pricing { position: relative; z-index: 1; padding: 90px 0; }
+    .pricing h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(32px, 5vw, 56px); letter-spacing: 0.02em; color: var(--text); text-align: center; margin-bottom: 12px; }
+    .pricing-sub { text-align: center; color: var(--text-dim); font-size: 14px; margin-bottom: 48px; }
+    .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .pcard { border: 1px solid var(--border); border-radius: 6px; padding: 26px 20px; background: var(--surface); display: flex; flex-direction: column; transition: border-color .25s, box-shadow .25s; }
+    .pcard[data-active="true"] { border-color: var(--pcard-accent); box-shadow: 0 0 0 1px var(--pcard-accent), 0 12px 40px rgba(var(--pcard-accent-rgb), 0.12); }
+    .pcard-name { font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--pcard-accent); margin-bottom: 14px; }
+    .pcard-price { font-family: 'Bebas Neue', sans-serif; font-size: 44px; letter-spacing: 0.01em; color: var(--text); line-height: 1; }
+    .pcard-price small { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text-dim); letter-spacing: 0.04em; }
+    .pcard-annual { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-dimmer); margin-top: 8px; margin-bottom: 20px; min-height: 34px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .save-badge { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--pcard-accent); border: 1px solid rgba(var(--pcard-accent-rgb), 0.4); background: rgba(var(--pcard-accent-rgb), 0.1); padding: 2px 6px; border-radius: 2px; }
+
+    /* Billing period toggle (rev §6) */
+    .billing-toggle { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 36px; }
+    .billing-opt { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); background: var(--surface); border: 1px solid var(--border); padding: 8px 20px; border-radius: 3px; cursor: pointer; transition: color .15s, border-color .15s, background .15s; }
+    .billing-opt:hover { color: var(--text); }
+    .billing-opt[aria-pressed="true"] { color: var(--amber); border-color: var(--amber); background: var(--amber-glow); }
+    .billing-hint { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--tier-free); margin-left: 8px; }
+
+    /* Venue explainer tooltip (rev §9) */
+    .tip { position: relative; display: inline-flex; vertical-align: middle; cursor: help; margin-left: 5px; }
+    .tip-i { display: inline-flex; align-items: center; justify-content: center; width: 14px; height: 14px; border: 1px solid var(--text-dimmer); border-radius: 50%; font-family: 'DM Mono', monospace; font-size: 9px; line-height: 1; color: var(--text-dim); }
+    .tip:hover .tip-i, .tip:focus .tip-i { border-color: var(--pcard-accent); color: var(--pcard-accent); }
+    .tip-pop { position: absolute; bottom: 150%; left: 50%; transform: translateX(-50%); width: 220px; max-width: 62vw; background: var(--surface-2); border: 1px solid var(--border-bright); border-radius: 5px; padding: 11px 13px; font-family: 'DM Sans', sans-serif; font-size: 12px; line-height: 1.5; letter-spacing: 0; text-transform: none; color: var(--text-dim); opacity: 0; visibility: hidden; transition: opacity .15s; z-index: 30; pointer-events: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+    .tip:hover .tip-pop, .tip:focus .tip-pop { opacity: 1; visibility: visible; }
+    .pcard-specs { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 22px; }
+    .pcard-specs li { font-size: 13px; color: var(--text-dim); display: flex; justify-content: space-between; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+    .pcard-specs li span:last-child { color: var(--text); }
+    .pcard-cta { margin-top: auto; font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; text-align: center; text-decoration: none; padding: 12px; border-radius: 3px; cursor: pointer; }
+    .pcard-cta.solid { background: var(--pcard-accent); color: var(--black); border: 1px solid var(--pcard-accent); }
+    .pcard-cta.ghost { background: transparent; color: var(--pcard-accent); border: 1px solid rgba(var(--pcard-accent-rgb), 0.4); }
 
     /* ── FAQ ── */
-    .faq-section {
-      position: relative;
-      z-index: 1;
-      padding: 80px 48px;
-      max-width: 860px;
-      margin: 0 auto;
-    }
+    .faq { position: relative; z-index: 1; padding: 80px 0 120px; }
+    .faq h2 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(32px, 5vw, 56px); letter-spacing: 0.02em; color: var(--text); text-align: center; margin-bottom: 44px; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-q { width: 100%; text-align: left; background: none; border: none; cursor: pointer; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 17px; font-weight: 400; padding: 22px 0; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+    .faq-q .chev { color: var(--amber); font-family: 'DM Mono', monospace; transition: transform .2s; flex-shrink: 0; }
+    .faq-item[open] .chev { transform: rotate(45deg); }
+    .faq-a { color: var(--text-dim); font-size: 15px; line-height: 1.7; padding: 0 0 22px; max-width: 780px; }
 
-    .faq-header {
-      margin-bottom: 48px;
-    }
-
-    .faq-header h2 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(36px, 5vw, 56px);
-      letter-spacing: 0.04em;
-    }
-
-    .faq-item {
-      border-top: 1px solid var(--border);
-      padding: 0;
-    }
-
-    .faq-item:last-child { border-bottom: 1px solid var(--border); }
-
-    .faq-q {
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 500;
-      color: var(--text);
-      padding: 24px 0;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 20px;
-      list-style: none;
-      user-select: none;
-    }
-
-    .faq-q::after {
-      content: '+';
-      font-family: 'DM Mono', monospace;
-      font-size: 20px;
-      color: var(--amber);
-      flex-shrink: 0;
-      line-height: 1;
-      transition: transform 0.2s;
-    }
-
-    .faq-item.open .faq-q::after { transform: rotate(45deg); }
-
-    .faq-a {
-      font-size: 14px;
-      line-height: 1.8;
-      color: var(--text-dim);
-      display: none;
-      padding-bottom: 24px;
-      max-width: 720px;
-    }
-
-    .faq-item.open .faq-a { display: block; }
+    /* ── FOOTER ── */
+    footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 40px 48px; text-align: center; }
+    footer p { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-dimmer); letter-spacing: 0.06em; }
+    footer a { color: var(--text-dim); text-decoration: none; }
 
     /* ── RESPONSIVE ── */
-    @media (max-width: 1100px) {
-      .pricing-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    @media (max-width: 900px) {
+    @media (max-width: 820px) {
+      .wrap { padding-left: 24px; padding-right: 24px; }
       nav { padding: 16px 24px; }
-      .hero { padding: 120px 24px 60px; }
-      .hero-inner { max-width: 100%; }
-      .hero-media { display: none; }
-      h1 { font-size: 64px; }
-      .pain-section, .features-section, .who-section, .cta-section { padding: 60px 24px; }
-      .signal-section { padding: 60px 24px; }
-      .signal-inner { grid-template-columns: 1fr; gap: 40px; }
-      .channel-card { max-width: 100%; }
-      .pain-grid { grid-template-columns: 1fr; }
-      .who-grid { grid-template-columns: 1fr; }
-      .feature-block { grid-template-columns: 1fr; gap: 32px; }
-      .feature-block.reverse { direction: ltr; }
-      .email-form, .cta-form { flex-direction: column; }
-      .email-input { border-right: 1px solid var(--border-bright); border-bottom: none; border-radius: 3px 3px 0 0; }
-      .email-btn { border-radius: 0 0 3px 3px; padding: 14px; }
-      footer { flex-direction: column; gap: 12px; text-align: center; }
-      .social-proof-section { padding: 60px 24px; }
-      .case-study-section { padding: 0 24px 60px; }
-      .case-study-inner { padding: 32px; }
-      .pricing-section { padding: 60px 24px; }
-      .faq-section { padding: 60px 24px; }
-      .quotes-grid { grid-template-columns: 1fr; }
+      .toggle-wrap { padding: 12px 16px; }
+      .spotlight { grid-template-columns: 1fr; gap: 28px; }
+      .fgrid-new { grid-template-columns: 1fr; }
+      .cards { grid-template-columns: 1fr 1fr; }
     }
+    @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
 
-    @media (max-width: 700px) {
-      .pricing-grid { grid-template-columns: 1fr; }
+    /* ── REDUCED MOTION ── §7 fallback: no wiring, instant colour + copy swap ── */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      #tier-block.striking > *:not(.strike-svg) { opacity: 1 !important; transform: none !important; transition: none !important; }
+      .strike-svg { display: none !important; }
     }
   </style>
 </head>
 <body>
+  <div class="grid-bg"></div>
 
-<div class="grid-bg"></div>
-<div id="theater-backdrop"></div>
+  <!-- ── NAV ─────────────────────────────────────────────────────────────── -->
+  <nav>
+    <a href="/" class="nav-logo">PATCHMAP</a>
+    <a href="https://app.patchmap.app" class="nav-cta" data-conversion data-track-cta="nav">Start Building</a>
+  </nav>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">PatchMap</div>
-  <div style="display:flex;align-items:center;gap:12px;">
-    <div class="nav-badge">Launching July 15</div>
-    <div class="share-group">
-      <a class="share-btn" id="nav-x-share" href="#" target="_blank" rel="noopener">↗ Share</a>
-      <button class="share-btn" id="nav-copy-link" onclick="copyLink(this)">⎘ Copy Link</button>
-    </div>
-  </div>
-</nav>
-
-<!-- ═══════════════════════════════════════════
-     HERO
-     ASSET #1: Hero video or hero screenshot
-     File: /public/assets/hero-demo.mp4 (or .jpg)
-     What to capture: Full canvas view with a real show loaded —
-     instruments placed, input list populated. Should feel like
-     "oh, that's what this is."
-     Dimensions: 16:10, at least 1280×800px
-═══════════════════════════════════════════ -->
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-eyebrow">For Working Audio Engineers</div>
-
-    <h1>
-      Your Last Stage Plot<br/>
-      <span>Was Built in Sheets.</span>
-    </h1>
-
-    <p class="hero-sub">
-      We both know how that went.<br/><br/>
-      <strong>PatchMap</strong> is a professional stage plot and patch documentation tool built for A1s — not spreadsheet users.
+  <!-- ══ UNIVERSAL BLOCK (FIXED — never reacts to tier) ═══════════════════════ -->
+  <header class="u-hero wrap">
+    <div class="eyebrow">Built for A1s. Not spreadsheet users.</div>
+    <h1>Fast and Wrong Is Still Wrong.</h1>
+    <p class="u-hero-sub">
+      Every patching tool sped up the PDF. Nobody fixed the fact that it's <strong>outdated by soundcheck</strong>.
     </p>
-
-    <ul class="hero-props">
-      <li>Ten minutes from blank canvas to a complete show file.</li>
-      <li>PDFs that look like a professional built them. Because one did.</li>
-      <li>One link — your whole crew, every role, any device.</li>
+    <ul class="prop-list">
+      <li class="lede">PatchMap is the only patch document that's still accurate at 9pm.</li>
     </ul>
-
-    <div class="email-form">
-      <input class="email-input" id="hero-email" type="email" placeholder="your@email.com" autocomplete="email" />
-      <button class="email-btn" onclick="handleSignup('hero-email', 'hero-success')">Join the Waitlist</button>
+    <div class="cta-row">
+      <a href="https://app.patchmap.app" class="hero-cta" data-conversion data-track-cta="hero">Start Building &rarr;</a>
     </div>
-    <p class="form-note">Going live July 15, 2026 — join now and you're in from day one.</p>
-    <div class="success-msg" id="hero-success">✓ You're on the list. See you on July 15.</div>
-  </div>
-</section>
+  </header>
 
-<hr class="section-divider" />
+  <hr class="divider" />
 
-<!-- PAIN -->
-<section class="pain-section">
-  <div class="pain-label reveal">The Current Workflow</div>
-  <div class="pain-grid reveal">
-    <div class="pain-card">
-      <div class="pain-icon">The Current Workflow</div>
-      <h3>Built for Spreadsheets. Not for Shows.</h3>
-      <p>A stage plot has never been a data entry problem. But that's what it became when nothing better existed. Patch Map's canvas auto-populates labeling, channel assignments, and signal flow as you build — so you spend less time on paperwork and more time on the actual show.</p>
+  <!-- PAIN POINTS (fixed) — compressed copy, tier-accented, lighter rules (rev §2) -->
+  <section class="pains wrap">
+    <div class="pain" data-accent="free">
+      <div class="pain-num">01 — The Problem</div>
+      <h2>Every Tool in This Space Got Faster at Building the Wrong Document.</h2>
+      <p>Templates, drag-and-drop builders, auto-routing — they all solve the same problem: how fast can you produce a PDF. None of them solve what happens the second something changes after you hit export. <strong>PatchMap isn't a faster document. It's a live one.</strong></p>
     </div>
-    <div class="pain-card">
-      <div class="pain-icon">Three Documents. One Problem.</div>
-      <h3>Your Analog Patch, RF, and Dante Don't Talk to Each Other.</h3>
-      <p>Right now they live in three different places. When you're troubleshooting at showtime, you're jumping between windows, cross-referencing documents, hoping nothing's out of sync. Patch Map puts all three under one roof. Not a replacement — a single source of truth.</p>
+    <div class="pain" data-accent="plus">
+      <div class="pain-num">02 — The Problem</div>
+      <h2>One QR Code. Ninety Days Later, Still Right.</h2>
+      <p>Print it once. Tape it to the case. Anyone loading in — your crew or the house tech who's never seen this show — opens it once and leaves it open. Every change you make from the tour bus pushes live, with a timestamp showing exactly when it last updated. <strong>No rescanning. No refreshing. Just leave the page open.</strong></p>
     </div>
-    <div class="pain-card">
-      <div class="pain-icon">Day of Show</div>
-      <h3>Verbal and Lossy.</h3>
-      <p>A mix issue gets called out. Someone shouts it over comms. Maybe it gets fixed. Maybe it gets forgotten. Either way, nothing was documented and the same problem shows up next week. Patch Map gives your whole crew a shared live ticketing system — everyone on their own device, same list, every flag routed to the right person and logged when it's resolved.</p>
+    <div class="pain" data-accent="pro">
+      <div class="pain-num">03 — The Problem</div>
+      <h2>Your Patch, RF, and Dante Don't Talk to Each Other.</h2>
+      <p>Three documents, three windows, cross-referenced at showtime and hoping nothing's out of sync. PatchMap puts all three under one roof — one source of truth, accessible by everyone on the crew, live, on their own device.</p>
     </div>
-    <div class="pain-card">
-      <div class="pain-icon">Next Season</div>
-      <h3>It Walked Out the Door With Your Last Engineer.</h3>
-      <p>Every fix, every resolved ticket, every pattern across your show run — gone when the person who held it in their head moves on. Patch Map collects that data around you while you work. Walk into Christmas rehearsals knowing what failed last year, what gear keeps throwing problems, and what got resolved. Nobody had to remember it.</p>
+    <div class="pain" data-accent="tour">
+      <div class="pain-num">04 — The Problem</div>
+      <h2>Verbal and Lossy.</h2>
+      <p>A mix issue gets shouted over comms. Maybe it's fixed, maybe it's forgotten, and it's back next week. PatchMap gives the whole crew one shared live list — every flag routed and logged.</p>
     </div>
-  </div>
-</section>
-
-<hr class="section-divider" />
-
-<!-- SIGNAL FLOW -->
-<section class="signal-section">
-  <div class="signal-inner">
-
-    <div class="signal-text reveal">
-      <h2>Every Channel.<br/>Fully Resolved.</h2>
-      <p>Assign your patch once. <strong>Signal flow resolves automatically</strong> — top to bottom, across every view, every role, every device.</p>
-      <p>No separate entry. No reconciling two documents. The channel record knows where the signal came from and where it's going.</p>
-      <ul class="detail-list">
-        <li>Input name and mic assignment</li>
-        <li>Snake input with box and port</li>
-        <li>Rack assignment and input number</li>
-        <li>Dante channel and network path</li>
-        <li>Full signal path string auto-generated</li>
-      </ul>
+    <div class="pain" data-accent="free">
+      <div class="pain-num">05 — The Problem</div>
+      <h2>It Walked Out With Your Last Engineer.</h2>
+      <p>Every fix and pattern from the run, gone when the person holding it moves on. PatchMap collects it as you work, so next season starts knowing what failed last time.</p>
     </div>
+  </section>
 
-    <div class="reveal">
-      <div class="channel-card">
-        <div class="ch-header">
-          <div class="ch-number">Ch 14</div>
-          <div class="ch-status">Clean</div>
-        </div>
-        <div class="sf-body" id="sf-body">
-          <!-- Rendered by JS -->
+  <!-- ANTI–DATA ENTRY + SIGNAL-FLOW DEMO MODULE (fixed) -->
+  <section class="demo">
+    <div class="wrap">
+      <h2>We're Aggressively Anti–Data Entry.</h2>
+      <p>Drop the gear in. That's the whole data-entry step. Every other tool in this category still has you hand-type a console model, a drum kit, a channel list, a loom assignment — and hopes you don't have to do it again next week. PatchMap has templates, show import, and smart patch too. <strong>We just don't make you type your way through them.</strong> Auto-label the gear, and the rest resolves itself.</p>
+      <p>Assign your patch once, every role, every device — and it still holds tomorrow, when something changes.</p>
+      <div class="demo-media">
+        <div class="media-ph">
+          <span class="ph-icon">◇</span>
+          <span class="ph-label">Signal-flow demo module — placeholder</span>
+          <span class="ph-tag">Asset TODO</span>
         </div>
       </div>
     </div>
+  </section>
 
-  </div>
-</section>
-
-<!-- ═══════════════════════════════════════════
-     FEATURES — each block has a media slot
-═══════════════════════════════════════════ -->
-<section class="features-section">
-  <div class="section-header reveal">
-    <h2>What PatchMap Does</h2>
-    <span class="tag">Feature by Feature</span>
-  </div>
-
-  <!-- ─────────────────────────────────────────
-       FEATURE 1 — Stage Plot Canvas
-       ASSET #2: Screen recording or screenshot
-       File: /public/assets/feat-canvas.mp4
-  ───────────────────────────────────────── -->
-  <div class="feature-block reveal">
-    <div class="feature-text">
-      <div class="feature-tier-tag tier-free">Free</div>
-      <h3>A Stage Plot That Looks Like a Stage Plot</h3>
-      <p>50+ instrument types. Drag, drop, label, arrange. Build a professional-grade plot in the time it used to take you to open a spreadsheet and start arguing with columns.</p>
-      <p><strong>PDF export that doesn't look like it came from Excel.</strong> Share a link or download — every artifact is branded with your show name.</p>
-      <ul class="detail-list">
-        <li>50+ instrument and equipment types</li>
-        <li>Drag-and-drop canvas with snap-to-grid</li>
-        <li>Professional PDF + shareable read-only link</li>
-      </ul>
+  <!-- SMART IMPORT — hold-to-patch (NEW) -->
+  <section class="story" data-accent="free">
+    <div class="wrap">
+      <div class="story-eyebrow">Smart Import</div>
+      <h2>Import the Roster. Patch Nothing Until You Say So.</h2>
+      <p>Drop in a CSV, an Excel sheet, or a PDF, and smart import reads the gear inside it — keys, bass, drums, four violins, a cello, whatever's actually listed — and offers to add it straight to your inventory. It builds a staging shelf with the exact nodes it found, correctly counted, named the way you already had them.</p>
+      <p>Here's the part that took a while to get right: those nodes don't patch themselves anywhere yet. Drag a freshly imported instrument onto most canvases and it locks into whatever channel happens to be open right now — even if the real board has that instrument sitting at channel 11 and 14 for a reason the software doesn't know yet. <strong>PatchMap waits.</strong> The node stays open until you assign it to the actual I/O slot, and only then does it hard-patch in. Import the roster first. Patch it when the real availability shows up — not before.</p>
     </div>
-    <div class="feature-media">
-      <video src="assets/Video_2.mp4" autoplay muted loop playsinline></video>
+  </section>
+
+  <!-- SHOW CHAIN / history (NEW) -->
+  <section class="story" data-accent="plus">
+    <div class="wrap">
+      <div class="story-eyebrow">Show Chain</div>
+      <h2>Press Next Show. Everything Comes With You.</h2>
+      <p>Next stop on the tour. Next week's date. Next Sunday. Hit Instance Forward and PatchMap carries the show ahead — no copy-paste, no erasing this week's data to make room for next week's. Every show becomes part of a chain, and PatchMap quietly keeps what came before it, so you never have to wonder what changed since last month. Not a folder of old PDFs you have to dig through and compare by eye. <strong>It tells you what's different.</strong></p>
+      <p>Your whole show history lives in your account, not on a laptop that can get left in a case. Log in from any device, at any venue, and it's the same data.</p>
+      <span class="story-note">Show Chain starts at Plus</span>
     </div>
+  </section>
+
+  <!-- ══ TIER TOGGLE ══════════════════════════════════════════════════════════ -->
+  <div class="toggle-wrap">
+    <div class="toggle" id="toggle" role="tablist" aria-label="Choose your tier"></div>
   </div>
 
-  <!-- ─────────────────────────────────────────
-       FEATURE 2 — Input List + Auto-Patch
-       ASSET #3: Screen recording
-       File: /public/assets/feat-autopatch.mp4
-  ───────────────────────────────────────── -->
-  <div class="feature-block reverse reveal">
-    <div class="feature-text">
-      <div class="feature-tier-tag tier-free">Free</div>
-      <h3>Input List. Auto-Patched. No Extra Work.</h3>
-      <p>Your patch document lives next to your plot. Assign your box and rack once — signal flow resolves automatically across every channel, every view.</p>
-      <p><strong>No separate entry. No reconciling two documents.</strong> The input list and stage plot are the same show file.</p>
-      <ul class="detail-list">
-        <li>Signal flow auto-resolves from patch assignment</li>
-        <li>Mic library and locker — reuse across every show</li>
-        <li>Rental gap detection surfaces missing gear</li>
-      </ul>
+  <!-- ══ DYNAMIC TIER-CONTENT BLOCK (changes on toggle) ═══════════════════════ -->
+  <section id="tier-block" class="wrap" aria-live="polite"></section>
+
+  <!-- ══ PRICING TABLE (FIXED layout — all four tiers always shown) ═══════════ -->
+  <section class="pricing wrap" id="pricing">
+    <h2>Start at $0. Move Up When Your Shows Do.</h2>
+    <p class="pricing-sub">Every plan, always visible. Your selected tier is highlighted — nothing is ever hidden.</p>
+    <div class="billing-toggle" role="group" aria-label="Billing period">
+      <button type="button" class="billing-opt" data-billing="annual" aria-pressed="true">Annual</button>
+      <button type="button" class="billing-opt" data-billing="monthly" aria-pressed="false">Monthly</button>
+      <span class="billing-hint">≈ 2 months free</span>
     </div>
-    <div class="feature-media">
-      <video src="assets/Video_3.mp4" autoplay muted loop playsinline></video>
-    </div>
-  </div>
+    <div class="cards" id="pricing-cards"></div>
+  </section>
 
-  <!-- ─────────────────────────────────────────
-       FEATURE — Wireless Workbench Import (Plus)
-       ASSET: /assets/Video_Plus_Workbench.mp4
-       Placeholder — insert when available
-  ───────────────────────────────────────── -->
-  <div class="feature-block no-media reveal">
-    <div class="feature-text">
-      <div class="feature-tier-tag tier-plus">Plus</div>
-      <h3>Your Wireless Rig. Already In Your Show.</h3>
-      <p class="feature-subhead">Import your Workbench or WSM file once. PatchMap does the rest.</p>
-      <p>Export a CSV from Shure Wireless Workbench or Sennheiser Wireless Systems Manager and drop it into PatchMap. It parses your wireless data — mics, IEMs, transmitters, and receivers — matches anything already in your show file, creates what's missing, and places everything on your canvas and in your master I/O sheet automatically.</p>
-      <p><strong>No manual entry. No cross-referencing two windows.</strong> Your wireless rig shows up exactly where it belongs.</p>
-      <ul class="detail-list">
-        <li>CSV import from Shure Wireless Workbench</li>
-        <li>CSV import from Sennheiser Wireless Systems Manager</li>
-        <li>Auto-matches existing items in your show — creates missing ones</li>
-        <li>Receivers, transmitters, IEMs, and mics all placed automatically</li>
-        <li>Export back to Workbench-compatible CSV at any time</li>
-      </ul>
-    </div>
-  </div>
+  <!-- ══ FAQ (FIXED) ═════════════════════════════════════════════════════════ -->
+  <!-- FAQ copy is DRAFT — grounded in locked §6 claims only, no invented promises.
+       Supplement / correct before promotion to root. -->
+  <section class="faq wrap" id="faq">
+    <h2>Frequently Asked Questions</h2>
+    <div id="faq-list"></div>
+  </section>
 
-  <!-- ─────────────────────────────────────────
-       FEATURE — Rental List (Plus · Pro · Tour)
-  ───────────────────────────────────────── -->
-  <div class="feature-block no-media reveal">
-    <div class="feature-text">
-      <div class="feature-tier-tag tier-plus">Plus</div>
-      <h3>Your Canvas Builds Your Rental List.</h3>
-      <p class="feature-subhead">We are aggressively anti-data entry.</p>
-      <p>As you build your canvas, PatchMap pulls from your mic locker automatically. Go over your available inventory? Those channels don't just get flagged — they move directly into a rental list. Confirm the rentals or swap in something from your locker. Either way, your rental list is done before you've typed a single line.</p>
-      <p><strong>Your canvas is the source of truth.</strong> The rental list, the input list, the patch document — they all follow from the one thing you actually built.</p>
-      <ul class="detail-list">
-        <li>Mic locker populated by CSV import or manual entry</li>
-        <li>Canvas draws from locker automatically as you assign inputs</li>
-        <li>Overdraw detection builds rental list without manual flagging</li>
-        <li>Confirm rentals or substitute from locker — one step</li>
-      </ul>
-    </div>
-  </div>
+  <footer>
+    <p>© 2026 PatchMap — Built by <a href="https://indiesoft.app">Indiesoft.app</a></p>
+  </footer>
 
-  <!-- ─────────────────────────────────────────
-       FEATURE — PDF Export
-       File: /assets/Video_3_pdf Export.mp4
-  ───────────────────────────────────────── -->
-  <div class="feature-block reveal">
-    <div class="feature-text">
-      <div class="feature-tier-tag tier-free">Free</div>
-      <h3>A PDF That Doesn't Need an Apology.</h3>
-      <p>Two views, one file. Your stage plot and input list export as a single, branded PDF — no formatting, no cleanup, no spreadsheet workarounds.</p>
-      <p><strong>Or skip the file entirely.</strong> Share a read-only link and your venue TD has the whole show on their phone before you arrive.</p>
-      <ul class="detail-list">
-        <li>Stage plot + input list in one export</li>
-        <li>Branded header — show name, date, your name</li>
-        <li>Shareable link that works on any device, no login</li>
-        <li>Print-ready at any size, any orientation</li>
-      </ul>
-    </div>
-    <div class="feature-media">
-      <video src="assets/Video_3_pdf Export.mp4" autoplay muted loop playsinline></video>
-    </div>
-  </div>
+  <script>
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TIER CONTENT CONFIG (§3) — one entry per tier. Colours come from the CSS
+     --tier-* tokens (referenced by var name below), NOT from this object.
+     Feature grids are cumulative supersets (§5): each tier lists its OWN new
+     features; inherited lower-tier features are derived from `newFeatures` of
+     the tiers below it and rendered de-emphasised.
+     ═══════════════════════════════════════════════════════════════════════════ */
+  const TIER_ORDER = ['free', 'plus', 'pro', 'tour'];
 
-  <!-- ─────────────────────────────────────────
-       FEATURE — Live Crew Collaboration
-       ASSET #4: Screen recording
-       File: /public/assets/feat-crew.mp4
-  ───────────────────────────────────────── -->
-  <div class="feature-block reverse reveal">
-    <div class="feature-text">
-      <div class="feature-tier-tag tier-pro">Pro</div>
-      <h3>Your Crew, In the Room With You</h3>
-      <p>Open a Live Room. Your crew joins on their phones. Flagging, channel detail, role-based views — all live, all documented, all in one place.</p>
-      <p><strong>Every flag routed to the right person. Every fix logged.</strong> Not shouted across the stage and forgotten by soundcheck.</p>
-      <ul class="detail-list">
-        <li>Role-based views — A1, Monitor Eng, Stage Tech</li>
-        <li>Flagging with push routing by role</li>
-        <li>Crew memory persists across every Live Room on a Show</li>
-      </ul>
-    </div>
-    <div class="feature-media">
-      <video src="assets/Video_4_Crew Join.mp4" autoplay muted loop playsinline></video>
-    </div>
-  </div>
+  const tierContent = {
+    free: {
+      label: 'Free',
+      accentVar: '--tier-free', accentRgb: '74,222,128',
+      badge: 'FREE',
+      headline: 'Let This Be Your Last Static Patch Sheet.',
+      heroBody: "A full stage plot in the time it used to take to open a spreadsheet and start arguing with columns. Drop your gear on the canvas — it auto-patches in seconds, with full control to fine-tune every assignment yourself. Export a PDF if you need one for the file. But the real document lives behind the QR code, and it doesn't go stale the way the PDF does.",
+      heroKicker: '<strong>PatchMap Free</strong> is the whole planning tool, not a trial of it. No credit card. No time limit. No "upgrade to stop typing."',
+      spotlightHeading: 'Drop in Gear and Instruments, Pre-Labeled.',
+      spotlightBody: "Drop the right node on the canvas — a vocal mic, a DI, a keyboard rig — and it's instantly identified and ready to patch, no manual labeling required. PatchMap auto-patches the signal chain the moment you drop it in. Need it different? Define exactly where a channel goes, reserve a range for wireless, or block channels out entirely — your overrides stay locked in, even as the rest of the show keeps auto-patching around them.",
+      spotlightShot: 'Gear dropped onto the canvas — auto-labeled, auto-patched, ready to fine-tune',
+      newFeatures: [
+        { title: 'Full Canvas & Stage Plot View', body: 'Signal flow and physical stage layout, same data, one toggle.' },
+        { title: 'Auto-Resolved Signal Flow', body: 'Drop gear in, PatchMap patches it. Override, reserve, or block any channel by hand.' },
+        { title: 'Live QR Code', body: "One durable code per show. Open it once and leave it open — every change pushes live the moment you touch the canvas, with a timestamp showing exactly when it last updated. No rescanning required." },
+        { title: 'Professional PDF Export', body: "The document that used to take an hour of fighting spreadsheet formatting, done in seconds — and it doesn't look like a spreadsheet pretending to be a rundown." },
+      ],
+      numberLine: '1 Venue · 1 Show · $0',
+      proofBlurb: "Built for the engineer who's done arguing with spreadsheet columns before the show even starts.",
+      ctaLabel: 'Start Building',
+    },
+    plus: {
+      label: 'Plus',
+      accentVar: '--tier-plus', accentRgb: '56,189,248',
+      badge: 'PLUS',
+      headline: 'Gear Managed, With Room to Grow.',
+      heroBody: "Your venue locker is the one place gear actually lives — mics, wireless, cables, counted or individually tracked, whichever makes sense for that piece. Assign gear to a show, and PatchMap checks it against your venue locker automatically — what you own is covered, what you're short on lands on your rental list without a single manual entry.",
+      heroKicker: "<strong>PatchMap Plus</strong> carries your venue locker across an entire season — twenty shows deep, one venue — so what you own stays known, and what you're short on never gets discovered on load-in day.",
+      spotlightHeading: 'Every Piece of Gear, Tracked Correctly.',
+      spotlightBody: "A case of SM57s needs a count. A wireless transmitter needs a name — RF1 isn't RF2. Your venue locker tracks both automatically, the moment you assign gear to a show. No manual tally. No separate spreadsheet for what you actually own.",
+      spotlightShot: 'The venue locker checking assigned gear against what you already own',
+      newFeatures: [
+        { title: 'Venue Locker', body: 'One record of what you own, tracked at the right grain for what it is.' },
+        { title: 'Auto-Derived Rental List', body: 'Assigned minus owned. Shortages surface themselves.' },
+        { title: '20 Shows, One Venue', body: 'A full season without hitting a wall.' },
+        { title: 'Locker CSV Import', body: 'Bring your existing gear list in once. Never retype it.' },
+      ],
+      numberLine: '1 Venue · 20 Shows · $12.99/mo',
+      proofBlurb: "Built for the engineer running the same room, season after season, who's tired of reconciling old spreadsheets with actual inventory.",
+      ctaLabel: 'See Plus Pricing',
+    },
+    pro: {
+      label: 'Pro',
+      accentVar: '--tier-pro', accentRgb: '245,166,35',
+      badge: 'PRO',
+      headline: 'Quit Rebuilding. Start Collaborating.',
+      heroBody: "Multiple venues. Multiple runs. Every show you've ever built lives in one place — not scattered across a dozen spreadsheet versions buried somewhere in a chain of revisions.",
+      heroKicker: "<strong>PatchMap Pro</strong> keeps your full patch history with you — and unlocks a Live Room that takes the comms chatter off your plate the moment your crew steps on stage.",
+      spotlightHeading: 'The Live Room Runs the Show With You.',
+      spotlightBody: "Open a Room, and your crew joins from their own phones — no app to install, just a link. Each person sees a view built for their job: the stage tech sees what a stage tech needs, the monitor engineer sees monitor requests, nobody's digging through notes that aren't theirs. Spot a problem, flag it right there — it routes straight to the person who can fix it, and changes color as it moves from spotted to seen to resolved. No more \"did anyone tell FOH about that?\" Everything gets logged as it happens, so when the show's over, there's an actual record — not five different memories of how it went.",
+      spotlightShot: 'The Live Room mid-show — crew joined, a flag routing from spotted → seen → resolved',
+      newFeatures: [
+        { title: 'Live Room', body: 'Crew joins live, flags route automatically, nothing gets lost in the noise.' },
+        { title: 'Full Patch History', body: 'Every show you’ve built, across every venue, still yours.' },
+        { title: 'Room Report', body: 'A closeout record of what happened, written as you go.' },
+        { title: 'Issue Flagging & Resolution', body: 'Problems get tracked from flag to fix, not forgotten.' },
+      ],
+      numberLine: '5 Venues · Unlimited Shows · 2 Concurrent Live Sessions',
+      proofBlurb: "Built for the working A1 — freelance across multiple rooms, or in-house running live productions regularly — who's done being the only person who remembers how last time went.",
+      ctaLabel: 'See Pro Pricing',
+    },
+    tour: {
+      label: 'Tour',
+      accentVar: '--tier-tour', accentRgb: '167,139,250',
+      badge: 'TOUR',
+      headline: 'Stop Learning Lessons Twice With Show Intelligence.',
+      heroBody: "Every city runs on what the last one taught you — if someone remembers to say it out loud. Show Intelligence means the production doesn't wait on memory. Every issue, every fix, every call made under pressure becomes part of the record automatically, so the next stop starts smarter than the last one ended.",
+      heroKicker: "<strong>PatchMap Tour</strong> turns your production into a system that gets sharper every night — hand-off reports, a live musician portal, and a memory that never needs a debrief to transfer.",
+      spotlightHeading: 'The Show Remembers So the Next One Runs Better.',
+      spotlightBody: "Every issue, every fix, every call made under pressure gets recorded as it happens — no debrief, no one writing it down after. By the next city, the production already knows what failed last time, what gear keeps acting up, and what got solved. The lessons don't leave when the engineer does.",
+      spotlightShot: 'Show Intelligence compiling every issue and fix into the running record',
+      newFeatures: [
+        { title: 'Show Intelligence', body: 'Every fix, every flag, every call under pressure, part of the permanent record.' },
+        { title: 'Hand-Off Reports', body: 'The next stop starts with what the last one already solved.' },
+        { title: 'Touring Continuity', body: 'Unresolved issues carry forward, city to city, engineer to engineer.' },
+        { title: 'Musician Portal', body: 'One QR code, self-service monitor requests, routed directly.' },
+      ],
+      numberLine: '10 Venues · Unlimited Shows · 5 Concurrent Live Sessions',
+      proofBlurb: "Built for the production that doesn't run on one person's memory — a touring operation, a multi-campus production team, a festival crew — where the buyer is the production, not any one engineer on it.",
+      ctaLabel: 'See Tour Pricing',
+    },
+  };
 
-  <!-- ─────────────────────────────────────────
-       FEATURE — Musician Portal
-       ASSET #5: Phone screen recording
-       File: /public/assets/feat-musician.mp4
-  ───────────────────────────────────────── -->
-  <div class="feature-block reveal">
-    <div class="feature-text">
-      <div class="feature-tier-tag tier-tour">Tour</div>
-      <h3>One QR Code. Whole Ensemble.</h3>
-      <p>Scan once. Your channel appears. Monitor requests route directly to the monitor engineer — not through the MD, not by tapping someone on the shoulder mid-rehearsal.</p>
-      <p><strong>Nobody in the room has seen this before.</strong> Your musicians have a direct line. Your MD keeps their focus. Everything is logged.</p>
-      <ul class="detail-list">
-        <li>Single QR — entire ensemble self-assigns</li>
-        <li>Monitor requests route to engineer, not MD</li>
-        <li>Works on any phone, no app download required</li>
-      </ul>
-    </div>
-    <div class="feature-media">
-      <video src="assets/Video_5_Musician and Mons.mp4" autoplay muted loop playsinline></video>
-    </div>
-  </div>
+  /* Pricing table config (§6 LOCKED — authoritative; ignores the old live numbers).
+     ANNUAL-FIRST (rev §6): annual is the headline number; monthlyEq is annual/12
+     shown as the billed-annually rate; savePct is the honest discount vs 12×
+     monthly (Plus 155.88→129 = 17%, Pro 359.88→299 = 17%, Tour 2399.88→1950 = 19%). */
+  const pricing = {
+    free: { monthly: '$0', annual: '$0', monthlyEq: null, savePct: null, venues: '1', shows: '1', sessions: '0', line: '$0. No Card, No Catch.' },
+    plus: { monthly: '$12.99', annual: '$129', monthlyEq: '$10.75', savePct: 17, venues: '1', shows: '20', sessions: '0', line: '$129/yr · $12.99/mo' },
+    pro:  { monthly: '$29.99', annual: '$299', monthlyEq: '$24.92', savePct: 17, venues: '5', shows: 'Unlimited', sessions: '2', line: '$299/yr · $29.99/mo' },
+    tour: { monthly: '$199.99', annual: '$1,950', monthlyEq: '$162.50', savePct: 19, venues: '10', shows: 'Unlimited', sessions: '5', line: '$1,950/yr · $199.99/mo' },
+  };
 
-  <!-- ─────────────────────────────────────────
-       FEATURE — Show Record
-       ASSET #6: Screen recording
-       File: /public/assets/feat-record.mp4
-  ───────────────────────────────────────── -->
-  <div class="feature-block no-media reveal">
-    <div class="feature-text">
-      <div class="feature-tier-tag tier-tour">Tour</div>
-      <h3>Your Production Has a Memory Now.</h3>
-      <p>Timestamped Session Log. Scene markers. Carry-forward issues. <strong>The record travels with the show</strong> — the next city starts where this one left off, with every unresolved flag already queued.</p>
-      <p>When your engineer moves to the next gig, the show file stays. <strong>Institutional knowledge that doesn't walk out the door.</strong></p>
-      <ul class="detail-list">
-        <li>Every flag and fix timestamped — nothing slips between shows</li>
-        <li>Scene markers dropped live: soundcheck, set 1, set 2, strike</li>
-        <li>Unresolved issues follow the tour automatically</li>
-        <li>Hand-off PDF: next crew walks in knowing everything</li>
-        <li>Export the full log at any point — shareable outside the app</li>
-        <li>Per-show history tied to the show file, not the engineer</li>
-      </ul>
-    </div>
-  </div>
-
-</section>
-
-<!-- SOCIAL PROOF — hidden until real quotes available -->
-<!-- style="display:none" removed when ready to populate -->
-<!-- PLACEHOLDER: Replace quotes with real feedback after Houston's First Baptist beta — target late July 2026 -->
-<section class="social-proof-section" style="display:none;">
-  <div class="social-proof-inner">
-    <div class="section-label reveal">From the field</div>
-    <div class="quotes-grid reveal">
-
-      <!-- PLACEHOLDER: Replace with real quote from Houston's First Baptist beta — target late July 2026 -->
-      <div class="quote-block">
-        <div class="quote-mark">"</div>
-        <p class="quote-text">I've never had a tool that actually understood how a show file works. This is what we've needed.</p>
-        <div class="quote-attribution">— [Name], A1 · [Church/Organization] · Houston, TX</div>
-      </div>
-
-      <!-- PLACEHOLDER: Populate after Beth Moore tour — target September 2026 -->
-      <!-- <div class="quote-block">
-        <div class="quote-mark">"</div>
-        <p class="quote-text">[Quote TBD from tour crew]</p>
-        <div class="quote-attribution">— [Name], [Role] · Beth Moore Ministries Tour</div>
-      </div> -->
-
-      <!-- PLACEHOLDER: Third quote TBD -->
-      <!-- <div class="quote-block">
-        <div class="quote-mark">"</div>
-        <p class="quote-text">[Quote TBD]</p>
-        <div class="quote-attribution">— [Name], [Role] · [Organization]</div>
-      </div> -->
-
-    </div>
-  </div>
-</section>
-
-<!-- CASE STUDY — hidden until content is ready (target January 2027) -->
-<!-- PLACEHOLDER: Populate after Houston's First Baptist Christmas production — target January 2027 -->
-<section class="case-study-section" style="display:none;">
-  <div class="case-study-inner reveal">
-    <div class="coming-soon-tag">Coming Soon</div>
-    <div class="case-study-label">In production</div>
-    <div class="case-study-headline">Houston's First Baptist — Christmas Production 2026</div>
-    <!-- PLACEHOLDER: Case study TBD. Cover: show scale, number of inputs, crew size, specific problems solved,
-         quote from Jonathan or production director. Target length: 3–4 sentences + one pull quote.
-         Populate after production — target January 2027. -->
-    <p class="case-study-body">[Case study content coming after the production. To cover: show scale, number of inputs, crew size, specific problems solved, and a quote from the production director.]</p>
-    <a href="/case-studies/houstons-first" class="case-study-cta">Read the full case study →</a>
-  </div>
-</section>
-
-<hr class="section-divider" />
-
-<!-- WHO -->
-<section class="who-section">
-  <div class="section-header reveal">
-    <h2>Who It's For</h2>
-    <span class="tag">Roles</span>
-  </div>
-  <div class="who-grid reveal">
-    <div class="who-card">
-      <div class="who-role">FOH / A1</div>
-      <h3>The Working Freelance Engineer</h3>
-      <p>Multiple clients. Dozens of shows a year. Every patch you've ever built, in one place — not scattered across five versions of a spreadsheet on your desktop.</p>
-    </div>
-    <div class="who-card">
-      <div class="who-role">Technical Director</div>
-      <h3>The Church or Venue TD</h3>
-      <p>Christmas production. Easter. Every large-scale event your team runs. Institutional memory that doesn't walk out the door with your last engineer.</p>
-    </div>
-    <div class="who-card">
-      <div class="who-role">Monitor Engineer</div>
-      <h3>Output-Focused and In the Weeds</h3>
-      <p>Your own dashboard. Full output list. Issue management. Mix notes that persist. And musicians who send requests to you directly — not through the MD.</p>
-    </div>
-    <div class="who-card">
-      <div class="who-role">Production Manager</div>
-      <h3>Touring and Festival</h3>
-      <p>Local crew onboarded via QR. Hand-off reports. Live-linked PDFs for venue TDs. Touring continuity that doesn't live in one engineer's head.</p>
-    </div>
-  </div>
-</section>
-
-<!-- PRICING -->
-<section class="pricing-section">
-  <div class="pricing-header reveal">
-    <h2>Simple Pricing. Start Free.</h2>
-    <p>Every show you've ever built in one place. Upgrade when your workflow demands it.</p>
-  </div>
-
-  <div class="pricing-toggle-wrap reveal">
-    <button class="pricing-toggle-btn active" data-billing="annual" onclick="setPricingBilling('annual')">
-      Billed Annually <span class="save-badge">Save 2 months</span>
-    </button>
-    <button class="pricing-toggle-btn" data-billing="monthly" onclick="setPricingBilling('monthly')">
-      Billed Monthly
-    </button>
-  </div>
-
-  <div class="pricing-grid reveal">
-
-    <!-- FREE -->
-    <div class="pricing-card">
-      <div class="tier-name tier-free">Free</div>
-      <div class="tier-tagline">One workspace. Full routing engine. No credit card.</div>
-      <div class="tier-price-block">
-        <div class="price-annual">
-          <div class="price-main">$0</div>
-          <div class="price-per">Free forever</div>
-        </div>
-        <div class="price-monthly" style="display:none;">
-          <div class="price-main">$0</div>
-          <div class="price-per">Free forever</div>
-        </div>
-      </div>
-      <ul class="tier-features-list">
-        <li>1 active show workspace</li>
-        <li>Full canvas — 50+ instrument types</li>
-        <li>Drag-and-drop with snap-to-grid</li>
-        <li>Unlimited channels and routing depth</li>
-        <li>Auto-resolved signal flow</li>
-        <li>Professional PDF export</li>
-        <li>Static share link and QR code</li>
-        <li>Mic locker (manual entry)</li>
-      </ul>
-      <a href="#waitlist" class="tier-cta-btn primary">Join the Waitlist</a>
-    </div>
-
-    <!-- PLUS -->
-    <div class="pricing-card">
-      <div class="tier-name tier-plus">Plus</div>
-      <div class="tier-tagline">For the steady local venue gig — up to 3 stage workspaces.</div>
-      <div class="tier-price-block">
-        <div class="price-annual">
-          <div class="price-main">$119</div>
-          <div class="price-per">per year</div>
-          <div class="price-equiv">~$9.99/mo</div>
-        </div>
-        <div class="price-monthly" style="display:none;">
-          <div class="price-main">$12.99</div>
-          <div class="price-per">per month</div>
-        </div>
-      </div>
-      <div class="tier-section-label">Everything in Free, plus:</div>
-      <ul class="tier-features-list">
-        <li>3 active stage workspaces — main room, second stage, recurring gig</li>
-        <li>Live-sync — patches update in real time across all active workspaces</li>
-        <li>CSV import from Shure Wireless Workbench</li>
-        <li>CSV import from Sennheiser Wireless Systems Manager</li>
-        <li>Wireless Workbench-compatible CSV export</li>
-        <li>Automatic rental list from canvas</li>
-        <li>Mic locker CSV import</li>
-        <li>Master CSV export</li>
-      </ul>
-      <a href="#waitlist" class="tier-cta-btn primary">Join the Waitlist</a>
-    </div>
-
-    <!-- PRO (featured) -->
-    <div class="pricing-card featured">
-      <div class="tier-name tier-pro">Pro</div>
-      <div class="tier-tagline">For independent road warriors — unlimited venues, every city.</div>
-      <div class="tier-price-block">
-        <div class="price-annual">
-          <div class="price-main">$299</div>
-          <div class="price-per">per year</div>
-          <div class="price-equiv">~$24.99/mo</div>
-        </div>
-        <div class="price-monthly" style="display:none;">
-          <div class="price-main">$29.99</div>
-          <div class="price-per">per month</div>
-        </div>
-      </div>
-      <div class="tier-section-label">Everything in Plus, plus:</div>
-      <ul class="tier-features-list">
-        <li>Unlimited venues and show workspaces</li>
-        <li>Live Room — crew joins by link or QR</li>
-        <li>Role-based views — A1, Monitor Engineer, Stage Tech</li>
-        <li>Flagging with role-based routing</li>
-        <li>Session timeline and Session Log</li>
-        <li>Crew memory persists across Live Rooms on a show</li>
-        <li>No account required for crew to join</li>
-      </ul>
-      <a href="#waitlist" class="tier-cta-btn primary">Join the Waitlist</a>
-    </div>
-
-    <!-- TOUR -->
-    <div class="pricing-card">
-      <div class="tier-name tier-tour">Tour</div>
-      <div class="tier-tagline">For collaborative crews and multi-site operations.</div>
-      <div class="tier-price-block">
-        <div class="price-annual">
-          <div class="price-main">$1,992</div>
-          <div class="price-per">per year</div>
-          <div class="price-equiv">~$166/mo</div>
-        </div>
-        <div class="price-monthly" style="display:none;">
-          <div class="price-main">$199</div>
-          <div class="price-per">per month</div>
-        </div>
-      </div>
-      <div class="tier-section-label">Everything in Pro, plus:</div>
-      <ul class="tier-features-list">
-        <li>5 collaborative seats — A1, A2, Systems Tech, edit together live</li>
-        <li>3 active nodes — campuses or simultaneous tour packages</li>
-        <li>Musician portal — up to 100 positions live in the room</li>
-        <li>Monitor requests route direct to engineer, not through MD</li>
-        <li>Touring continuity — unresolved issues carry forward show to show</li>
-        <li>Scene markers — soundcheck, set 1, set 2, strike</li>
-        <li>Hand-off PDF — next crew walks in knowing everything</li>
-        <li>AI-powered show summary and tour summary</li>
-      </ul>
-      <a href="#waitlist" class="tier-cta-btn primary">Join the Waitlist</a>
-    </div>
-
-  </div>
-
-</section>
-
-<!-- FAQ -->
-<section class="faq-section">
-  <div class="faq-header reveal">
-    <h2>Questions</h2>
-  </div>
-
-  <div class="faq-item reveal">
-    <div class="faq-q" onclick="toggleFaq(this)">Is PatchMap web-based or do I need to download an app?</div>
-    <div class="faq-a">PatchMap runs entirely in your browser — nothing to download, nothing to install. It's optimized for the way each role actually uses it: full canvas on desktop for building and managing your show, streamlined views on tablet and phone for crew on stage.</div>
-  </div>
-
-  <div class="faq-item reveal">
-    <div class="faq-q" onclick="toggleFaq(this)">Does it work with Shure Wireless Workbench and Sennheiser Wireless Systems Manager?</div>
-    <div class="faq-a">Yes. PatchMap imports CSV exports from Shure Wireless Workbench and Sennheiser Wireless Systems Manager directly into your show file. It parses your wireless data — mics, IEMs, transmitters, and receivers — matches anything already in your show, creates what's missing, and places everything on your canvas and master I/O sheet automatically. Available on Plus.</div>
-  </div>
-
-  <div class="faq-item reveal">
-    <div class="faq-q" onclick="toggleFaq(this)">How does crew joining work — do they need a PatchMap account?</div>
-    <div class="faq-a">No account needed. Your crew joins via a role-specific QR code or link — Stage Tech scans theirs, Monitor Engineer scans theirs, everyone lands in the same live document instantly. No app, no shared network, no login required. If someone closes the page mid-show, they rejoin on the same device and pick up exactly where they left off — PatchMap remembers them automatically. Available on Pro.</div>
-  </div>
-
-  <div class="faq-item reveal">
-    <div class="faq-q" onclick="toggleFaq(this)">How does the musician portal work — won't musicians have too much access?</div>
-    <div class="faq-a">The musician portal is designed for your crew, not against them. Musicians flag technical issues and monitor requests from their phones. Engineers see a clean, assignable, resolvable queue — nothing arrives as a shout across the stage or a message through the MD. Everyone has a shared record of what was flagged and what was handled. It's not about giving musicians more visibility into your workflow. It's about giving your crew less to hold in their heads and more to act on their screens. Up to 100 positions can be live simultaneously. Available on Tour.</div>
-  </div>
-
-  <div class="faq-item reveal">
-    <div class="faq-q" onclick="toggleFaq(this)">What's the shareable QR code on the free tier — what does it actually show?</div>
-    <div class="faq-a">Every PatchMap show file generates a QR code you can print, tape to a road case, or drop in a group chat. Anyone who scans it gets a live-updating view of your input list, mic assignments, and stage layout on their phone — no app, no account, no session required. It updates automatically as you make changes. Higher tiers unlock per-channel signal chain detail, but the core live show view is free, forever.</div>
-  </div>
-
-  <div class="faq-item reveal">
-    <div class="faq-q" onclick="toggleFaq(this)">What happens to my show data if I downgrade?</div>
-    <div class="faq-a">Your show files are never deleted. If you downgrade from Pro to Plus, your live session features deactivate but your show data, canvas, and patch documentation stay exactly as you left them. Upgrade again anytime to reactivate.</div>
-  </div>
-
-</section>
-
-<!-- BOTTOM CTA -->
-<section class="cta-section" id="waitlist">
-  <h2 class="reveal">
-    Built for the Engineer.<br/>
-    <span>Ready for the Show.</span>
-  </h2>
-  <p class="reveal">Launching July 15, 2026. Join the waitlist — your first show file in ten minutes from day one.</p>
-  <div class="cta-form reveal">
-    <input class="email-input" id="cta-email" type="email" placeholder="your@email.com" autocomplete="email" />
-    <button class="email-btn" onclick="handleSignup('cta-email', 'cta-success')">Join the Waitlist</button>
-  </div>
-  <div class="success-msg" id="cta-success" style="text-align:center; margin-top:16px;">✓ You're on the list. See you on July 15.</div>
-  <div class="share-group reveal" style="justify-content:center;margin-top:32px;">
-    <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-dimmer);letter-spacing:0.1em;text-transform:uppercase;margin-right:4px;">Share with your crew</span>
-    <a class="share-btn" id="cta-x-share" href="#" target="_blank" rel="noopener">↗ Share on X</a>
-    <button class="share-btn" id="cta-copy-link" onclick="copyLink(this)">⎘ Copy Link</button>
-  </div>
-</section>
-
-<footer>
-  <div class="footer-logo">PatchMap</div>
-  <div class="footer-copy"><a href="/privacy" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--border-bright);">Privacy</a> &nbsp;·&nbsp; © 2026 PatchMap — A product of <a href="https://indiesoft.app" style="color:inherit;text-decoration:none;border-bottom:1px solid var(--border-bright);">IndieSoft</a></div>
-</footer>
-
-<script>
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // ── Signal flow card ──
-  const sfRows = [
-    { label: 'Input Name',       value: 'Lead Vocal',      sub: null },
-    { label: 'Mic / Input',      value: 'Shure SM58',      sub: 'Dynamic · Cardioid' },
-    { label: 'Snake Input',      value: 'Stage Left Box 2', sub: 'Input 4' },
-    { label: 'Rack & Input',     value: 'Rack A',           sub: 'Input 14' },
-    { label: 'Dante Assignment', value: 'Dante Ch 14',      sub: 'TX · dante-stage-left' },
+  const faqs = [
+    { q: 'Is Free actually free, or a trial?', a: "Free is the whole planning tool, not a trial of it — full canvas, auto-resolved signal flow, professional PDF export, and a live QR code. One venue, one show, no credit card, no time limit." },
+    { q: 'What’s a “venue,” and why do lower tiers include only one?', a: "A venue is your home base in PatchMap — it holds your gear library and the history of every show you've run there, so you're not rebuilding the same rig show after show. One venue covers an engineer working a single room; higher tiers add more venues for freelancers and productions moving between multiple rooms." },
+    { q: 'Do my crew need to install an app?', a: "No. Everyone joins from their own phone through a single link, and each person lands on a view built for their role — stage tech, monitor engineer, musician. Nothing to install." },
+    { q: 'What counts as a “concurrent live session”?', a: "A live session is an open Room running a show in real time. Free and Plus are planning tiers (0 live sessions). Pro runs 2 at once; Tour runs 5 — enough for a production with more than one thing happening at a time." },
+    { q: 'Can I pay monthly, or is it annual?', a: "Either. Every paid tier bills monthly or annually, and annual runs about two months cheaper than paying month to month. Switch billing on the pricing table above — the plan and every feature are identical either way." },
+    { q: 'What happens when I hit my venue or show limit?', a: "Nothing you've built disappears. Free covers one show in one venue; Plus runs twenty shows in one venue; Pro and Tour lift the show cap entirely and add more venues. When you need more room, you move up a tier and everything you've already made carries over." },
+    { q: 'Can I change plans later?', a: "Yes. The ladder is cumulative — every higher tier includes everything below it, so you climb when you're ready without rebuilding anything you've already made." },
+    { q: 'Does it hold up at showtime?', a: "The Live Room and every role view run live off one shared record, so a last-minute change reaches the whole crew at once instead of living in one person's head — and the document behind your QR code is always current when someone scans it." },
+    { q: 'Who owns my data?', a: "You do. Your shows, your patch history, and your venue locker stay with you — that's the whole point of PatchMap collecting the record around you while you work." },
   ];
 
-  function renderSF() {
-    const body = document.getElementById('sf-body');
-    if (!body) return;
-    body.innerHTML = '';
+  /* ═══════════════════════════════════════════════════════════════════════════
+     ATTRIBUTION + ANALYTICS  (Analytics Addendum §2 + §3)
+       §2  FIRST-TOUCH ATTRIBUTION — the spine. Captured once on first load and
+           NEVER overwritten, so original discovery keeps channel credit. The
+           anonymous_id + first-touch UTMs / referrer / channel live in a
+           first-party cookie.
+       §3  BEHAVIOURAL EVENTS — everything funnels through ONE track() chokepoint.
+           Every payload auto-carries anonymous_id and user_id (once known). The
+           chokepoint fans out to (1) the full-fidelity /api/track events sink,
+           (2) the existing landing beacon for the attribution spine, (3) PostHog.
+     // INTEGRATION: indiesoft/dashboard — behavioural events + attribution land here.
+     ═══════════════════════════════════════════════════════════════════════════ */
+  const ATTR_COOKIE = 'pm_attr';     // first-party — first-touch attribution + anonymous_id
+  const COOKIE_DAYS = 400;
+  const pageLoadedAt = Date.now();
 
-    sfRows.forEach((row, i) => {
-      const isLast = i === sfRows.length - 1;
+  function readCookie(name) {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+  }
+  function writeCookie(name, value, days) {
+    const exp = new Date(Date.now() + days * 864e5).toUTCString();
+    document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + exp + '; path=/; SameSite=Lax';
+  }
+  function uuid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = Math.random() * 16 | 0; return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+  }
 
-      const rowEl = document.createElement('div');
-      rowEl.className = 'sf-row';
+  // Channel derived from referrer when no utm_source is present (§2). Raw
+  // referrer is always kept regardless.
+  function deriveChannel(ref, utmSource) {
+    if (utmSource) return utmSource;
+    if (!ref) return 'direct';
+    try {
+      const host = new URL(ref).hostname.replace(/^www\./, '');
+      if (host === location.hostname) return 'internal';
+      if (/(^|\.)(google|bing|duckduckgo|yahoo|ecosia|brave|baidu|yandex)\./.test(host)) return 'organic-search';
+      return 'referral:' + host;
+    } catch (e) { return 'direct'; }
+  }
 
-      const lineCol = document.createElement('div');
-      lineCol.className = 'sf-line-col';
-      const dot = document.createElement('div');
-      dot.className = 'sf-dot filled';
-      lineCol.appendChild(dot);
-      if (!isLast) {
-        const conn = document.createElement('div');
-        conn.className = 'sf-connector';
-        lineCol.appendChild(conn);
+  // §2 — establish or read the first-touch record. Returns { attr, isReturning }.
+  function resolveAttribution() {
+    const params = new URLSearchParams(location.search);
+    const utm = {
+      source: params.get('utm_source'), medium: params.get('utm_medium'),
+      campaign: params.get('utm_campaign'), content: params.get('utm_content'),
+      term: params.get('utm_term'),
+    };
+    let stored = null;
+    try { stored = JSON.parse(readCookie(ATTR_COOKIE) || 'null'); } catch (e) {}
+
+    if (stored && stored.anonymous_id) {
+      // Returning visitor: DO NOT overwrite first-touch. Record last-touch only.
+      if (Object.keys(utm).some(function (k) { return utm[k]; }) || document.referrer) {
+        stored.last_touch = {
+          utm_source: utm.source || null, utm_campaign: utm.campaign || null,
+          utm_content: utm.content || null, referrer: document.referrer || null,
+          at: new Date().toISOString(),
+        };
+        writeCookie(ATTR_COOKIE, JSON.stringify(stored), COOKIE_DAYS); // refresh expiry
+      }
+      return { attr: stored, isReturning: true };
+    }
+
+    // First load ever — this is the authoritative channel credit.
+    const attr = {
+      anonymous_id: uuid(),
+      utm_source: utm.source || null, utm_medium: utm.medium || null,
+      utm_campaign: utm.campaign || null, utm_content: utm.content || null,
+      utm_term: utm.term || null,
+      referrer: document.referrer || null,
+      channel: deriveChannel(document.referrer, utm.source),
+      landing_page: location.pathname,
+      first_seen_at: new Date().toISOString(),
+    };
+    writeCookie(ATTR_COOKIE, JSON.stringify(attr), COOKIE_DAYS);
+    return { attr: attr, isReturning: false };
+  }
+
+  const _resolved = resolveAttribution();
+  const ATTR = _resolved.attr;
+  const IS_RETURNING = _resolved.isReturning;
+  let userId = null;   // set at signup in the app (§4 identity bridge)
+
+  // §4 — carry anonymous_id across the domain hop so the app can alias
+  // anonymous_id → user_id on account creation. Decorates outbound app links.
+  function decorateAppLinks() {
+    document.querySelectorAll('a[href^="https://app.patchmap.app"]').forEach(function (a) {
+      try {
+        const u = new URL(a.href);
+        u.searchParams.set('aid', ATTR.anonymous_id);
+        if (ATTR.utm_campaign) u.searchParams.set('utm_campaign', ATTR.utm_campaign);
+        if (ATTR.utm_source) u.searchParams.set('utm_source', ATTR.utm_source);
+        a.href = u.toString();
+      } catch (e) {}
+    });
+  }
+
+  // PostHog seam — inert until a project key is wired (window.posthog). Kept
+  // behind the chokepoint so call sites never change when it goes live.
+  // INTEGRATION: indiesoft/dashboard — PostHog capture (behaviour + replay + anon→id alias).
+  const POSTHOG = (typeof window !== 'undefined' && window.posthog) ? window.posthog : null;
+  function sendToPostHog(event, payload) {
+    if (!POSTHOG) return;
+    try { POSTHOG.capture(event, payload); } catch (e) {}
+  }
+
+  function beacon(url, obj) {
+    try {
+      const body = JSON.stringify(obj);
+      if (navigator.sendBeacon) navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }));
+      else fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true }).catch(function () {});
+    } catch (e) {}
+  }
+
+  // Events the existing /api/pageview → landing_events store already understands.
+  // These carry the attribution spine and persist TODAY with no schema change;
+  // the full behavioural stream goes to /api/track (rich {event, payload} rows).
+  const LANDING_TYPES = { page_view: 'pageview', cta_click: 'cta_click', signup: 'signup' };
+
+  function track(event, payload) {
+    const enriched = Object.assign({ anonymous_id: ATTR.anonymous_id, user_id: userId }, payload || {});
+    try {
+      // (1) Full-fidelity behavioural stream → dedicated events sink.
+      beacon('/api/track', {
+        event: event, payload: enriched, path: location.pathname,
+        anonymous_id: ATTR.anonymous_id, user_id: userId,
+        attribution: ATTR, is_returning: IS_RETURNING, ts: Date.now(),
+      });
+      // (2) Attribution spine → existing landing_events (no schema change).
+      if (LANDING_TYPES[event]) {
+        beacon('/api/pageview', {
+          type: LANDING_TYPES[event], event: event, path: location.pathname,
+          visitorId: ATTR.anonymous_id, isReturning: IS_RETURNING, referrer: ATTR.referrer,
+          utm: { source: ATTR.utm_source, medium: ATTR.utm_medium, campaign: ATTR.utm_campaign, content: ATTR.utm_content, term: ATTR.utm_term },
+          target: (payload && (payload.cta_type || payload.to_tier || payload.tier)) || null,
+          ts: Date.now(),
+        });
+      }
+      // (3) Behavioural analytics + replay.
+      sendToPostHog(event, enriched);
+    } catch (e) { /* analytics must never break the page */ }
+  }
+
+  // §4 identity bridge hook — the app calls this at signup (or reads ?aid=).
+  window.pmIdentify = function (uid) {
+    userId = uid || null;
+    if (POSTHOG && POSTHOG.identify) { try { POSTHOG.identify(uid); } catch (e) {} }
+  };
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     RENDER + TOGGLE
+     ═══════════════════════════════════════════════════════════════════════════ */
+  const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const tierBlock = document.getElementById('tier-block');
+  const toggleEl = document.getElementById('toggle');
+  let activeTier = null;
+  let billing = 'annual';           // rev §6 — annual is the default view
+  let tierEnteredAt = Date.now();
+  let strikeSvg = null;             // §7 — live conductor-bundle overlay, if any
+  let lastSection = 'hero';         // addendum §3 — last landmark reached, for exit
+  let cardObserver = null;          // addendum §3 — pricing_card_view observer
+  const seenCards = {};             // fire pricing_card_view once per tier
+
+  function accentHexFor(t) {
+    return getComputedStyle(document.documentElement).getPropertyValue(tierContent[t].accentVar).trim();
+  }
+
+  function buildToggle() {
+    TIER_ORDER.forEach(function (t) {
+      const btn = document.createElement('button');
+      btn.className = 'toggle-tab';
+      btn.textContent = tierContent[t].label;
+      btn.setAttribute('role', 'tab');
+      btn.dataset.tier = t;
+      btn.style.setProperty('--tab-accent', accentHexFor(t));
+      btn.style.setProperty('--tab-accent-rgb', tierContent[t].accentRgb);
+      btn.addEventListener('click', function () { selectTier(t, true); });
+      toggleEl.appendChild(btn);
+    });
+  }
+
+  function inheritedFor(t) {
+    // Everything from tiers BELOW this one, in ladder order (§5).
+    const idx = TIER_ORDER.indexOf(t);
+    const out = [];
+    for (let i = 0; i < idx; i++) {
+      tierContent[TIER_ORDER[i]].newFeatures.forEach(function (f) { out.push(f.title); });
+    }
+    return out;
+  }
+
+  function renderTierBlock(t) {
+    const c = tierContent[t];
+    const inherited = inheritedFor(t);
+    const inheritedHtml = inherited.length ? (
+      '<div class="fgrid-inherited">' +
+        '<div class="inherited-label">Also included</div>' +
+        '<div class="inherited-list">' +
+          inherited.map(function (x) { return '<span class="inherited-chip">' + x + '</span>'; }).join('') +
+        '</div>' +
+      '</div>'
+    ) : '';
+
+    tierBlock.innerHTML =
+      '<span class="tier-badge">' + c.badge + '</span>' +
+      '<h2 class="tier-headline">' + c.headline + '</h2>' +
+      '<p class="tier-body">' + c.heroBody + '</p>' +
+      '<p class="tier-kicker">' + c.heroKicker + '</p>' +
+      '<div class="cta-row">' +
+        '<a class="btn-primary" href="https://app.patchmap.app" data-conversion data-track-cta="tier-primary">' + c.ctaLabel + ' &rarr;</a>' +
+        '<a class="btn-secondary" href="#tutorials" data-track-cta="watch-it-built">Watch It Built</a>' +
+      '</div>' +
+      '<p class="price-line">' + pricing[t].line + '</p>' +
+
+      '<div class="spotlight">' +
+        '<div>' +
+          '<h3>' + c.spotlightHeading + '</h3>' +
+          '<p>' + c.spotlightBody + '</p>' +
+        '</div>' +
+        '<div class="spotlight-media"><div class="media-ph">' +
+          '<span class="ph-icon">▦</span>' +
+          '<span class="ph-label">' + c.spotlightShot + '</span>' +
+          '<span class="ph-tag">Screen capture — coming</span>' +
+        '</div></div>' +
+      '</div>' +
+
+      '<div class="fgrid">' +
+        '<div class="fgrid-lead">' + (t === 'free' ? "What's Included" : 'What ' + c.label + ' adds') + '</div>' +
+        '<div class="fgrid-new">' +
+          c.newFeatures.map(function (f) {
+            return '<div class="fcard"><h4>' + f.title + '</h4><p>' + f.body + '</p></div>';
+          }).join('') +
+        '</div>' +
+        inheritedHtml +
+      '</div>' +
+
+      '<div class="numberline">' + c.numberLine + '</div>' +
+      '<p class="proof">' + c.proofBlurb + '</p>';
+
+    // Re-theme: copy the tier accent into the live --accent tokens.
+    tierBlock.style.setProperty('--accent', accentHexFor(t));
+    tierBlock.style.setProperty('--accent-rgb', c.accentRgb);
+    decorateAppLinks();   // §4 — carry anonymous_id onto the freshly rendered CTAs
+  }
+
+  /* Venue explainer tooltip (rev §9) — short form lives on the pricing card next
+     to the venue count; the fuller version is a dedicated FAQ entry. */
+  const VENUE_TIP = "A venue holds your gear library and show history, so your rig and past shows carry over instead of being re-entered every time.";
+  const venueTipHtml =
+    ' <span class="tip" tabindex="0" role="note" aria-label="What is a venue?">' +
+      '<span class="tip-i" aria-hidden="true">i</span>' +
+      '<span class="tip-pop">' + VENUE_TIP + '</span>' +
+    '</span>';
+
+  function renderPricing() {
+    const annualMode = (billing === 'annual');
+    const el = document.getElementById('pricing-cards');
+    el.innerHTML = TIER_ORDER.map(function (t) {
+      const p = pricing[t];
+      const c = tierContent[t];
+      const isFree = (t === 'free');
+
+      // Annual-first (rev §6): annual headline by default, monthly on toggle.
+      let priceMain, priceUnit, priceSub;
+      if (isFree) {
+        priceMain = '$0'; priceUnit = ''; priceSub = 'No card, no catch.';
+      } else if (annualMode) {
+        priceMain = p.annual; priceUnit = '<small>/yr</small>';
+        priceSub = p.monthlyEq + '/mo, billed annually' +
+                   '<span class="save-badge">Save ' + p.savePct + '%</span>';
+      } else {
+        priceMain = p.monthly; priceUnit = '<small>/mo</small>';
+        priceSub = 'or ' + p.annual + '/yr';
       }
 
-      const content = document.createElement('div');
-      content.className = 'sf-content';
-      content.innerHTML = `
-        <div class="sf-label">${row.label}</div>
-        <div class="sf-value">${row.value}</div>
-        ${row.sub ? `<div class="sf-sub">${row.sub}</div>` : ''}
-      `;
+      const cta = isFree
+        ? '<a class="pcard-cta solid" href="https://app.patchmap.app" data-conversion data-track-cta="pricing-free">Start Free</a>'
+        : '<a class="pcard-cta ghost" href="https://app.patchmap.app" data-conversion data-track-cta="pricing-' + t + '">Choose ' + c.label + '</a>';
 
-      rowEl.appendChild(lineCol);
-      rowEl.appendChild(content);
-      body.appendChild(rowEl);
+      return '<div class="pcard" data-tier="' + t + '"' +
+        ' style="--pcard-accent:' + accentHexFor(t) + ';--pcard-accent-rgb:' + c.accentRgb + '">' +
+        '<div class="pcard-name">' + c.label + '</div>' +
+        '<div class="pcard-price">' + priceMain + priceUnit + '</div>' +
+        '<div class="pcard-annual">' + priceSub + '</div>' +
+        '<ul class="pcard-specs">' +
+          '<li><span>Venues' + venueTipHtml + '</span><span>' + p.venues + '</span></li>' +
+          '<li><span>Shows</span><span>' + p.shows + '</span></li>' +
+          '<li><span>Live sessions</span><span>' + p.sessions + '</span></li>' +
+        '</ul>' + cta +
+      '</div>';
+    }).join('');
+    decorateAppLinks();     // §4 — carry anonymous_id onto pricing CTAs
+    observePricingCards();  // §3 — (re)watch cards for pricing_card_view
+  }
 
-      if (!isLast) {
-        const div = document.createElement('div');
-        div.className = 'sf-divider';
-        body.appendChild(div);
-      }
+  function highlightPricing(t) {
+    document.querySelectorAll('.pcard').forEach(function (card) {
+      card.setAttribute('data-active', String(card.dataset.tier === t));
+    });
+  }
+
+  function renderFaq() {
+    document.getElementById('faq-list').innerHTML = faqs.map(function (f, i) {
+      return '<details class="faq-item" data-faq="' + i + '">' +
+        '<summary class="faq-q">' + f.q + '<span class="chev">+</span></summary>' +
+        '<div class="faq-a">' + f.a + '</div>' +
+      '</details>';
+    }).join('');
+    document.querySelectorAll('.faq-item').forEach(function (d) {
+      d.addEventListener('toggle', function () {
+        if (d.open) track('faq_open', { index: Number(d.dataset.faq), question: faqs[d.dataset.faq].q });
+      });
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════════════
+     §7 — SIGNATURE CONDUCTOR-BUNDLE STRIKE
+     A short-lived SVG overlay: a bundle of thin conductors in the incoming tier's
+     colour races down through the tier-content block (stroke-dashoffset draw), the
+     block's sections reveal top-to-bottom in sync (colour + copy arrive together),
+     then the conductors self-extinguish and the SVG is removed. At rest: nothing.
+     Driven by the Web Animations API so it's GPU-friendly and cancelable on rapid
+     toggles. Skipped entirely under prefers-reduced-motion (see selectTier).
+     ═══════════════════════════════════════════════════════════════════════════ */
+  const STRIKE_EASE = 'cubic-bezier(0.2, 0.8, 0.2, 1)';
+
+  function revealSections() {
+    // Sections were rendered hidden (via .striking); reveal them top-to-bottom on
+    // a stagger keyed to the descending strike front.
+    const kids = Array.from(tierBlock.children).filter(function (el) {
+      return !el.classList.contains('strike-svg');
+    });
+    const per = Math.min(90, 620 / Math.max(kids.length, 1));
+    kids.forEach(function (el, i) { el.style.transitionDelay = (i * per) + 'ms'; });
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        kids.forEach(function (el) { el.style.opacity = '1'; el.style.transform = 'none'; });
+      });
+    });
+    setTimeout(function () {
+      tierBlock.classList.remove('striking');
+      kids.forEach(function (el) { el.style.transitionDelay = ''; el.style.opacity = ''; el.style.transform = ''; });
+    }, kids.length * per + 440);
+  }
+
+  function buildStrikeSvg(t) {
+    if (strikeSvg && strikeSvg.parentNode) strikeSvg.parentNode.removeChild(strikeSvg);
+    const NS = 'http://www.w3.org/2000/svg';
+    const w = tierBlock.clientWidth, h = tierBlock.clientHeight;
+    const color = accentHexFor(t);
+    const rnd = function (a, b) { return a + Math.random() * (b - a); };
+
+    const svg = document.createElementNS(NS, 'svg');
+    svg.setAttribute('class', 'strike-svg');
+    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.style.width = w + 'px'; svg.style.height = h + 'px';
+    const defs = document.createElementNS(NS, 'defs');
+    defs.innerHTML = '<filter id="pmGlow" x="-30%" y="-10%" width="160%" height="120%"><feGaussianBlur stdDeviation="3"/></filter>';
+    svg.appendChild(defs);
+    const g = document.createElementNS(NS, 'g');
+    svg.appendChild(g);
+
+    const N = 6, startX = w * 0.5, lines = [];
+    for (let i = 0; i < N; i++) {
+      const f = N > 1 ? i / (N - 1) : 0.5;
+      const sx = startX + rnd(-0.05, 0.05) * w;
+      const ex = w * (0.12 + 0.76 * f) + rnd(-0.03, 0.03) * w;
+      const ey = h * rnd(0.86, 1.0);
+      const c1x = startX + (ex - startX) * 0.3 + rnd(-0.22, 0.22) * w;
+      const c1y = h * rnd(0.26, 0.4);
+      const c2x = ex + rnd(-0.2, 0.2) * w;
+      const c2y = h * rnd(0.58, 0.72);
+      const d = 'M' + sx + ' 0 C' + c1x + ' ' + c1y + ',' + c2x + ' ' + c2y + ',' + ex + ' ' + ey;
+      ['glow', 'core'].forEach(function (kind) {
+        const p = document.createElementNS(NS, 'path');
+        p.setAttribute('d', d); p.setAttribute('fill', 'none');
+        p.setAttribute('stroke', color); p.setAttribute('stroke-linecap', 'round');
+        if (kind === 'glow') { p.setAttribute('stroke-width', '3.5'); p.setAttribute('opacity', '0.35'); p.setAttribute('filter', 'url(#pmGlow)'); }
+        else { p.setAttribute('stroke-width', '1.2'); }
+        g.appendChild(p); lines.push(p);
+      });
+    }
+
+    tierBlock.appendChild(svg);
+    strikeSvg = svg;
+
+    // Draw each conductor downward (fast onset, settling out), with per-line jitter.
+    let maxEnd = 0;
+    lines.forEach(function (p) {
+      const len = p.getTotalLength();
+      p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
+      const dur = rnd(450, 550), del = rnd(0, 90);
+      maxEnd = Math.max(maxEnd, dur + del);
+      p.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }],
+        { duration: dur, delay: del, easing: STRIKE_EASE, fill: 'forwards' });
+    });
+    // Tail: self-extinguish over a longer fade, then remove the overlay entirely.
+    const fade = g.animate([{ opacity: 1 }, { opacity: 0 }],
+      { duration: 850, delay: maxEnd + 120, easing: 'ease-in', fill: 'forwards' });
+    fade.onfinish = function () {
+      if (svg.parentNode) svg.parentNode.removeChild(svg);
+      if (strikeSvg === svg) strikeSvg = null;
+    };
+  }
+
+  function runStrike(t) {
+    revealSections();
+    // getTotalLength/measurement needs the SVG sized to the freshly rendered block.
+    requestAnimationFrame(function () { buildStrikeSvg(t); });
+  }
+
+  function selectTier(t, userInitiated) {
+    if (!tierContent[t]) t = 'free';
+    if (t === activeTier) return;
+
+    // §3: log dwell (seconds) on the tier we're leaving, then the toggle.
+    if (activeTier && userInitiated) {
+      track('tier_dwell', { tier: activeTier, seconds: Math.round((Date.now() - tierEnteredAt) / 1000) });
+      track('tier_toggle', { to_tier: t, from_tier: activeTier });
+    }
+
+    const prev = activeTier;
+    activeTier = t;
+    tierEnteredAt = Date.now();
+
+    // Toggle tab state.
+    document.querySelectorAll('.toggle-tab').forEach(function (b) {
+      b.setAttribute('aria-selected', String(b.dataset.tier === t));
     });
 
-    const resolved = document.createElement('div');
-    resolved.className = 'sf-resolved';
-    resolved.innerHTML = `
-      <div class="sf-resolved-label">Signal Path</div>
-      <div class="sf-resolved-string">
-        ${sfRows.map((r, i) => `<span>${r.value}</span>${i < sfRows.length - 1 ? ' → ' : ''}`).join('')}
-      </div>
-    `;
-    body.appendChild(resolved);
-  }
-
-  renderSF();
-
-  // ── Theater mode ──
-  // Elements with position:fixed inside a z-index stacking context don't escape it,
-  // so we move the element to <body> to ensure it renders above the backdrop.
-  const backdrop = document.getElementById('theater-backdrop');
-  let theaterOrigin = null;
-  let theaterNext = null;
-
-  function openTheater(media) {
-    theaterOrigin = media.parentElement;
-    theaterNext = media.nextSibling;
-    document.body.appendChild(media);
-    media.classList.add('theater-active');
-    backdrop.classList.add('active');
-  }
-
-  function closeTheater() {
-    const active = document.querySelector('.feature-media.theater-active');
-    if (!active) return;
-    active.classList.remove('theater-active');
-    backdrop.classList.remove('active');
-    if (theaterOrigin) {
-      theaterOrigin.insertBefore(active, theaterNext);
-      theaterOrigin = null;
-      theaterNext = null;
+    // §7: on first paint / reduced-motion, swap instantly. Otherwise render the
+    // new tier hidden (.striking) and fire the conductor-bundle strike, which
+    // reveals sections top-to-bottom so colour + copy arrive together.
+    if (REDUCED || !prev) {
+      renderTierBlock(t);
+      highlightPricing(t);
+    } else {
+      tierBlock.classList.add('striking');
+      renderTierBlock(t);
+      highlightPricing(t);
+      runStrike(t);
     }
+
+    // URL param (deep-link support §3), no history spam.
+    const url = new URL(location.href);
+    url.searchParams.set('tier', t);
+    history.replaceState(null, '', url);
   }
 
-  document.querySelectorAll('.feature-media').forEach(media => {
-    media.addEventListener('click', e => {
-      e.preventDefault();
-      media.classList.contains('theater-active') ? closeTheater() : openTheater(media);
+  /* CTA click instrumentation (delegated) — §3 normalises cta_type. */
+  document.addEventListener('click', function (e) {
+    const el = e.target.closest ? e.target.closest('[data-track-cta]') : null;
+    if (!el) return;
+    const raw = el.dataset.trackCta || '';
+    const ctaType = /watch/i.test(raw) ? 'watch_it_built' : 'purchase';
+    track('cta_click', { tier: activeTier, cta_type: ctaType, cta: raw, label: el.textContent.trim() });
+  }, true);
+
+  /* Scroll depth (§3) — fire each 25% milestone once. */
+  (function () {
+    const seen = {};
+    window.addEventListener('scroll', function () {
+      const h = document.documentElement.scrollHeight - window.innerHeight;
+      if (h <= 0) return;
+      const pct = Math.round((window.scrollY / h) * 100);
+      [25, 50, 75, 100].forEach(function (b) {
+        if (pct >= b && !seen[b]) { seen[b] = true; track('scroll_depth', { milestone: b, tier: activeTier }); }
+      });
+    }, { passive: true });
+  })();
+
+  /* Pricing CARD views (§3) — fire once per tier card as it scrolls in. Cards are
+     re-created on the billing toggle, so this re-runs after each render; seenCards
+     keeps it to one event per tier. */
+  function observePricingCards() {
+    if (!('IntersectionObserver' in window)) return;
+    if (!cardObserver) {
+      cardObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          const tier = en.target.dataset.tier;
+          if (tier && !seenCards[tier]) { seenCards[tier] = true; track('pricing_card_view', { tier: tier }); }
+          cardObserver.unobserve(en.target);
+        });
+      }, { threshold: 0.5 });
+    }
+    document.querySelectorAll('.pcard').forEach(function (c) {
+      if (!seenCards[c.dataset.tier]) cardObserver.observe(c);
+    });
+  }
+
+  /* Last section reached (§3) — feeds the exit event. */
+  (function () {
+    if (!('IntersectionObserver' in window)) return;
+    const marks = [['hero', 'header.u-hero'], ['problems', '.pains'], ['demo', '.demo'],
+      ['smart-import', '.story[data-accent="free"]'], ['show-chain', '.story[data-accent="plus"]'],
+      ['tiers', '#tier-block'], ['pricing', '#pricing'], ['faq', '#faq'], ['footer', 'footer']];
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        const m = marks.find(function (x) { return en.target.matches(x[1]); });
+        if (m) lastSection = m[0];
+      });
+    }, { threshold: 0.3 });
+    marks.forEach(function (m) { const el = document.querySelector(m[1]); if (el) io.observe(el); });
+  })();
+
+  /* Exit (§3) — last section reached + total time on page. */
+  window.addEventListener('pagehide', function () {
+    track('exit', { last_section: lastSection, seconds: Math.round((Date.now() - pageLoadedAt) / 1000), tier: activeTier });
+  });
+
+  /* ── BOOT ─────────────────────────────────────────────────────────────── */
+  buildToggle();
+  renderPricing();
+  renderFaq();
+  decorateAppLinks();   // §4 — nav CTA + any static app links
+
+  /* Billing period toggle (rev §6) — re-render cards, keep the active tier lit. */
+  document.querySelectorAll('.billing-opt').forEach(function (b) {
+    b.addEventListener('click', function () {
+      if (billing === b.dataset.billing) return;
+      billing = b.dataset.billing;
+      document.querySelectorAll('.billing-opt').forEach(function (x) {
+        x.setAttribute('aria-pressed', String(x.dataset.billing === billing));
+      });
+      renderPricing();
+      if (activeTier) highlightPricing(activeTier);
+      track('pricing_toggle', { value: billing });   // §3 — monthly | annual
     });
   });
 
-  backdrop.addEventListener('click', closeTheater);
-
-  async function handleSignup(inputId, successId) {
-    const input = document.getElementById(inputId);
-    const success = document.getElementById(successId);
-    const btn = input.parentElement.querySelector('button');
-    const email = input.value.trim();
-
-    if (!email || !email.includes('@')) {
-      input.style.borderColor = 'var(--red)';
-      setTimeout(() => input.style.borderColor = '', 1200);
-      return;
-    }
-
-    btn.textContent = 'Sending...';
-    btn.disabled = true;
-
-    // One shared ID per signup: sent to both the browser pixels AND the server
-    // (CAPI) so Meta/Reddit dedupe the two reports into a single conversion.
-    const eventId = (self.crypto && crypto.randomUUID)
-      ? crypto.randomUUID()
-      : String(Date.now()) + '-' + Math.random().toString(36).slice(2);
-
-    try {
-      const res = await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: inputId === 'hero-email' ? 'hero-form' : 'cta-form', eventId }),
-      });
-
-      if (!res.ok) throw new Error('Request failed');
-
-      input.parentElement.style.display = 'none';
-      success.style.display = 'block';
-      if (window.pmTrack) window.pmTrack('signup', 'waitlist');
-      // Meta Pixel: waitlist signup = a Lead. content_name tags which form
-      // converted. eventID (4th arg) dedupes against the server-side CAPI Lead.
-      if (window.fbq) fbq('track', 'Lead', {
-        content_name: 'waitlist',
-        content_category: inputId === 'hero-email' ? 'hero-form' : 'cta-form',
-      }, { eventID: eventId });
-      // Reddit Pixel: waitlist signup conversion. conversionId dedupes against
-      // the server-side CAPI SignUp event.
-      if (window.rdt) rdt('track', 'SignUp', { conversionId: eventId });
-    } catch (e) {
-      btn.textContent = 'Try Again';
-      btn.disabled = false;
-      input.style.borderColor = 'var(--red)';
-      setTimeout(() => input.style.borderColor = '', 1200);
-    }
-  }
-
-  // ── Share buttons ──
-  const shareText = encodeURIComponent('Finally, a stage plot tool built for working audio engineers — not spreadsheet users. Check out PatchMap:');
-  const shareUrl = encodeURIComponent('https://patchmap.app');
-  const xUrl = `https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`;
-
-  document.querySelectorAll('#nav-x-share, #cta-x-share').forEach(el => el.href = xUrl);
-
-  function copyLink(btn) {
-    navigator.clipboard.writeText('https://patchmap.app').then(() => {
-      btn.textContent = '✓ Copied';
-      btn.classList.add('copied');
-      setTimeout(() => {
-        btn.textContent = '⎘ Copy Link';
-        btn.classList.remove('copied');
-      }, 2000);
-    });
-  }
-
-  // ── Pricing toggle ──
-  function setPricingBilling(mode) {
-    document.querySelectorAll('.pricing-toggle-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.billing === mode);
-    });
-    document.querySelectorAll('.price-annual').forEach(el => {
-      el.style.display = mode === 'annual' ? 'block' : 'none';
-    });
-    document.querySelectorAll('.price-monthly').forEach(el => {
-      el.style.display = mode === 'monthly' ? 'block' : 'none';
-    });
-  }
-
-  // ── FAQ accordion ──
-  function toggleFaq(el) {
-    const item = el.parentElement;
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
-    if (!isOpen) item.classList.add('open');
-  }
-
-  // ── Landing analytics beacon (patchmap.app → dashboard) ──
-  // Fire-and-forget pageviews + conversions to /api/pageview. Tracks new vs
-  // returning visitors and UTM source so the dashboard can show visit→signup
-  // conversion and overlay ad spend on the traffic timeline.
-  (function () {
-    function getUTM() {
-      var p = new URLSearchParams(location.search);
-      return {
-        source: p.get('utm_source'), medium: p.get('utm_medium'),
-        campaign: p.get('utm_campaign'), content: p.get('utm_content'), term: p.get('utm_term'),
-      };
-    }
-    var existing = null;
-    try { existing = localStorage.getItem('pm_vid'); } catch (e) {}
-    var isReturning = !!existing;
-    var vid = existing || (Date.now().toString(36) + Math.random().toString(36).slice(2, 10));
-    if (!existing) { try { localStorage.setItem('pm_vid', vid); } catch (e) {} }
-    var utm = getUTM();
-
-    function track(type, target) {
-      var payload = JSON.stringify({
-        type: type, target: target || null, path: location.pathname,
-        visitorId: vid, isReturning: isReturning,
-        referrer: document.referrer || null, utm: utm,
-      });
-      try {
-        if (navigator.sendBeacon) {
-          navigator.sendBeacon('/api/pageview', new Blob([payload], { type: 'application/json' }));
-          return;
-        }
-      } catch (e) {}
-      try { fetch('/api/pageview', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }); } catch (e) {}
-    }
-    window.pmTrack = track;
-
-    track('pageview');
-
-    // Forward-compatible: at launch, any click toward the app counts as a signup
-    // conversion — no code change needed when CTAs point at app.patchmap.app.
-    document.addEventListener('click', function (e) {
-      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
-      if (!a) return;
-      var href = a.getAttribute('href') || '';
-      if (href.indexOf('app.patchmap.app') !== -1 || a.hasAttribute('data-conversion')) {
-        track('signup', 'app.patchmap.app');
-      }
-    }, true);
-  })();
-</script>
+  const initialTier = (new URL(location.href)).searchParams.get('tier');
+  selectTier(TIER_ORDER.indexOf(initialTier) >= 0 ? initialTier : 'free', false);
+  track('page_view', { path: location.pathname, tier: activeTier });
+  </script>
 </body>
 </html>
