@@ -179,9 +179,6 @@
 
     /* ── DYNAMIC TIER BLOCK ── */
     #tier-block { position: relative; z-index: 1; padding: 70px 0 40px; }
-    /* §7 strike: sections render hidden, then reveal top-to-bottom as the front passes. */
-    #tier-block.striking > *:not(.strike-svg) { opacity: 0; transform: translateY(8px); transition: opacity .4s ease, transform .4s ease; }
-    .strike-svg { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; overflow: visible; }
 
     .tier-badge {
       display: inline-block; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.18em;
@@ -290,11 +287,9 @@
     }
     @media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
 
-    /* ── REDUCED MOTION ── §7 fallback: no wiring, instant colour + copy swap ── */
+    /* ── REDUCED MOTION ── */
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
-      #tier-block.striking > *:not(.strike-svg) { opacity: 1 !important; transform: none !important; transition: none !important; }
-      .strike-svg { display: none !important; }
     }
   </style>
 </head>
@@ -309,7 +304,7 @@
 
   <!-- ══ UNIVERSAL BLOCK (FIXED — never reacts to tier) ═══════════════════════ -->
   <header class="u-hero wrap">
-    <div class="eyebrow">Built for A1s. Not spreadsheet users.</div>
+    <div class="eyebrow">Built for audio engineers. Not spreadsheet users.</div>
     <h1>Fast and Wrong Is Still Wrong.</h1>
     <p class="u-hero-sub">
       Every patching tool sped up the PDF. Nobody fixed the fact that it's <strong>outdated by soundcheck</strong>.
@@ -334,22 +329,22 @@
     <div class="pain" data-accent="plus">
       <div class="pain-num">02 — The Problem</div>
       <h2>One QR Code. Ninety Days Later, Still Right.</h2>
-      <p>Print it once. Tape it to the case. Anyone loading in — your crew or the house tech who's never seen this show — opens it once and leaves it open. Every change you make from the tour bus pushes live, with a timestamp showing exactly when it last updated. <strong>No rescanning. No refreshing. Just leave the page open.</strong></p>
+      <p>Print it once. Tape it to the case. Anyone loading in — your crew, the house tech who's never seen this show, or local/daily labor — opens it once and leaves it open. Every change you make from the tour bus pushes live, with a timestamp showing exactly when it last updated. <strong>No rescanning needed.</strong></p>
     </div>
     <div class="pain" data-accent="pro">
       <div class="pain-num">03 — The Problem</div>
-      <h2>Your Patch, RF, and Dante Don't Talk to Each Other.</h2>
-      <p>Three documents, three windows, cross-referenced at showtime and hoping nothing's out of sync. PatchMap puts all three under one roof — one source of truth, accessible by everyone on the crew, live, on their own device.</p>
+      <h2>Your Patch, Wireless, and Dante Don't Live in the Same World.</h2>
+      <p>Three documents, three windows, cross-referenced at showtime and hoping nothing's out of sync. PatchMap unifies all three under <strong>one source of truth</strong> — accessible by anyone on the crew, live on their own device.</p>
     </div>
     <div class="pain" data-accent="tour">
       <div class="pain-num">04 — The Problem</div>
       <h2>Verbal and Lossy.</h2>
-      <p>A mix issue gets shouted over comms. Maybe it's fixed, maybe it's forgotten, and it's back next week. PatchMap gives the whole crew one shared live list — every flag routed and logged.</p>
+      <p>A channel issue gets shouted over comms — you mentally add it to your list. Maybe it gets fixed, maybe it gets forgotten. But good luck remembering all the details before the next show. PatchMap gives the whole crew one common source of truth everyone can look at, working off the same document that's constantly updating. Every user — stage tech, monitor engineer, musician, or front of house — can flag a specific issue on a specific channel, and everyone has the entire signal flow in their hands. <strong>Empower your crew to resolve issues with tighter communication, faster than ever, with Live Room.</strong></p>
     </div>
     <div class="pain" data-accent="free">
       <div class="pain-num">05 — The Problem</div>
       <h2>It Walked Out With Your Last Engineer.</h2>
-      <p>Every fix and pattern from the run, gone when the person holding it moves on. PatchMap collects it as you work, so next season starts knowing what failed last time.</p>
+      <p>Every fix and pattern from the run — gone the moment the person holding it moves on. Now PatchMap collects the show data as you work, so the next show, the next season, the next tour starts knowing the lessons from last time. <strong>Introducing Show Intelligence</strong> — a record of what was never trackable before. You couldn't measure any of this. Now you can.</p>
     </div>
   </section>
 
@@ -357,8 +352,8 @@
   <section class="demo">
     <div class="wrap">
       <h2>We're Aggressively Anti–Data Entry.</h2>
-      <p>Drop the gear in. That's the whole data-entry step. Every other tool in this category still has you hand-type a console model, a drum kit, a channel list, a loom assignment — and hopes you don't have to do it again next week. PatchMap has templates, show import, and smart patch too. <strong>We just don't make you type your way through them.</strong> Auto-label the gear, and the rest resolves itself.</p>
-      <p>Assign your patch once, every role, every device — and it still holds tomorrow, when something changes.</p>
+      <p>PatchMap is node-based at its core. That frees you from entering data at all — the nodes already understand what they are. Patching a 60-seat orchestra? There's no way you have time to type that much.</p>
+      <p>PatchMap has templates, show imports, and Smart Import — <strong>we just don't make you type your way through them.</strong> The system is auto-labeling and self-resolving. Assign your patch once — every role, every device — and it still holds tomorrow. When something changes, that's fine.</p>
     </div>
   </section>
 
@@ -367,8 +362,10 @@
     <div class="wrap">
       <div class="story-eyebrow">Smart Import</div>
       <h2>Import the Roster. Patch Nothing Until You Say So.</h2>
-      <p>Drop in a CSV, an Excel sheet, or a PDF, and smart import reads the gear inside it — keys, bass, drums, four violins, a cello, whatever's actually listed — and offers to add it straight to your inventory. It builds a staging shelf with the exact nodes it found, correctly counted, named the way you already had them.</p>
-      <p>Here's the part that took a while to get right: those nodes don't patch themselves anywhere yet. Drag a freshly imported instrument onto most canvases and it locks into whatever channel happens to be open right now — even if the real board has that instrument sitting at channel 11 and 14 for a reason the software doesn't know yet. <strong>PatchMap waits.</strong> The node stays open until you assign it to the actual I/O slot, and only then does it hard-patch in. Import the roster first. Patch it when the real availability shows up — not before.</p>
+      <p>Drop a CSV, an Excel sheet, or a PDF — Smart Import reads the gear inside it, understands the position and the channel you're placing it in, so you don't have to repatch anything. It also checks the gear you already have listed and asks whether you want to add it to your locker or your rental inventory — one-step import.</p>
+      <p>It builds a staging shelf with the exact nodes it found, correctly counted, named the way you already had them.</p>
+      <p>Most "smart importers" populate a list but require you to re-patch everything by hand. <strong>We're anti-data entry.</strong></p>
+      <p>If your string section starts at channel 21, PatchMap waits for channel 21 to become available and pages itself there automatically. There's no need to patch things twice — that would make it a dumb importer.</p>
     </div>
   </section>
 
@@ -377,8 +374,8 @@
     <div class="wrap">
       <div class="story-eyebrow">Show Chain</div>
       <h2>Press Next Show. Everything Comes With You.</h2>
-      <p>Next stop on the tour. Next week's date. Next Sunday. Hit Instance Forward and PatchMap carries the show ahead — no copy-paste, no erasing this week's data to make room for next week's. Every show becomes part of a chain, and PatchMap quietly keeps what came before it, so you never have to wonder what changed since last month. Not a folder of old PDFs you have to dig through and compare by eye. <strong>It tells you what's different.</strong></p>
-      <p>Your whole show history lives in your account, not on a laptop that can get left in a case. Log in from any device, at any venue, and it's the same data.</p>
+      <p>Next stop on the tour. Next week's date. Next Sunday. Hit Instance Forward and PatchMap carries the show ahead — no copy-paste, no erasing this week's data to make room for next week's. Every <strong>concurrent</strong> show becomes part of a chain, and PatchMap quietly keeps what came before it — so you never have to wonder what changed since last month. Not a folder of old PDFs you have to dig through and compare eye to eye. <strong>PatchMap tells you what's different.</strong></p>
+      <p>Your whole history of shows lives in your account, not on a laptop that can get left in a case. Log in from any computer — any venue, it's the same data.</p>
       <span class="story-note">Show Chain starts at Plus</span>
     </div>
   </section>
@@ -431,13 +428,13 @@
       accentVar: '--tier-free', accentRgb: '74,222,128',
       badge: 'FREE',
       headline: 'Let This Be Your Last Static Patch Sheet.',
-      heroBody: "A full stage plot in the time it used to take to open a spreadsheet and start arguing with columns. Drop your gear on the canvas — it auto-patches in seconds, with full control to fine-tune every assignment yourself. Export a PDF if you need one for the file. But the real document lives behind the QR code, and it doesn't go stale the way the PDF does.",
-      heroKicker: '<strong>PatchMap Free</strong> is the whole planning tool, not a trial of it. No credit card. No time limit. No "upgrade to stop typing."',
-      spotlightHeading: 'Drop in Gear and Instruments, Pre-Labeled.',
-      spotlightBody: "Drop the right node on the canvas — a vocal mic, a DI, a keyboard rig — and it's instantly identified and ready to patch, no manual labeling required. PatchMap auto-patches the signal chain the moment you drop it in. Need it different? Define exactly where a channel goes, reserve a range for wireless, or block channels out entirely — your overrides stay locked in, even as the rest of the show keeps auto-patching around them.",
+      heroBody: "There are three ways to build and view your canvas: the node-based canvas, the Stage Plot layer, and the Signal Flow layer — all included in Free. Drop your gear and instrument nodes onto the canvas and it auto-patches and auto-labels in seconds, with full control to fine-tune every assignment yourself. A full stage plot in the time it used to take to open a spreadsheet and start arguing with columns. Export a PDF if you need one for the file — but the real document lives behind the viewer QR code, and it doesn't go stale the way a PDF does.",
+      heroKicker: '<strong>PatchMap Free</strong> is the whole planning tool, not a trial of it. No credit card, no time limit, no upgrading to stop trying. No canvas feature gating, no pulling back your show\'s complexity — build it the way it actually is.',
+      spotlightHeading: 'Auto-Patched, But Never Out of Your Hands.',
+      spotlightBody: "PatchMap auto-patches the signal chain the moment you drop a node in — but you're never locked out of it. Define exactly where a channel goes, reserve a range for wireless, or block channels out entirely. Your overrides stay put, even as the rest of the show keeps auto-patching around them.",
       spotlightShot: 'Gear dropped onto the canvas — auto-labeled, auto-patched, ready to fine-tune',
       newFeatures: [
-        { title: 'Full Canvas & Stage Plot View', body: 'Signal flow and physical stage layout, same data, one toggle.' },
+        { title: 'Full Canvas, Stage Plot & Signal Flow', body: 'Three ways to build and see your show, same data, all on one toggle.' },
         { title: 'Auto-Resolved Signal Flow', body: 'Drop gear in, PatchMap patches it. Override, reserve, or block any channel by hand.' },
         { title: 'Live QR Code', body: "One durable code per show. Open it once and leave it open — every change pushes live the moment you touch the canvas, with a timestamp showing exactly when it last updated. No rescanning required." },
         { title: 'Professional PDF Export', body: "The document that used to take an hour of fighting spreadsheet formatting, done in seconds — and it doesn't look like a spreadsheet pretending to be a rundown." },
@@ -451,20 +448,20 @@
       accentVar: '--tier-plus', accentRgb: '56,189,248',
       badge: 'PLUS',
       headline: 'Gear Managed, With Room to Grow.',
-      heroBody: "Your venue locker is the one place gear actually lives — mics, wireless, cables, counted or individually tracked, whichever makes sense for that piece. Assign gear to a show, and PatchMap checks it against your venue locker automatically — what you own is covered, what you're short on lands on your rental list without a single manual entry.",
+      heroBody: "Your venue locker is the one place gear actually lives — mics, wireless, cables, and other gear, individually tracked. Assign gear to a show and PatchMap checks it against your venue locker automatically. What you own is covered and clearly listed. What you don't own gets flagged as a rental on every document that matters.",
       heroKicker: "<strong>PatchMap Plus</strong> carries your venue locker across an entire season — twenty shows deep, one venue — so what you own stays known, and what you're short on never gets discovered on load-in day.",
       spotlightHeading: 'Every Piece of Gear, Tracked Correctly.',
       spotlightBody: "A case of SM57s needs a count. A wireless transmitter needs a name — RF1 isn't RF2. Your venue locker tracks both automatically, the moment you assign gear to a show. No manual tally. No separate spreadsheet for what you actually own.",
       spotlightShot: 'The venue locker checking assigned gear against what you already own',
       newFeatures: [
-        { title: 'Venue Locker', body: 'One record of what you own, tracked at the right grain for what it is.' },
+        { title: 'Venue Locker', body: 'One record of all the gear you own, tracked correctly.' },
         { title: 'Auto-Derived Rental List', body: 'Assigned minus owned. Shortages surface themselves.' },
-        { title: '20 Shows, One Venue', body: 'A full season without hitting a wall.' },
-        { title: 'Locker CSV Import', body: 'Bring your existing gear list in once. Never retype it.' },
+        { title: 'Room to Grow', body: 'A full season in your venue — twenty shows deep, with headroom to spare.' },
+        { title: 'Standard Locker CSV Import', body: 'Bring your existing gear list in once. Never retype it.' },
       ],
       numberLine: '1 Venue · 20 Shows · $12.99/mo',
       proofBlurb: "Built for the engineer running the same room, season after season, who's tired of reconciling old spreadsheets with actual inventory.",
-      ctaLabel: 'See Plus Pricing',
+      ctaLabel: null,
     },
     pro: {
       label: 'Pro',
@@ -472,39 +469,39 @@
       badge: 'PRO',
       headline: 'Quit Rebuilding. Start Collaborating.',
       heroBody: "Multiple venues. Multiple runs. Every show you've ever built lives in one place — not scattered across a dozen spreadsheet versions buried somewhere in a chain of revisions.",
-      heroKicker: "<strong>PatchMap Pro</strong> keeps your full patch history with you — and unlocks a Live Room that takes the comms chatter off your plate the moment your crew steps on stage.",
+      heroKicker: "<strong>PatchMap Pro</strong> keeps your full patch history with you — and unlocks a collaborative <strong>Live Room</strong> that takes comms chatter off your plate the moment your crew steps on stage.",
       spotlightHeading: 'The Live Room Runs the Show With You.',
-      spotlightBody: "Open a Room, and your crew joins from their own phones — no app to install, just a link. Each person sees a view built for their job: the stage tech sees what a stage tech needs, the monitor engineer sees monitor requests, nobody's digging through notes that aren't theirs. Spot a problem, flag it right there — it routes straight to the person who can fix it, and changes color as it moves from spotted to seen to resolved. No more \"did anyone tell FOH about that?\" Everything gets logged as it happens, so when the show's over, there's an actual record — not five different memories of how it went.",
+      spotlightBody: "Open a <strong>Live Room</strong> and your crew joins from their own phones — no app to install, just a role-specific link. Each person sees the view built for their job: the stage tech sees what a stage tech needs, the monitor engineer sees monitor requests, and musicians see their channel and can request support directly. Nobody's digging through notes that aren't theirs. Spot a problem, flag it right there — it routes straight to the person who can fix it, and changes color as it moves from spotted, to seen, to resolved. No more \"did anyone tell FOH about that?\" Everything gets logged as it happens, so when the show's over, there's an actual record — not five different memories of how it went.",
       spotlightShot: 'The Live Room mid-show — crew joined, a flag routing from spotted → seen → resolved',
       newFeatures: [
         { title: 'Live Room', body: 'Crew joins live, flags route automatically, nothing gets lost in the noise.' },
-        { title: 'Full Patch History', body: 'Every show you’ve built, across every venue, still yours.' },
-        { title: 'Room Report', body: 'A closeout record of what happened, written as you go.' },
+        { title: 'Full Patch History', body: 'Every show you’ve ever built, across every venue, all in one place — accessible, easy to find.' },
+        { title: 'Live Room Statistics', body: 'A closeout record of exactly how your show went — authored automatically by you and your team.' },
         { title: 'Issue Flagging & Resolution', body: 'Problems get tracked from flag to fix, not forgotten.' },
       ],
       numberLine: '5 Venues · Unlimited Shows · 2 Concurrent Live Sessions',
-      proofBlurb: "Built for the working A1 — freelance across multiple rooms, or in-house running live productions regularly — who's done being the only person who remembers how last time went.",
-      ctaLabel: 'See Pro Pricing',
+      proofBlurb: "Built for the working A1 — freelance across multiple rooms, or in-house running live productions regularly — who's done being the only one who has the entire show in their head.",
+      ctaLabel: null,
     },
     tour: {
       label: 'Tour',
       accentVar: '--tier-tour', accentRgb: '167,139,250',
       badge: 'TOUR',
       headline: 'Stop Learning Lessons Twice With Show Intelligence.',
-      heroBody: "Every city runs on what the last one taught you — if someone remembers to say it out loud. Show Intelligence means the production doesn't wait on memory. Every issue, every fix, every call made under pressure becomes part of the record automatically, so the next stop starts smarter than the last one ended.",
-      heroKicker: "<strong>PatchMap Tour</strong> turns your production into a system that gets sharper every night — hand-off reports, a live musician portal, and a memory that never needs a debrief to transfer.",
-      spotlightHeading: 'The Show Remembers So the Next One Runs Better.',
-      spotlightBody: "Every issue, every fix, every call made under pressure gets recorded as it happens — no debrief, no one writing it down after. By the next city, the production already knows what failed last time, what gear keeps acting up, and what got solved. The lessons don't leave when the engineer does.",
+      heroBody: "Every show runs on what the last one taught you — if someone remembers to say it out loud. Show Intelligence means the production doesn't rely on the memory of your team. Every issue, every fix, every gear change, every piece of metadata, and every call made under pressure becomes part of a record automatically — so the next stop starts smarter than the last one ended.",
+      heroKicker: "<strong>PatchMap Tour</strong> turns your production into a system that gets sharper with every stop, not just every night — hand-off reports, touring continuity, and a memory that never needs a debrief to transfer.",
+      spotlightHeading: "The Power Isn't One Show. It's Twenty.",
+      spotlightBody: "Show Intelligence quietly captures the metadata of your production as you run it — what's in the show, where it lives, the patch itself, your gear library, and every issue flagged in a Live Room. On its own, one show is a record. The power shows up across twenty of them, or three years of tours: patterns you had no way to see before, because a box of old show files can't be compared and the lived experience of a run was never written down. Now it is. Ask a specific question — where a single mic was used across the whole run — and the answer's already there, not in someone's memory.",
       spotlightShot: 'Show Intelligence compiling every issue and fix into the running record',
       newFeatures: [
-        { title: 'Show Intelligence', body: 'Every fix, every flag, every call under pressure, part of the permanent record.' },
-        { title: 'Hand-Off Reports', body: 'The next stop starts with what the last one already solved.' },
+        { title: 'Show Intelligence', body: 'The power to compare — how ten nights actually went, how Tour A compares to Tour B, how this year compares to last.' },
+        { title: 'Hand-Off Reports', body: 'The next stop starts with what the last one solved. Got a specific question — like where one mic was used across the run? Ask it.' },
         { title: 'Touring Continuity', body: 'Unresolved issues carry forward, city to city, engineer to engineer.' },
-        { title: 'Musician Portal', body: 'One QR code, self-service monitor requests, routed directly.' },
+        { title: 'Enterprise-Scale Capacity', body: 'Ten venues, unlimited shows, and five concurrent live sessions — several touring-sized productions running at once.' },
       ],
       numberLine: '10 Venues · Unlimited Shows · 5 Concurrent Live Sessions',
       proofBlurb: "Built for the production that doesn't run on one person's memory — a touring operation, a multi-campus production team, a festival crew — where the buyer is the production, not any one engineer on it.",
-      ctaLabel: 'See Tour Pricing',
+      ctaLabel: null,
     },
   };
 
@@ -521,8 +518,8 @@
 
   const faqs = [
     { q: 'Is Free actually free, or a trial?', a: "Free is the whole planning tool, not a trial of it — full canvas, auto-resolved signal flow, professional PDF export, and a live QR code. One venue, one show, no credit card, no time limit." },
-    { q: 'What’s a “venue,” and why do lower tiers include only one?', a: "A venue is your home base in PatchMap — it holds your gear library and the history of every show you've run there, so you're not rebuilding the same rig show after show. One venue covers an engineer working a single room; higher tiers add more venues for freelancers and productions moving between multiple rooms." },
-    { q: 'Do my crew need to install an app?', a: "No. Everyone joins from their own phone through a single link, and each person lands on a view built for their role — stage tech, monitor engineer, musician. Nothing to install." },
+    { q: 'What’s a “venue,” and why do lower tiers include only one?', a: "A venue is your home base in PatchMap — it holds your gear library and the history of every show you've run there, so you're not rebuilding the same rig show after show. One venue covers an engineer working a single production environment; higher tiers add more venues for freelancers and productions moving between multiple rooms." },
+    { q: 'Do my crew need to install an app?', a: "No — the PatchMap Live Room is a web app. Everyone joins from their own phone through a single link, and each person lands on a view built for their role — stage tech, monitor engineer, musician. If someone accidentally exits, rescanning the QR code or re-clicking the join link brings them right back in, no re-entering data." },
     { q: 'What counts as a “concurrent live session”?', a: "A live session is an open Room running a show in real time. Free and Plus are planning tiers (0 live sessions). Pro runs 2 at once; Tour runs 5 — enough for a production with more than one thing happening at a time." },
     { q: 'Can I pay monthly, or is it annual?', a: "Either. Every paid tier bills monthly or annually, and annual runs about two months cheaper than paying month to month. Switch billing on the pricing table above — the plan and every feature are identical either way." },
     { q: 'What happens when I hit my venue or show limit?', a: "Nothing you've built disappears. Free covers one show in one venue; Plus runs twenty shows in one venue; Pro and Tour lift the show cap entirely and add more venues. When you need more room, you move up a tier and everything you've already made carries over." },
@@ -688,13 +685,11 @@
   /* ═══════════════════════════════════════════════════════════════════════════
      RENDER + TOGGLE
      ═══════════════════════════════════════════════════════════════════════════ */
-  const REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const tierBlock = document.getElementById('tier-block');
   const toggleEl = document.getElementById('toggle');
   let activeTier = null;
   let billing = 'annual';           // rev §6 — annual is the default view
   let tierEnteredAt = Date.now();
-  let strikeSvg = null;             // §7 — live conductor-bundle overlay, if any
   let lastSection = 'hero';         // addendum §3 — last landmark reached, for exit
   let cardObserver = null;          // addendum §3 — pricing_card_view observer
   const seenCards = {};             // fire pricing_card_view once per tier
@@ -744,9 +739,11 @@
       '<h2 class="tier-headline">' + c.headline + '</h2>' +
       '<p class="tier-body">' + c.heroBody + '</p>' +
       '<p class="tier-kicker">' + c.heroKicker + '</p>' +
-      '<div class="cta-row">' +
-        '<a class="btn-primary" href="https://app.patchmap.app" data-conversion data-track-cta="tier-primary">' + c.ctaLabel + ' &rarr;</a>' +
-      '</div>' +
+      (c.ctaLabel
+        ? '<div class="cta-row">' +
+            '<a class="btn-primary" href="https://app.patchmap.app" data-conversion data-track-cta="tier-primary">' + c.ctaLabel + ' &rarr;</a>' +
+          '</div>'
+        : '') +
       '<p class="price-line">' + pricing[t].line + '</p>' +
 
       '<div class="spotlight">' +
@@ -845,103 +842,6 @@
     });
   }
 
-  /* ═══════════════════════════════════════════════════════════════════════════
-     §7 — SIGNATURE CONDUCTOR-BUNDLE STRIKE
-     A short-lived SVG overlay: a bundle of thin conductors in the incoming tier's
-     colour races down through the tier-content block (stroke-dashoffset draw), the
-     block's sections reveal top-to-bottom in sync (colour + copy arrive together),
-     then the conductors self-extinguish and the SVG is removed. At rest: nothing.
-     Driven by the Web Animations API so it's GPU-friendly and cancelable on rapid
-     toggles. Skipped entirely under prefers-reduced-motion (see selectTier).
-     ═══════════════════════════════════════════════════════════════════════════ */
-  const STRIKE_EASE = 'cubic-bezier(0.2, 0.8, 0.2, 1)';
-
-  function revealSections() {
-    // Sections were rendered hidden (via .striking); reveal them top-to-bottom on
-    // a stagger keyed to the descending strike front.
-    const kids = Array.from(tierBlock.children).filter(function (el) {
-      return !el.classList.contains('strike-svg');
-    });
-    const per = Math.min(90, 620 / Math.max(kids.length, 1));
-    kids.forEach(function (el, i) { el.style.transitionDelay = (i * per) + 'ms'; });
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        kids.forEach(function (el) { el.style.opacity = '1'; el.style.transform = 'none'; });
-      });
-    });
-    setTimeout(function () {
-      tierBlock.classList.remove('striking');
-      kids.forEach(function (el) { el.style.transitionDelay = ''; el.style.opacity = ''; el.style.transform = ''; });
-    }, kids.length * per + 440);
-  }
-
-  function buildStrikeSvg(t) {
-    if (strikeSvg && strikeSvg.parentNode) strikeSvg.parentNode.removeChild(strikeSvg);
-    const NS = 'http://www.w3.org/2000/svg';
-    const w = tierBlock.clientWidth, h = tierBlock.clientHeight;
-    const color = accentHexFor(t);
-    const rnd = function (a, b) { return a + Math.random() * (b - a); };
-
-    const svg = document.createElementNS(NS, 'svg');
-    svg.setAttribute('class', 'strike-svg');
-    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
-    svg.setAttribute('preserveAspectRatio', 'none');
-    svg.style.width = w + 'px'; svg.style.height = h + 'px';
-    const defs = document.createElementNS(NS, 'defs');
-    defs.innerHTML = '<filter id="pmGlow" x="-30%" y="-10%" width="160%" height="120%"><feGaussianBlur stdDeviation="3"/></filter>';
-    svg.appendChild(defs);
-    const g = document.createElementNS(NS, 'g');
-    svg.appendChild(g);
-
-    const N = 6, startX = w * 0.5, lines = [];
-    for (let i = 0; i < N; i++) {
-      const f = N > 1 ? i / (N - 1) : 0.5;
-      const sx = startX + rnd(-0.05, 0.05) * w;
-      const ex = w * (0.12 + 0.76 * f) + rnd(-0.03, 0.03) * w;
-      const ey = h * rnd(0.86, 1.0);
-      const c1x = startX + (ex - startX) * 0.3 + rnd(-0.22, 0.22) * w;
-      const c1y = h * rnd(0.26, 0.4);
-      const c2x = ex + rnd(-0.2, 0.2) * w;
-      const c2y = h * rnd(0.58, 0.72);
-      const d = 'M' + sx + ' 0 C' + c1x + ' ' + c1y + ',' + c2x + ' ' + c2y + ',' + ex + ' ' + ey;
-      ['glow', 'core'].forEach(function (kind) {
-        const p = document.createElementNS(NS, 'path');
-        p.setAttribute('d', d); p.setAttribute('fill', 'none');
-        p.setAttribute('stroke', color); p.setAttribute('stroke-linecap', 'round');
-        if (kind === 'glow') { p.setAttribute('stroke-width', '3.5'); p.setAttribute('opacity', '0.35'); p.setAttribute('filter', 'url(#pmGlow)'); }
-        else { p.setAttribute('stroke-width', '1.2'); }
-        g.appendChild(p); lines.push(p);
-      });
-    }
-
-    tierBlock.appendChild(svg);
-    strikeSvg = svg;
-
-    // Draw each conductor downward (fast onset, settling out), with per-line jitter.
-    let maxEnd = 0;
-    lines.forEach(function (p) {
-      const len = p.getTotalLength();
-      p.style.strokeDasharray = len; p.style.strokeDashoffset = len;
-      const dur = rnd(450, 550), del = rnd(0, 90);
-      maxEnd = Math.max(maxEnd, dur + del);
-      p.animate([{ strokeDashoffset: len }, { strokeDashoffset: 0 }],
-        { duration: dur, delay: del, easing: STRIKE_EASE, fill: 'forwards' });
-    });
-    // Tail: self-extinguish over a longer fade, then remove the overlay entirely.
-    const fade = g.animate([{ opacity: 1 }, { opacity: 0 }],
-      { duration: 850, delay: maxEnd + 120, easing: 'ease-in', fill: 'forwards' });
-    fade.onfinish = function () {
-      if (svg.parentNode) svg.parentNode.removeChild(svg);
-      if (strikeSvg === svg) strikeSvg = null;
-    };
-  }
-
-  function runStrike(t) {
-    revealSections();
-    // getTotalLength/measurement needs the SVG sized to the freshly rendered block.
-    requestAnimationFrame(function () { buildStrikeSvg(t); });
-  }
-
   function selectTier(t, userInitiated) {
     if (!tierContent[t]) t = 'free';
     if (t === activeTier) return;
@@ -961,18 +861,10 @@
       b.setAttribute('aria-selected', String(b.dataset.tier === t));
     });
 
-    // §7: on first paint / reduced-motion, swap instantly. Otherwise render the
-    // new tier hidden (.striking) and fire the conductor-bundle strike, which
-    // reveals sections top-to-bottom so colour + copy arrive together.
-    if (REDUCED || !prev) {
-      renderTierBlock(t);
-      highlightPricing(t);
-    } else {
-      tierBlock.classList.add('striking');
-      renderTierBlock(t);
-      highlightPricing(t);
-      runStrike(t);
-    }
+    // Instant swap — copy + colour arrive together. (The conductor-bundle strike
+    // animation was pulled 2026-07-12; see revision pass.)
+    renderTierBlock(t);
+    highlightPricing(t);
 
     // URL param (deep-link support §3), no history spam.
     const url = new URL(location.href);
