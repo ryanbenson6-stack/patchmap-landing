@@ -17,8 +17,8 @@
   <script src="/assets/reddit-pixel.js"></script>
   <!-- End Reddit Pixel -->
 
-  <title>PatchMap — The Patch Document That Stays Accurate</title>
-  <meta name="description" content="Every patching tool sped up the PDF. PatchMap is the only patch document that's still accurate at soundcheck — live, QR-shared, built for A1s, not spreadsheet users." />
+  <title>PatchMap — Live Patch, Dante &amp; Wireless Documentation That Stays Accurate</title>
+  <meta name="description" content="Every patching tool sped up the PDF. PatchMap is the only live patch document — analog, Dante, and wireless in one source of truth — that's still accurate at soundcheck. QR-shared, built for audio engineers, not spreadsheet users." />
 
   <!-- Link / social preview -->
   <link rel="icon" type="image/png" href="/assets/patchmap-preview.png" />
@@ -27,15 +27,15 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="PatchMap" />
   <meta property="og:url" content="https://patchmap.app/" />
-  <meta property="og:title" content="PatchMap — The Patch Document That Stays Accurate" />
-  <meta property="og:description" content="Every patching tool sped up the PDF. PatchMap is the only patch document that's still accurate at soundcheck — live, QR-shared, built for audio engineers, not spreadsheet users." />
+  <meta property="og:title" content="PatchMap — Live Patch, Dante &amp; Wireless Documentation That Stays Accurate" />
+  <meta property="og:description" content="Every patching tool sped up the PDF. PatchMap is the only live patch document — analog, Dante, and wireless in one source of truth — that's still accurate at soundcheck. QR-shared, built for audio engineers, not spreadsheet users." />
   <meta property="og:image" content="https://patchmap.app/assets/patchmap-preview.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="1200" />
-  <meta property="og:image:alt" content="PatchMap" />
+  <meta property="og:image:alt" content="PatchMap live patch, Dante, and wireless documentation software" />
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="PatchMap — The Patch Document That Stays Accurate" />
-  <meta name="twitter:description" content="The only patch document that's still accurate at soundcheck — live, QR-shared, built for audio engineers, not spreadsheet users." />
+  <meta name="twitter:title" content="PatchMap — Live Patch, Dante &amp; Wireless Documentation That Stays Accurate" />
+  <meta name="twitter:description" content="Every patching tool sped up the PDF. PatchMap is the only live patch document — analog, Dante, and wireless in one source of truth — that's still accurate at soundcheck. QR-shared, built for audio engineers, not spreadsheet users." />
   <meta name="twitter:image" content="https://patchmap.app/assets/patchmap-preview.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -134,6 +134,8 @@
     h1 em { font-style: normal; color: var(--text-dim); display: block; font-size: 0.42em; letter-spacing: 0.04em; margin-top: 14px; font-family: 'DM Sans', sans-serif; font-weight: 300; }
     .u-hero-sub { font-size: 18px; line-height: 1.65; color: var(--text-dim); max-width: 620px; margin: 28px 0; }
     .u-hero-sub strong { color: var(--text); font-weight: 500; }
+    .hero-def { font-family: 'DM Sans', sans-serif; font-size: clamp(21px, 2.9vw, 33px); line-height: 1.32; letter-spacing: -0.01em; color: var(--text); font-weight: 500; max-width: 760px; margin: 0 0 32px; }
+    .hero-def strong { color: var(--amber); font-weight: 600; }
     .prop-list { list-style: none; max-width: 620px; display: flex; flex-direction: column; gap: 10px; }
     .prop-list li { font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.05em; color: var(--text-dim); display: flex; gap: 12px; }
     .prop-list li::before { content: '→'; color: var(--amber); flex-shrink: 0; }
@@ -328,6 +330,9 @@
     <p class="u-hero-sub">
       Every patching tool sped up the PDF. Nobody fixed the fact that it's <strong>outdated by soundcheck</strong>.
     </p>
+    <h2 class="hero-def">
+      PatchMap is the visual way to build your show that <strong>auto-patches your layout intelligently</strong> without manual data entry. It's a suite of tools designed for building, managing, troubleshooting, and learning from your live and touring shows with your whole crew.
+    </h2>
     <ul class="prop-list">
       <li class="lede">PatchMap is the only patch document that's still accurate at 9pm.</li>
     </ul>
@@ -347,7 +352,7 @@
     </div>
     <div class="pain" data-accent="plus">
       <div class="pain-num">02 — The Problem</div>
-      <h2>One QR Code. Ninety Days Later, Still Right.</h2>
+      <h2>One QR Code on the Rack. Ninety Days Later, Still Right.</h2>
       <p>Print it once. Tape it to the case. Anyone loading in — your crew, the house tech who's never seen this show, or local/daily labor — opens it once and leaves it open. Every change you make from the tour bus pushes live, with a timestamp showing exactly when it last updated. <strong>No rescanning needed.</strong></p>
     </div>
     <div class="pain" data-accent="pro">
@@ -357,7 +362,7 @@
     </div>
     <div class="pain" data-accent="tour">
       <div class="pain-num">04 — The Problem</div>
-      <h2>Verbal and Lossy.</h2>
+      <h2>Signal Flow Shouldn't Be Verbal and Lossy.</h2>
       <p>A channel issue gets shouted over comms — you mentally add it to your list. Maybe it gets fixed, maybe it gets forgotten. But good luck remembering all the details before the next show. PatchMap gives the whole crew one common source of truth everyone can look at, working off the same document that's constantly updating. Every user — stage tech, monitor engineer, musician, or front of house — can flag a specific issue on a specific channel, and everyone has the entire signal flow in their hands. <strong>Empower your crew to resolve issues with tighter communication, faster than ever, with Live Room.</strong></p>
     </div>
     <div class="pain" data-accent="free">
@@ -859,6 +864,36 @@
         if (d.open) track('faq_open', { index: Number(d.dataset.faq), question: faqs[d.dataset.faq].q });
       });
     });
+    injectFaqSchema();
+  }
+
+  /* FAQPage structured data — generated from the same faqs[] source so the
+     visible copy and the schema can never drift. Makes the FAQ eligible for
+     Google FAQ rich snippets. Answers are stripped of HTML per schema.org. */
+  function injectFaqSchema() {
+    var stripHtml = function (s) {
+      var tmp = document.createElement('div');
+      tmp.innerHTML = s;
+      return (tmp.textContent || tmp.innerText || '').trim();
+    };
+    var schema = {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map(function (f) {
+        return {
+          '@type': 'Question',
+          name: stripHtml(f.q),
+          acceptedAnswer: { '@type': 'Answer', text: stripHtml(f.a) }
+        };
+      })
+    };
+    var existing = document.getElementById('faq-schema');
+    if (existing) existing.remove();
+    var s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.id = 'faq-schema';
+    s.textContent = JSON.stringify(schema);
+    document.head.appendChild(s);
   }
 
   function selectTier(t, userInitiated) {
