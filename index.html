@@ -978,5 +978,14 @@
   selectTier(TIER_ORDER.indexOf(initialTier) >= 0 ? initialTier : 'free', false);
   track('page_view', { path: location.pathname, tier: activeTier });
   </script>
+
+  <!-- Vercel Web Analytics — static-site install (no bundler here, so the
+       official <script> snippet stands in for the @vercel/analytics/next
+       React component, which needs a Next.js/React build). Requires Web
+       Analytics to be enabled for this project in the Vercel dashboard. -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
 </body>
 </html>
