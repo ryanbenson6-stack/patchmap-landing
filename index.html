@@ -141,7 +141,7 @@
     .prop-list li::before { content: '→'; color: var(--amber); flex-shrink: 0; }
     .prop-list li.lede { font-family: 'DM Sans', sans-serif; font-size: 17px; letter-spacing: 0; color: var(--text); font-weight: 400; }
     .prop-list li.lede::before { color: var(--amber); }
-    .u-hero .cta-row { margin-top: 32px; margin-bottom: 0; }
+    .u-hero .cta-row { margin-top: 32px; margin-bottom: 0; align-items: center; }
     .hero-cta {
       font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
       color: var(--black); background: var(--amber); border: 1px solid var(--amber);
@@ -297,6 +297,59 @@
     footer p { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-dimmer); letter-spacing: 0.06em; }
     footer a { color: var(--text-dim); text-decoration: none; }
 
+    /* ── WATCH TRIGGERS ── quiet, secondary openers for the tutorial modal.
+       Both must read as lighter-weight than the primary amber CTA beside them. */
+    .hero-watch {
+      font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-dim); background: none; border: none; cursor: pointer;
+      padding: 14px 4px; text-decoration: none; transition: color .15s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .hero-watch .play { color: var(--amber); font-size: 10px; line-height: 1; }
+    .hero-watch:hover { color: var(--text); }
+    .hero-watch:hover .play { color: #ffc04a; }
+
+    .pricing-watch-row { text-align: center; margin-top: 34px; }
+    .pricing-watch {
+      font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.08em;
+      color: var(--text-dim); background: none; border: none; cursor: pointer;
+      padding: 8px 4px; transition: color .15s;
+      border-bottom: 1px solid transparent;
+    }
+    .pricing-watch:hover { color: var(--amber); border-bottom-color: rgba(245,166,35,0.4); }
+
+    /* ── VIDEO MODAL ── one instance, shared by every trigger. Sits above nav
+       (z 100) and the sticky toggle (z 90). The Bunny embed keeps its own
+       responsive aspect-ratio wrapper; we don't rebuild that math. ── */
+    .video-overlay {
+      position: fixed; inset: 0; z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      background: rgba(6,6,7,0.82); backdrop-filter: blur(6px);
+      opacity: 0; visibility: hidden; transition: opacity .2s;
+    }
+    .video-overlay[data-open="true"] { opacity: 1; visibility: visible; }
+    .video-modal { position: relative; width: 100%; max-width: 960px; }
+    .video-frame {
+      background: var(--black); border: 1px solid var(--border-bright);
+      border-radius: 6px; overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+    }
+    .video-close {
+      position: absolute; top: -14px; right: -14px; z-index: 2;
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface-2); border: 1px solid var(--border-bright);
+      color: var(--text); font-family: 'DM Mono', monospace; font-size: 16px; line-height: 1;
+      cursor: pointer; transition: color .15s, border-color .15s, background .15s;
+    }
+    .video-close:hover { color: var(--amber); border-color: var(--amber); background: var(--surface); }
+    @media (max-width: 560px) {
+      .video-close { top: -12px; right: 4px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .video-overlay { transition: none; }
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 820px) {
       .wrap { padding-left: 24px; padding-right: 24px; }
@@ -338,6 +391,7 @@
     </ul>
     <div class="cta-row">
       <a href="https://app.patchmap.app" class="hero-cta" data-conversion data-track-cta="hero">Start Building &rarr;</a>
+      <button type="button" class="hero-watch" data-video-open data-track-cta="hero-watch" aria-haspopup="dialog"><span class="play" aria-hidden="true">&#9654;</span>Watch in Action</button>
     </div>
   </header>
 
@@ -422,6 +476,9 @@
       <span class="billing-hint">≈ 2 months free</span>
     </div>
     <div class="cards" id="pricing-cards"></div>
+    <div class="pricing-watch-row">
+      <button type="button" class="pricing-watch" data-video-open data-track-cta="pricing-watch" aria-haspopup="dialog">Still not sure? Watch it in action</button>
+    </div>
   </section>
 
   <!-- ══ FAQ (FIXED) ═════════════════════════════════════════════════════════ -->
@@ -431,6 +488,21 @@
     <h2>Frequently Asked Questions</h2>
     <div id="faq-list"></div>
   </section>
+
+  <!-- ══ TUTORIAL VIDEO MODAL ══════════════════════════════════════════════════
+       Single shared instance. Triggered by any [data-video-open] element, by the
+       Escape key, an overlay click, or the close button — and auto-opened when the
+       page loads with ?watch=true (Instagram bio / ad landing deep links). The
+       Bunny Stream embed (with its own responsive aspect-ratio wrapper) is injected
+       into .video-frame on first open and removed on close, so nothing preloads for
+       visitors who never open it and playback/audio stops the moment it closes. ── -->
+  <div class="video-overlay" id="video-overlay" role="dialog" aria-modal="true"
+       aria-label="Building a Full Show Patch in PatchMap — 10-minute walkthrough" data-open="false">
+    <div class="video-modal">
+      <button type="button" class="video-close" id="video-close" aria-label="Close video">&times;</button>
+      <div class="video-frame" id="video-frame"></div>
+    </div>
+  </div>
 
   <footer>
     <p>© 2026 PatchMap — Built by <a href="https://indiesoft.app">Indiesoft.app</a></p>
@@ -989,6 +1061,58 @@
     track('exit', { last_section: lastSection, seconds: Math.round((Date.now() - pageLoadedAt) / 1000), tier: activeTier });
   });
 
+  /* ═══════════════════════════════════════════════════════════════════════════
+     TUTORIAL VIDEO MODAL — one shared instance, opened by any [data-video-open]
+     trigger or by ?watch=true on load. The Bunny embed keeps its own responsive
+     aspect-ratio wrapper (we don't rebuild it); we inject on open and clear on
+     close so it doesn't preload for non-openers and stops playing when dismissed.
+     ═══════════════════════════════════════════════════════════════════════════ */
+  const VIDEO_EMBED =
+    '<div style="position:relative;padding-top:56.25%;">' +
+      '<iframe ' +
+        'src="https://player.mediadelivery.net/embed/710517/d5ab4003-81ae-4779-81fb-3266d6073f5e?autoplay=false&loop=false&muted=false&preload=true&responsive=true" ' +
+        'loading="lazy" ' +
+        'style="border:0;position:absolute;top:0;height:100%;width:100%;" ' +
+        'allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;fullscreen;" ' +
+        'allowfullscreen="true">' +
+      '</iframe>' +
+    '</div>';
+
+  const videoOverlay = document.getElementById('video-overlay');
+  const videoFrame = document.getElementById('video-frame');
+  const videoClose = document.getElementById('video-close');
+  let lastVideoTrigger = null;   // restore focus here on close (a11y)
+
+  function openVideo(source) {
+    if (videoOverlay.getAttribute('data-open') === 'true') return;
+    lastVideoTrigger = document.activeElement;
+    if (!videoFrame.firstChild) videoFrame.innerHTML = VIDEO_EMBED;   // inject once
+    videoOverlay.setAttribute('data-open', 'true');
+    document.body.style.overflow = 'hidden';                          // lock scroll
+    videoClose.focus();
+    track('video_open', { source: source || 'unknown', tier: activeTier });
+  }
+  function closeVideo() {
+    if (videoOverlay.getAttribute('data-open') !== 'true') return;
+    videoOverlay.setAttribute('data-open', 'false');
+    videoFrame.innerHTML = '';                                        // stop playback/audio
+    document.body.style.overflow = '';
+    if (lastVideoTrigger && lastVideoTrigger.focus) lastVideoTrigger.focus();
+  }
+
+  document.querySelectorAll('[data-video-open]').forEach(function (el) {
+    el.addEventListener('click', function () {
+      openVideo(el.dataset.trackCta || 'trigger');
+    });
+  });
+  videoClose.addEventListener('click', closeVideo);
+  videoOverlay.addEventListener('click', function (e) {
+    if (e.target === videoOverlay) closeVideo();   // overlay (backdrop) click only
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') closeVideo();
+  });
+
   /* ── BOOT ─────────────────────────────────────────────────────────────── */
   buildToggle();
   renderPricing();
@@ -1012,6 +1136,12 @@
   const initialTier = (new URL(location.href)).searchParams.get('tier');
   selectTier(TIER_ORDER.indexOf(initialTier) >= 0 ? initialTier : 'free', false);
   track('page_view', { path: location.pathname, tier: activeTier });
+
+  /* Deep link (§ external links) — patchmap.app/?watch=true lands straight on the
+     video so Instagram-bio / ad viewers don't have to scroll to find it. */
+  if (/^(1|true|yes)$/i.test((new URL(location.href)).searchParams.get('watch') || '')) {
+    openVideo('deep_link');
+  }
   </script>
 
   <!-- Vercel Web Analytics — static-site install (no bundler here, so the
