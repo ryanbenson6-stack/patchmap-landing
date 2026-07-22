@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Meta Pixel Code -->
+  <script src="/assets/meta-pixel.js"></script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1053165947067170&ev=PageView&noscript=1"/></noscript>
+  <!-- End Meta Pixel Code -->
+
+  <!-- Reddit Pixel -->
+  <script src="/assets/reddit-pixel.js"></script>
+  <!-- End Reddit Pixel -->
+
+  <title>Learn PatchMap — Tutorials &amp; Walkthroughs</title>
+  <meta name="description" content="Watch PatchMap in action. Step-by-step video walkthroughs for building live patch documents — analog, Dante, and wireless — that stay accurate at soundcheck." />
+
+  <!-- Link / social preview -->
+  <link rel="icon" type="image/png" href="/assets/patchmap-preview.png" />
+  <link rel="apple-touch-icon" href="/assets/patchmap-preview.png" />
+  <link rel="canonical" href="https://patchmap.app/learn" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="PatchMap" />
+  <meta property="og:url" content="https://patchmap.app/learn" />
+  <meta property="og:title" content="Learn PatchMap — Tutorials &amp; Walkthroughs" />
+  <meta property="og:description" content="Watch PatchMap in action. Step-by-step video walkthroughs for building live patch documents — analog, Dante, and wireless — that stay accurate at soundcheck." />
+  <meta property="og:image" content="https://patchmap.app/assets/patchmap-preview.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="1200" />
+  <meta property="og:image:alt" content="PatchMap tutorials and video walkthroughs" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Learn PatchMap — Tutorials &amp; Walkthroughs" />
+  <meta name="twitter:description" content="Watch PatchMap in action. Step-by-step video walkthroughs for building live patch documents — analog, Dante, and wireless — that stay accurate at soundcheck." />
+  <meta name="twitter:image" content="https://patchmap.app/assets/patchmap-preview.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ─────────────────────────────────────────────────────────────────────────
+       PatchMap education hub — patchmap.app/learn
+       A real, shareable home for tutorial content (no modal). Design language
+       carried from index.html / privacy: DM Mono / Bebas Neue / DM Sans on the
+       dark deck, amber accent. Lessons are cards; the first is FEATURED (full
+       inline player). Drop new <article class="lesson"> blocks into the grid as
+       more content ships — the layout grows on its own.
+       ───────────────────────────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --near-black: #111113;
+      --surface: #161618;
+      --surface-2: #1e1e21;
+      --border: #2a2a2e;
+      --border-bright: #3a3a40;
+      --amber: #f5a623;
+      --amber-glow: rgba(245,166,35,0.12);
+      --text: #e8e8ea;
+      --text-dim: #888890;
+      --text-dimmer: #55555e;
+      --green: #4ade80;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,10,0.88);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.12em;
+      color: var(--amber);
+      text-decoration: none;
+    }
+    .nav-right { display: flex; align-items: center; gap: 26px; }
+    .nav-back {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--amber); }
+    .nav-cta {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--black);
+      background: var(--amber);
+      padding: 9px 18px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 18px var(--amber-glow); }
+
+    /* ── MAIN ── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 64px 24px 96px;
+      flex: 1;
+    }
+    .page-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 64px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .intro {
+      font-size: 17px;
+      font-weight: 300;
+      color: #c4c4ca;
+      max-width: 640px;
+      line-height: 1.7;
+      margin-bottom: 56px;
+    }
+
+    /* ── FEATURED LESSON ── */
+    .lesson {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+    .lesson.featured { border-color: var(--border-bright); }
+    .player {
+      position: relative;
+      padding-top: 56.25%;
+      background: var(--black);
+    }
+    .player iframe { border: 0; position: absolute; top: 0; left: 0; height: 100%; width: 100%; }
+    .lesson-body { padding: 26px 30px 30px; }
+    .lesson-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 12px;
+    }
+    .badge {
+      color: var(--amber);
+      border: 1px solid var(--border-bright);
+      border-radius: 999px;
+      padding: 3px 10px;
+    }
+    .runtime { color: var(--text-dimmer); }
+    .lesson h2 {
+      font-size: 26px;
+      font-weight: 500;
+      color: var(--text);
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+    .lesson p {
+      font-size: 16px;
+      font-weight: 300;
+      color: #c4c4ca;
+      line-height: 1.8;
+      margin-bottom: 22px;
+      max-width: 680px;
+    }
+    .lesson-actions { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+    .btn-primary {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--black);
+      background: var(--amber);
+      padding: 12px 22px;
+      border-radius: 7px;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 22px var(--amber-glow); }
+    .btn-ghost {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .btn-ghost:hover { color: var(--amber); border-bottom-color: var(--amber); }
+
+    /* ── UP NEXT / GROWTH SLOTS ── */
+    .section-head {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin: 8px 0 22px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+    }
+    .soon-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .soon-card {
+      background: var(--near-black);
+      border: 1px dashed var(--border-bright);
+      border-radius: 10px;
+      padding: 22px 22px 24px;
+    }
+    .soon-card .tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dimmer);
+      margin-bottom: 10px;
+    }
+    .soon-card h3 {
+      font-size: 17px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 6px;
+      letter-spacing: -0.01em;
+    }
+    .soon-card p {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 28px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 0.12em;
+      color: var(--text-dimmer);
+    }
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dimmer);
+      letter-spacing: 0.04em;
+    }
+    .footer-copy a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--border-bright); }
+    .footer-copy a:hover { color: var(--amber); border-bottom-color: var(--amber); }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .nav-right { gap: 16px; }
+      footer { padding: 24px 20px; }
+      main { padding: 48px 20px 72px; }
+      h1 { font-size: 48px; }
+      .lesson-body { padding: 22px 20px 26px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">PatchMap</a>
+    <div class="nav-right">
+      <a href="/" class="nav-back">← Home</a>
+      <a href="https://app.patchmap.app" class="nav-cta" data-track-cta="learn-nav">Start Building</a>
+    </div>
+  </nav>
+
+  <main>
+    <p class="page-label">Learn</p>
+    <h1>Learn PatchMap</h1>
+    <p class="intro">Short, practical walkthroughs for building live patch documents that stay accurate from load-in to encore. Start with the full show build below — more lessons are on the way.</p>
+
+    <!-- FEATURED LESSON ─ the 10-minute full-show walkthrough.
+         To add lessons later, copy an <article class="lesson"> block and swap the
+         Bunny embed src, the title, runtime, and description. -->
+    <article class="lesson featured" id="full-show-patch">
+      <div class="player">
+        <iframe
+          src="https://player.mediadelivery.net/embed/710517/d5ab4003-81ae-4779-81fb-3266d6073f5e?autoplay=false&loop=false&muted=false&preload=true&responsive=true"
+          loading="lazy"
+          allow="accelerometer;gyroscope;autoplay;encrypted-media;picture-in-picture;fullscreen;"
+          allowfullscreen="true"></iframe>
+      </div>
+      <div class="lesson-body">
+        <div class="lesson-eyebrow">
+          <span class="badge">Featured</span>
+          <span class="runtime">10 min walkthrough</span>
+        </div>
+        <h2>Building a Full Show Patch in PatchMap</h2>
+        <p>From an empty document to a complete, QR-shareable patch — analog, Dante, and wireless in one source of truth. Follow along and build the same show in your own account as you watch.</p>
+        <div class="lesson-actions">
+          <a href="https://app.patchmap.app" class="btn-primary" data-track-cta="learn-featured">Try it yourself →</a>
+          <a href="/" class="btn-ghost">What is PatchMap?</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- GROWTH SLOTS — replace these placeholders with real lessons as they ship. -->
+    <p class="section-head">Coming soon</p>
+    <div class="soon-grid">
+      <div class="soon-card">
+        <p class="tag">In production</p>
+        <h3>Sharing a Patch by QR</h3>
+        <p>Get your crew on the same live document in seconds — no logins, no PDF re-exports.</p>
+      </div>
+      <div class="soon-card">
+        <p class="tag">In production</p>
+        <h3>Dante &amp; Wireless Channels</h3>
+        <p>Map networked and RF inputs alongside analog so nothing gets lost between worlds.</p>
+      </div>
+      <div class="soon-card">
+        <p class="tag">In production</p>
+        <h3>Keeping It Accurate at Soundcheck</h3>
+        <p>Update the patch live and keep every collaborator's view in sync as the show changes.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-logo">PatchMap</div>
+    <div class="footer-copy">© 2026 PatchMap — A product of <a href="https://indiesoft.app">IndieSoft</a></div>
+  </footer>
+
+  <!-- Carry the anonymous_id onto app CTAs if the shared helper is present on the
+       root domain; harmless no-op here since /learn is a standalone static page. -->
+  <script>
+    (function () {
+      try {
+        var id = localStorage.getItem('pm_anonymous_id');
+        if (!id) return;
+        document.querySelectorAll('a[href^="https://app.patchmap.app"]').forEach(function (a) {
+          var u = new URL(a.href);
+          u.searchParams.set('anonymous_id', id);
+          a.href = u.toString();
+        });
+      } catch (e) { /* private mode / no storage — ignore */ }
+    })();
+  </script>
+
+</body>
+</html>
