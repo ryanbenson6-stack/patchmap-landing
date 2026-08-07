@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Meta Pixel Code -->
+  <script src="/assets/meta-pixel.js"></script>
+  <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1053165947067170&ev=PageView&noscript=1"/></noscript>
+  <!-- End Meta Pixel Code -->
+
+  <!-- Reddit Pixel -->
+  <script src="/assets/reddit-pixel.js"></script>
+  <!-- End Reddit Pixel -->
+
+  <title>Terms of Service — PatchMap</title>
+  <meta name="description" content="Terms of service for PatchMap — accounts, subscriptions and billing, acceptable use, ownership of your show data, and the legal terms of using the product." />
+  <link rel="canonical" href="https://patchmap.app/terms" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --near-black: #111113;
+      --surface: #161618;
+      --surface-2: #1e1e21;
+      --border: #2a2a2e;
+      --border-bright: #3a3a40;
+      --amber: #f5a623;
+      --amber-glow: rgba(245,166,35,0.12);
+      --text: #e8e8ea;
+      --text-dim: #888890;
+      --text-dimmer: #55555e;
+      --green: #4ade80;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,10,0.88);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.12em;
+      color: var(--amber);
+      text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--amber); }
+
+    /* ── MAIN ── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 64px 24px 96px;
+      flex: 1;
+    }
+    .page-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 64px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .last-updated {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+      margin-bottom: 48px;
+    }
+    h2 {
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text);
+      margin: 44px 0 14px;
+      letter-spacing: -0.01em;
+    }
+    p {
+      font-size: 16px;
+      font-weight: 300;
+      color: #c4c4ca;
+      margin-bottom: 16px;
+      line-height: 1.8;
+    }
+    ul {
+      margin: 0 0 16px 0;
+      padding-left: 22px;
+    }
+    ul li {
+      font-size: 16px;
+      font-weight: 300;
+      color: #c4c4ca;
+      margin-bottom: 10px;
+      line-height: 1.7;
+    }
+    strong { color: var(--text); font-weight: 500; }
+    a { color: var(--amber); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
+    a:hover { border-bottom-color: var(--amber); }
+
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border-bright);
+      border-left: 3px solid var(--green);
+      border-radius: 8px;
+      padding: 22px 26px;
+      margin: 28px 0 8px;
+      font-size: 16px;
+      color: var(--text);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+    .callout strong { color: var(--green); }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 28px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 0.12em;
+      color: var(--text-dimmer);
+    }
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dimmer);
+      letter-spacing: 0.04em;
+      line-height: 2;
+      text-align: right;
+    }
+    .footer-copy a { color: inherit; border-bottom: 1px solid var(--border-bright); }
+    .footer-copy a:hover { color: var(--amber); border-bottom-color: var(--amber); }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      footer { padding: 24px 20px; }
+      main { padding: 48px 20px 72px; }
+      h1 { font-size: 48px; }
+      .footer-copy { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">PatchMap</a>
+    <a href="/" class="nav-back">← Back</a>
+  </nav>
+
+
+  <main>
+    <p class="page-label">Legal</p>
+    <h1>Terms of Service</h1>
+    <p class="last-updated">Last updated: August 6, 2026</p>
+
+    <p>These terms govern your use of PatchMap. PatchMap is built and operated by IndieSoft, a product of Indie Pepper Creative LLC ("we", "us"). By creating an account or using the product, you agree to them.</p>
+
+    <div class="callout">
+      <strong>The short version:</strong> Your show data belongs to you — we just store it and make it work. Pay for what you use, cancel whenever you want, don't use PatchMap to break the law or wreck it for anyone else. If something goes wrong on our end, email us and we'll deal with it like people.
+    </div>
+
+    <h2>1. Who these terms are between</h2>
+    <p>These terms are an agreement between you and Indie Pepper Creative LLC, a Texas limited liability company operating as IndieSoft. If you're agreeing on behalf of a company, production, venue, or church, you confirm you have the authority to bind that organization, and "you" means that organization.</p>
+
+    <h2>2. Your account</h2>
+    <p>You need an account to use PatchMap. You're responsible for keeping access to it secure and for what happens under it. Tell us at <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a> if you believe someone else has gotten into your account.</p>
+    <p>You must be at least 13 years old to hold an account. PatchMap is a professional tool and isn't directed at children.</p>
+    <p>One account is for one person. Sharing a single login across a crew instead of using Live Room invitations isn't what the product is for and may be limited.</p>
+
+    <h2>3. Plans, billing, and cancellation</h2>
+    <p><strong>Free is free.</strong> The Free tier is a real product, not a timed trial. It doesn't require a card and doesn't expire. It's limited by capacity — one venue, one show, no live sessions — not by crippling the tool.</p>
+    <p><strong>Paid plans.</strong> Plus, Pro, and Touring bill monthly or annually in advance, at the prices shown on <a href="/#pricing">the pricing page</a> at the time you subscribe. Payments are processed by Stripe; we don't handle your card details. Subscriptions renew automatically at the end of each billing period until you cancel.</p>
+    <p><strong>Cancelling.</strong> You can cancel at any time from your billing settings. Cancellation stops the next renewal — you keep your paid features until the end of the period you've already paid for, then the account moves to Free. We don't delete your data when you downgrade, but content above the Free tier's capacity limits becomes read-only until you're back under the limit or upgrade again.</p>
+    <p><strong>Refunds.</strong> We don't automatically refund partial periods. That said, if PatchMap didn't do what you expected, email us at <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a> within 14 days of a charge and we'll sort out a refund. We'd rather do that than keep money from someone who isn't getting value. Where consumer law in your country gives you a stronger right to a refund, that law wins.</p>
+    <p><strong>Price changes.</strong> If we change the price of a plan you're on, we'll email you at least 30 days before it applies to your renewal. You can cancel before then.</p>
+    <p><strong>Taxes.</strong> Prices are exclusive of any sales tax, VAT, or GST, which we'll add where we're required to collect it.</p>
+
+    <h2>4. Your content is yours</h2>
+    <p>Everything you build in PatchMap — channel lists, patch assignments, stage plots, gear lockers, wireless assignments, routing, notes, flags, and show history — is yours. We claim no ownership over it.</p>
+    <p>You grant us only the permission we need to actually run the service: to store your content, process it, display it back to you and to the people you share it with, back it up, and transmit it across our infrastructure. That's it. This permission ends when you delete the content or close your account.</p>
+    <p>You're responsible for having the right to upload what you upload — including input lists, riders, and plots that belong to a client. We describe what happens to files you put through Smart Import in the <a href="/privacy">Privacy Policy</a>.</p>
+
+    <h2>5. What we own</h2>
+    <p>PatchMap itself — the software, the interface, the gear catalog, the node system, the name, and the logo — belongs to us. These terms don't transfer any of it to you. You may not copy, resell, reverse-engineer, or build a competing product out of the service, and you may not scrape the gear catalog or use automated means to extract data from the product in bulk.</p>
+
+    <h2>6. Acceptable use</h2>
+    <p>Don't use PatchMap to:</p>
+    <ul>
+      <li>Break the law, or infringe someone else's intellectual property or privacy.</li>
+      <li>Upload malware, or attempt to breach, overload, or probe our systems or another account's data.</li>
+      <li>Circumvent tier limits, billing, or access controls.</li>
+      <li>Harass or abuse other people through Live Room chat, notes, or shared documents.</li>
+      <li>Resell access to the product, or operate it as a service on behalf of third parties without our agreement.</li>
+    </ul>
+    <p>We can suspend or close an account that does these things. Where it's reasonable, we'll warn you first and give you a chance to get your data out.</p>
+
+    <h2>7. Live Rooms and guests</h2>
+    <p>Live Rooms let people join a running show from a QR code or invite link without a PatchMap account. If you open a room, you control who gets the link and you're responsible for what you expose in it. Anyone holding a valid link can see that room's contents and contribute flags, notes, and chat while the room is open. Closing the room ends that access.</p>
+    <p>Guests are bound by the acceptable-use terms above for what they contribute. Content created by guests in your room is treated as your content under Section 4.</p>
+
+    <h2>8. AI features</h2>
+    <p>Smart Import and Show Intelligence use AI, and AI gets things wrong. Both are assistive: they produce a starting point you're expected to check. An imported channel list is a draft, not a verified patch. Don't walk into a show on an unreviewed import.</p>
+    <p>We make no guarantee that AI output is accurate or complete, and you remain responsible for the correctness of your show documentation. What we do and don't do with the data behind those features is set out in the <a href="/privacy">Privacy Policy</a>, including our commitment that your data is never used to train AI models.</p>
+
+    <h2>9. Availability</h2>
+    <p>We work hard to keep PatchMap up, especially during shows, but we don't promise uninterrupted service. We may need to take the product down for maintenance, and things occasionally break. We'll try to schedule planned downtime when the fewest people are in a room.</p>
+    <p>We may change, add, or remove features over time. If we remove something significant that you rely on, we'll give you notice by email.</p>
+
+    <h2>10. Backups and your own copy</h2>
+    <p>We keep backups, but you should keep your own too. Every tier can export a Master Archive CSV and a PDF of any show. If a show matters, export it — that's what those buttons are for.</p>
+
+    <h2>11. Disclaimers</h2>
+    <p>PatchMap is provided "as is" and "as available". To the fullest extent the law allows, we disclaim all warranties, express or implied, including merchantability, fitness for a particular purpose, and non-infringement.</p>
+    <p>PatchMap is documentation software. It is not a substitute for your own verification of a signal path, and it doesn't control any audio hardware. You are responsible for what actually happens at your show.</p>
+
+    <h2>12. Limitation of liability</h2>
+    <p>To the fullest extent permitted by law, we are not liable for indirect, incidental, special, consequential, or punitive damages, or for lost profits, lost revenue, lost bookings, or lost data, arising out of your use of PatchMap.</p>
+    <p>Our total liability for any claim relating to PatchMap is limited to the amount you paid us in the 12 months before the claim arose, or one hundred US dollars, whichever is greater.</p>
+    <p>Some jurisdictions don't allow these limits. Where that's the case, they apply only as far as the law permits, and nothing here limits liability for fraud, gross negligence, or anything else that can't legally be limited.</p>
+
+    <h2>13. Indemnity</h2>
+    <p>You agree to cover us against third-party claims arising from content you upload, from your breach of these terms, or from your misuse of the product.</p>
+
+    <h2>14. Termination</h2>
+    <p>You can stop using PatchMap and close your account at any time by emailing <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a> from the address on the account. We handle deletion as described in the <a href="/privacy">Privacy Policy</a>.</p>
+    <p>We can suspend or terminate an account for a material breach of these terms, or for non-payment. If we terminate an account that isn't in breach — for example, if we discontinue the product — we'll give you reasonable notice and time to export your data, and refund any period you've paid for but won't receive.</p>
+
+    <h2>15. Changes to these terms</h2>
+    <p>We may update these terms. If a change materially affects your rights, we'll update the date at the top and notify account holders by email before it takes effect. Continuing to use PatchMap after that means you accept the updated terms.</p>
+
+    <h2>16. Governing law</h2>
+    <p>These terms are governed by the laws of the State of Texas, USA, without regard to its conflict-of-laws rules, and any dispute will be brought in the state or federal courts located in Texas. If you're a consumer outside the United States, this doesn't take away the protections of the mandatory laws of your home country.</p>
+
+    <h2>17. General</h2>
+    <p>If any part of these terms is found unenforceable, the rest stays in force. Our not enforcing a term isn't a waiver of it. You may not assign these terms without our consent; we may assign them in connection with a merger, acquisition, or sale of the business. These terms, together with the Privacy Policy, are the whole agreement between us about PatchMap.</p>
+
+    <hr>
+
+    <h2>Contact</h2>
+    <p>Questions about these terms:</p>
+    <p>
+      <strong><a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a></strong><br>
+      IndieSoft — a product of Indie Pepper Creative LLC<br>
+      Texas, USA
+    </p>
+  </main>
+
+  <footer>
+    <div class="footer-logo">PatchMap</div>
+    <div class="footer-copy">
+      © 2026 PatchMap — Built by <a href="https://indiesoft.app">Indiesoft.app</a><br>
+      <a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Service</a> · <a href="mailto:hello@indiesoft.app">Contact</a>
+    </div>
+  </footer>
+
+</body>
+</html>

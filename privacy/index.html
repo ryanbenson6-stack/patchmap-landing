@@ -15,7 +15,8 @@
   <!-- End Reddit Pixel -->
 
   <title>Privacy Policy — PatchMap</title>
-  <meta name="description" content="Privacy policy for PatchMap — what we collect, how we use it, and your rights." />
+  <meta name="description" content="Privacy policy for PatchMap — what we collect, how we use it, what we never do with it, and your rights. Your show data is never used to train AI models." />
+  <link rel="canonical" href="https://patchmap.app/privacy" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
@@ -199,6 +200,8 @@
       font-size: 11px;
       color: var(--text-dimmer);
       letter-spacing: 0.04em;
+      line-height: 2;
+      text-align: right;
     }
     .footer-copy a { color: inherit; border-bottom: 1px solid var(--border-bright); }
     .footer-copy a:hover { color: var(--amber); border-bottom-color: var(--amber); }
@@ -208,6 +211,7 @@
       footer { padding: 24px 20px; }
       main { padding: 48px 20px 72px; }
       h1 { font-size: 48px; }
+      .footer-copy { text-align: left; }
     }
   </style>
 </head>
@@ -221,80 +225,92 @@
   <main>
     <p class="page-label">Legal</p>
     <h1>Privacy Policy</h1>
-    <p class="last-updated">Last updated: June 7, 2026</p>
+    <p class="last-updated">Last updated: August 6, 2026</p>
+
+    <p>PatchMap is built and operated by IndieSoft, a product of Indie Pepper Creative LLC. This policy explains what we collect, what we do with it, and — just as importantly — what we don't do with it.</p>
 
     <div class="callout">
-      <strong>Short version:</strong> We collect what's needed to run PatchMap and to understand which features people actually use, so we can make it better. We don't sell your data, share it with advertisers, or use it to build ad profiles.
+      <strong>The short version:</strong> Your show data is yours. We don't sell it, we don't share it with advertisers, and we don't use it to train AI models. If you delete your account, it goes away.
     </div>
 
     <h2>1. Who we are</h2>
-    <p>PatchMap is a product of IndieSoft, an independent software studio, which is the data controller for PatchMap and the patchmap.app website. You can reach us at <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a>.</p>
-    <p>When we refer to "we", "us", or "PatchMap" in this policy, we mean the data controller responsible for your personal data.</p>
+    <p>PatchMap is a product of IndieSoft, an independent software studio operated by Indie Pepper Creative LLC in Texas, USA. Indie Pepper Creative LLC is the data controller for PatchMap and the patchmap.app website. You can reach us at <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a>.</p>
+    <p>When we refer to "we", "us", or "PatchMap" in this policy, we mean that data controller.</p>
 
-    <h2>2. What data we collect</h2>
-    <p>The data we collect falls into these categories:</p>
+    <h2>2. What we collect</h2>
+    <p><strong>Account information.</strong> When you create an account, we collect your email address and any name you choose to provide. If you subscribe to a paid plan, our payment processor collects your billing details — we never see or store your full card number.</p>
+    <p><strong>Show data.</strong> Everything you build in PatchMap: channel lists, patch assignments, stage plots, gear lockers, wireless assignments, Dante routing, notes, flags, and show history. This is your working data. We store it so the product works.</p>
+    <p><strong>Live Room participation.</strong> When someone joins a Live Room by QR code or invite link, we record their display name, their role, the flags and notes they create, and the messages they send in that room. Live Room guests do not need a PatchMap account.</p>
+    <p><strong>Usage data.</strong> Basic technical information — pages visited, features used, browser and device type, IP address, and error logs. In the application itself these are pseudonymous product-usage events tied to your account identifier rather than your name. We use this to understand what's working and to fix what isn't.</p>
+    <p><strong>Push notification data.</strong> If you opt in to notifications, we store the push subscription details your browser or device provides so we can deliver alerts. This is optional and off by default.</p>
+    <p><strong>Marketing site analytics.</strong> Our public marketing pages use analytics and advertising pixels to measure whether our ads are working. These are on the marketing site only, not inside the application. Section 5 lists exactly what runs and what it collects.</p>
+    <p>We do not collect your phone number, precise location, contacts, full payment card details, or device sensor data.</p>
+
+    <h2>3. What we do with it</h2>
+    <p>We use your information to run the product, keep your account secure, process payments, send you transactional email about your account, respond to your support requests, and improve PatchMap.</p>
+    <p>We do not sell your personal information. We do not share your show data with advertisers, and we do not make it available to other users or customers.</p>
+
+    <h2>4. AI and your data</h2>
+    <p>PatchMap uses AI in two specific, limited places:</p>
+    <p><strong>Smart Import.</strong> When you upload a CSV, spreadsheet, or PDF to build a show, the contents of that file may be sent to our AI provider to be parsed into channels and gear. The file contents are used to produce your import result and nothing else.</p>
+    <p><strong>Show Intelligence.</strong> Available on the Touring tier, this analyzes your own show history to surface patterns across your shows. It operates on your account's structured show data and returns results only to you.</p>
+    <p>The commitments that matter:</p>
     <ul>
-      <li><strong>Account data</strong> — your email address, used for authentication. No password is ever stored.</li>
-      <li><strong>App data</strong> — the content you create in PatchMap, such as stage plots, patch lists, input lists, signal-flow documents, venues, shows, equipment inventories, and related settings.</li>
-      <li><strong>Collaboration data</strong> — information needed to share a plot or session with your crew, including share links, room/session join tokens, role assignments, and the names or labels you give to collaborators (for example, musicians or crew members you invite).</li>
-      <li><strong>Usage analytics</strong> — pseudonymous records of how PatchMap is used: which features are opened, actions taken, and similar product-engagement events, tied to your account identifier. We use this to understand what's working and to prioritise improvements. (See Section 4.)</li>
-      <li><strong>Push notification data</strong> — if you opt in to notifications, we store the push subscription details your browser provides so we can deliver alerts. This is optional and off by default. (See Section 5.)</li>
-      <li><strong>Technical data</strong> — basic information needed to keep your account secure, such as authentication tokens stored locally on your device.</li>
+      <li><strong>Your data is never used to train AI models.</strong> Not ours, not our provider's. Our AI provider's commercial terms explicitly prohibit training on customer content, and we have not opted into any program that would change that.</li>
+      <li><strong>Your show data is never used to train on behalf of other customers,</strong> and it is never pooled, aggregated, or exposed to other accounts.</li>
+      <li><strong>Live Room chat is not analyzed by Show Intelligence.</strong> Chat is saved with the room so the history is there when you need it. Intelligence reads structured references — which channel a flag was raised against — not the content of your conversations.</li>
+      <li><strong>We do not use your show data to build datasets, benchmarks, or demo content.</strong> Every demo show in PatchMap is fictional and built by us.</li>
     </ul>
-    <p>We do not collect your name (beyond labels you choose to enter), phone number, precise location, contacts, payment card details, or device sensor data.</p>
+    <p>If you are working under an NDA and need a written data processing agreement, email us at <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a> and we'll sort it out.</p>
 
-    <h2>3. Legal basis for processing (GDPR)</h2>
+    <h2>5. Cookies, analytics, and advertising pixels</h2>
+    <p>We want to be precise about this, because "we don't track you" is easy to say and often untrue. There is a real difference between our marketing site and the application, and we treat them differently.</p>
+    <p><strong>Inside the application (app.patchmap.app)</strong> we run no advertising pixels, no third-party ad SDKs, and no social-media trackers. Product-usage analytics there are first-party, pseudonymous, and stored in our own infrastructure. Your show data is never sent to an advertising platform.</p>
+    <p><strong>On the marketing site (patchmap.app)</strong> — the pages you are reading right now — we run the following:</p>
+    <ul>
+      <li><strong>Meta Pixel</strong> — measures whether our Facebook and Instagram ads lead to sign-ups. Sets cookies and shares page-visit events with Meta.</li>
+      <li><strong>Reddit Pixel</strong> — the same, for our Reddit ads. Sets cookies and shares page-visit events with Reddit.</li>
+      <li><strong>Vercel Web Analytics</strong> — aggregate, privacy-preserving page statistics from our hosting provider.</li>
+      <li><strong>Our own visit beacon</strong> — a first-party record of the page visited, a random visitor identifier stored in your browser, the country your request came from, your browser's user agent, the site that referred you, and any campaign tags in the link. We use this to see which channels bring people to PatchMap.</li>
+      <li><strong>Bunny Stream</strong> — hosts the product walkthrough video. It loads only when you open the video, and it sets its own cookies for playback.</li>
+    </ul>
+    <p>These marketing-site tools are for measuring our own advertising. They do not have access to your PatchMap account or to anything you build inside the product.</p>
+    <p>You can block or clear these cookies in your browser at any time, and you can opt out of interest-based advertising through <a href="https://optout.aboutads.info" target="_blank" rel="noopener">the DAA opt-out tool</a> or your Meta and Reddit ad settings. Blocking them has no effect on how PatchMap works.</p>
+
+    <h2>6. Where your data lives</h2>
+    <p>PatchMap runs on third-party infrastructure. The providers that process data on our behalf:</p>
+    <ul>
+      <li><strong>Supabase</strong> — database, authentication, and file storage. <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Privacy policy →</a></li>
+      <li><strong>Vercel</strong> — application hosting, delivery, and site analytics. <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy policy →</a></li>
+      <li><strong>Stripe</strong> — payment processing and subscription billing. <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Privacy policy →</a></li>
+      <li><strong>Resend</strong> — transactional email. <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy policy →</a></li>
+      <li><strong>Anthropic</strong> — AI processing for Smart Import and Show Intelligence. <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener">Privacy policy →</a></li>
+      <li><strong>Meta, Reddit, and Bunny.net</strong> — marketing site advertising measurement and video hosting only, as described in Section 5.</li>
+    </ul>
+    <p>Each of these processes data only to provide their service to us. Data is stored in the United States.</p>
+
+    <h2>7. How long we keep it</h2>
+    <p>We keep your account and show data for as long as your account is active. When you close your account, we delete your data within 30 days, except where we're legally required to retain billing records. Content you delete inside PatchMap is removed from our servers within 30 days, subject to the same exceptions.</p>
+    <p>Live Room chat is stored with the room it belongs to, so the history remains available after the show; deleting a room deletes its messages. Data sent to our AI provider for Smart Import is deleted from their systems within 30 days under their standard commercial terms.</p>
+    <p>Aggregated, non-identifying usage statistics may be retained indefinitely.</p>
+
+    <h2>8. Legal basis for processing (GDPR)</h2>
     <p>If you are located in the European Economic Area (EEA), United Kingdom, or Switzerland, we process your personal data on the following legal bases under the General Data Protection Regulation (GDPR):</p>
     <ul>
       <li><strong>Performance of a contract (Article 6(1)(b))</strong> — processing necessary to provide the PatchMap service you have requested, including account creation, data storage, and collaboration features.</li>
-      <li><strong>Legitimate interests (Article 6(1)(f))</strong> — processing necessary for our legitimate interests in maintaining, securing, and improving PatchMap, including the product-usage analytics described in Section 4, where these interests are not overridden by your rights.</li>
+      <li><strong>Legitimate interests (Article 6(1)(f))</strong> — processing necessary for our legitimate interests in maintaining, securing, and improving PatchMap, including product-usage analytics, where these interests are not overridden by your rights.</li>
       <li><strong>Legal obligation (Article 6(1)(c))</strong> — processing required to comply with applicable law.</li>
       <li><strong>Consent (Article 6(1)(a))</strong> — where we rely on consent, such as opt-in push notifications, you may withdraw it at any time using in-app controls or by contacting us.</li>
     </ul>
 
-    <h2>4. Usage analytics</h2>
-    <p>To improve PatchMap, we record pseudonymous product-usage events — for example, when a feature is opened or a particular action is taken. These events are associated with your account identifier rather than your name, and are used in aggregate to understand how the product is used and what to build next.</p>
-    <p>We do not use this data to build advertising profiles, track you across other websites, sell it to third parties, or train AI models on your content. Analytics events are processed using our own infrastructure (see Section 8) and are not shared with external advertising or data-broker platforms.</p>
-
-    <h2>5. Push notifications</h2>
-    <p>PatchMap offers optional web push notifications (for example, to alert crew members to changes or flagged channels during a show). Notifications are off by default. If you opt in, your browser generates a push subscription, which we store so we can deliver messages to your device. You can turn notifications off at any time through your browser settings or in-app controls, which revokes the subscription.</p>
-
-    <h2>6. How we use your data</h2>
-    <p>We use your data only to:</p>
-    <ul>
-      <li>Create and manage your account</li>
-      <li>Store and sync your plots, patch lists, and related content across devices</li>
-      <li>Enable sharing and real-time collaboration with people you invite</li>
-      <li>Deliver notifications you have opted in to</li>
-      <li>Understand product usage and improve PatchMap (see Section 4)</li>
-      <li>Respond to support requests</li>
-      <li>Comply with legal obligations</li>
-    </ul>
-
-    <h2>7. Data retention</h2>
-    <p>We retain your personal data for as long as your account is active or as needed to provide the service. If you delete your account, we will delete your personal data within 30 days, except where retention is required by law or is technically necessary for data integrity. Content you delete within PatchMap is removed from our servers within 30 days, subject to the same exceptions. Aggregated, non-identifying usage statistics may be retained indefinitely.</p>
-
-    <h2>8. How we store your data</h2>
-    <p>App, account, collaboration, and analytics data are stored using <a href="https://supabase.com" target="_blank" rel="noopener">Supabase</a>, a cloud database provider. All data is encrypted in transit (TLS 1.2 or higher) and encrypted at rest. We use row-level security controls so you can only access data you are authorised to see.</p>
-
     <h2>9. International data transfers</h2>
-    <p>IndieSoft is based in the United States. If you access PatchMap from the EEA, UK, or Switzerland, your personal data will be transferred to and processed in the United States, which may not provide the same level of data protection as your home country.</p>
+    <p>Indie Pepper Creative LLC is based in the United States. If you access PatchMap from the EEA, UK, or Switzerland, your personal data will be transferred to and processed in the United States, which may not provide the same level of data protection as your home country.</p>
     <p>Where such transfers occur, we rely on appropriate safeguards including Standard Contractual Clauses (SCCs) as approved by the European Commission, or equivalent mechanisms recognised under applicable law. You may request a copy of the applicable safeguards by contacting us at <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a>.</p>
 
-    <h2>10. Third-party services</h2>
-    <p>As of the date of this policy, we use the following service providers to operate PatchMap:</p>
-    <ul>
-      <li><strong>Supabase</strong> — database, authentication, and file storage. <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Supabase Privacy Policy →</a></li>
-      <li><strong>Vercel</strong> — application hosting and delivery. <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Vercel Privacy Policy →</a></li>
-    </ul>
-    <p>We do not use advertising SDKs, commercial tracking platforms, or social-media trackers for marketing or advertising purposes.</p>
-
-    <h2>11. Data sharing and collaboration</h2>
-    <p>PatchMap is built for crews. When you share a plot or invite someone to a session, the people you share with can see the content you contribute to that shared space, along with any labels or assignments within it. You control what you share and with whom, and you can revoke access by removing share links or collaborators.</p>
-    <p>Outside of these features you choose to use, we do not sell, rent, or share your personal data with any third party for marketing or advertising purposes, and we have no commercial relationship with data brokers. We may disclose data if required by law or valid legal process; where legally permitted, we will notify you first.</p>
-
-    <h2>12. Your rights</h2>
-    <p>Under the GDPR and applicable data protection law, you have the following rights:</p>
+    <h2>10. Your choices and your rights</h2>
+    <p>You can access and edit your show data at any time from inside the app, export your data as CSV on any plan, and correct your account information from account settings.</p>
+    <p>To close your account and have your data deleted, email us at <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a> from the address on the account. We'll confirm and delete your data within 30 days.</p>
+    <p>If you're in a jurisdiction with additional rights over your personal data — such as the EU, UK, or California — those rights apply and you can exercise them by emailing us. We won't discriminate against you for doing so. Specifically, you have:</p>
     <ul>
       <li><strong>Right of access</strong> — request a copy of the personal data we hold about you.</li>
       <li><strong>Right to rectification</strong> — correct inaccurate or incomplete data, in-app or by contacting us.</li>
@@ -305,25 +321,42 @@
       <li><strong>Right to withdraw consent</strong> — where processing is based on consent, withdraw it at any time without affecting prior processing.</li>
       <li><strong>Right not to be subject to automated decision-making</strong> — we do not use automated decision-making or profiling that produces legal or similarly significant effects.</li>
     </ul>
-    <p>To exercise any of these rights, contact us at <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a>. We will respond within 30 days and may need to verify your identity first.</p>
+    <p>We will respond within 30 days and may need to verify your identity first.</p>
 
-    <h2>13. Right to lodge a complaint</h2>
+    <h2>11. Right to lodge a complaint</h2>
     <p>If you are in the EEA and believe we have not handled your personal data lawfully, you may lodge a complaint with your local data protection supervisory authority (a list is available at <a href="https://edpb.europa.eu/about-edpb/about-edpb/members_en" target="_blank" rel="noopener">edpb.europa.eu</a>). In the UK, you may contact the <a href="https://ico.org.uk" target="_blank" rel="noopener">Information Commissioner's Office (ICO)</a>. We encourage you to contact us first so we can help directly.</p>
 
-    <h2>14. Children</h2>
-    <p>PatchMap is a professional tool not directed at children under 13 (or under 16 where required by local law). We do not knowingly collect personal data from children. If you believe a child has provided us with personal data, please contact us and we will delete it promptly.</p>
+    <h2>12. Sharing and collaboration</h2>
+    <p>PatchMap is built for crews. When you share a show or invite someone to a Live Room, the people you share with can see the content you contribute to that shared space, along with any labels or assignments within it. You control what you share and with whom, and you can revoke access by closing the room or removing collaborators.</p>
+    <p>Outside of these features you choose to use, we do not sell, rent, or share your personal data with any third party for marketing or advertising purposes, and we have no commercial relationship with data brokers. We may disclose data if required by law or valid legal process; where legally permitted, we will notify you first.</p>
 
-    <h2>15. Changes to this policy</h2>
-    <p>If we make material changes, we will update the "Last updated" date above and, where required by law, notify you directly. Continued use of PatchMap after changes are posted constitutes acknowledgement of the updated policy.</p>
+    <h2>13. Security</h2>
+    <p>Data is encrypted in transit (TLS 1.2 or higher) and at rest. Database access is enforced at the row level, so accounts can only reach their own data. Live Room access is controlled by room-scoped join tokens, and those tokens stop granting access once the room closes.</p>
+    <p>No system is perfectly secure. If we ever discover a breach affecting your data, we'll tell you.</p>
+
+    <h2>14. Children</h2>
+    <p>PatchMap is a professional tool and isn't directed at children under 13 (or under 16 where required by local law). We don't knowingly collect their information. If you believe a child has provided us with personal data, please contact us and we will delete it promptly.</p>
+
+    <h2>15. Changes</h2>
+    <p>If we change this policy in a way that materially affects you, we'll update the date at the top and notify account holders by email.</p>
 
     <hr>
 
-    <p>Questions about this policy? Contact us at <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a>.</p>
+    <h2>Contact</h2>
+    <p>Questions about this policy, or about your data:</p>
+    <p>
+      <strong><a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a></strong><br>
+      IndieSoft — a product of Indie Pepper Creative LLC<br>
+      Texas, USA
+    </p>
   </main>
 
   <footer>
     <div class="footer-logo">PatchMap</div>
-    <div class="footer-copy">© 2026 PatchMap — A product of <a href="https://indiesoft.app">IndieSoft</a></div>
+    <div class="footer-copy">
+      © 2026 PatchMap — Built by <a href="https://indiesoft.app">Indiesoft.app</a><br>
+      <a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Service</a> · <a href="mailto:hello@indiesoft.app">Contact</a>
+    </div>
   </footer>
 
 </body>
