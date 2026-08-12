@@ -142,6 +142,9 @@
     .prop-list li.lede { font-family: 'DM Sans', sans-serif; font-size: 17px; letter-spacing: 0; color: var(--text); font-weight: 400; }
     .prop-list li.lede::before { color: var(--amber); }
     .u-hero .cta-row { margin-top: 32px; margin-bottom: 0; align-items: center; }
+    /* Device note — quiet by design on desktop (where it's just reassurance) and
+       the same size on a phone (where it's the answer to "can I even use this?"). */
+    .hero-device-note { margin-top: 18px; max-width: 620px; font-size: 14px; line-height: 1.6; color: var(--text-dim); border-left: 2px solid rgba(var(--tier-free-rgb), 0.45); padding-left: 12px; }
     .hero-cta {
       font-family: 'DM Mono', monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
       color: var(--black); background: var(--amber); border: 1px solid var(--amber);
@@ -396,6 +399,10 @@
       <a href="https://app.patchmap.app" class="hero-cta" data-conversion data-track-cta="hero">Start Building &rarr;</a>
       <button type="button" class="hero-watch" data-video-open data-track-cta="hero-watch" aria-haspopup="dialog"><span class="play" aria-hidden="true">&#9654;</span>Watch in Action</button>
     </div>
+    <!-- Most arrivals are on a phone. Say plainly what a phone CAN do before the
+         page starts describing a drag-and-drop canvas, so a mobile visitor
+         doesn't read the whole thing as "come back when you're at a desk". -->
+    <p class="hero-device-note">On a phone right now? Sign up, run a Smart Import on your rider, and view the show right here. The canvas builder wants a desktop — everything else doesn't.</p>
   </header>
 
   <hr class="divider" />
@@ -447,6 +454,8 @@
       <p>It builds a staging shelf with the exact nodes it found, correctly counted, named the way you already had them.</p>
       <p>Most "smart importers" populate a list but require you to re-patch everything by hand. <strong>We're anti-data entry.</strong></p>
       <p>If your string section starts at channel 21, PatchMap waits for channel 21 to become available and pages itself there automatically. There's no need to patch things twice — that would make it a dumb importer.</p>
+      <p>You don't need a paid plan to try it. On Free, your <strong>first Smart Import is on the house</strong> and doesn't count against anything — after that you get two a month. Plus raises it to fifteen a month, and Pro and Tour lift the cap entirely.</p>
+      <span class="story-note">First Smart Import free · 2/mo on Free · 15/mo at Plus</span>
     </div>
   </section>
 
@@ -557,7 +566,9 @@
         { title: 'Venue Locker', body: 'One record of all the gear you own, tracked correctly.' },
         { title: 'Auto-Derived Rental List', body: 'Assigned minus owned. Shortages surface themselves.' },
         { title: 'Room to Grow', body: 'A full season in your venue — twenty shows deep, with headroom to spare.' },
-        { title: 'Standard Locker CSV Import', body: 'Bring your existing gear list in once. Never retype it.' },
+        { title: 'Smart Import — 15 a Month', body: 'Drop in a CSV, spreadsheet or PDF rider and AI maps it to channels. Free gets a first one on the house plus two a month; Plus raises it to fifteen.' },
+        { title: 'Basic CSV Import', body: 'The straight, no-AI CSV reader — for when your sheet is already clean and you want it read exactly as written.' },
+        { title: 'Locker CSV Import', body: 'Bring your existing gear list in once. Never retype it.' },
       ],
       numberLine: '1 Venue · 20 Shows · $12.99/mo',
       proofBlurb: "Built for the engineer running the same room, season after season, who's tired of reconciling old spreadsheets with actual inventory.",
@@ -610,10 +621,10 @@
      shown as the billed-annually rate; savePct is the honest discount vs 12×
      monthly (Plus 155.88→129 = 17%, Pro 359.88→299 = 17%, Tour 2399.88→1950 = 19%). */
   const pricing = {
-    free: { monthly: '$0', annual: '$0', monthlyEq: null, savePct: null, venues: '1', shows: '1', sessions: '0', line: '$0. No Card, No Catch.' },
-    plus: { monthly: '$12.99', annual: '$129', monthlyEq: '$10.75', savePct: 17, venues: '1', shows: '20', sessions: '0', line: '$129/yr · $12.99/mo' },
-    pro:  { monthly: '$29.99', annual: '$299', monthlyEq: '$24.92', savePct: 17, venues: '5', shows: 'Unlimited', sessions: '2', line: '$299/yr · $29.99/mo' },
-    tour: { monthly: '$199.99', annual: '$1,950', monthlyEq: '$162.50', savePct: 19, venues: '10', shows: 'Unlimited', sessions: '5', line: '$1,950/yr · $199.99/mo' },
+    free: { monthly: '$0', annual: '$0', monthlyEq: null, savePct: null, venues: '1', shows: '1', sessions: '0', smartImport: '1 free, then 2/mo', line: '$0. No Card, No Catch.' },
+    plus: { monthly: '$12.99', annual: '$129', monthlyEq: '$10.75', savePct: 17, venues: '1', shows: '20', sessions: '0', smartImport: '15/mo', line: '$129/yr · $12.99/mo' },
+    pro:  { monthly: '$29.99', annual: '$299', monthlyEq: '$24.92', savePct: 17, venues: '5', shows: 'Unlimited', sessions: '2', smartImport: 'Unlimited', line: '$299/yr · $29.99/mo' },
+    tour: { monthly: '$199.99', annual: '$1,950', monthlyEq: '$162.50', savePct: 19, venues: '10', shows: 'Unlimited', sessions: '5', smartImport: 'Unlimited', line: '$1,950/yr · $199.99/mo' },
   };
 
   const faqs = [
@@ -621,6 +632,8 @@
     { q: 'What’s a “venue,” and why do lower tiers include only one?', a: "A venue is your home base in PatchMap — it holds your gear library and the history of every show you've run there, so you're not rebuilding the same rig show after show. One venue covers an engineer working a single production environment; higher tiers add more venues for freelancers and productions moving between multiple rooms." },
     { q: 'Do my crew need to install an app?', a: "No — the PatchMap Live Room is a web app. Everyone joins from their own phone through a single link, and each person lands on a view built for their role — stage tech, monitor engineer, musician. If someone accidentally exits, rescanning the QR code or re-clicking the join link brings them right back in, no re-entering data." },
     { q: 'What counts as a “concurrent live session”?', a: "A live session is an open Room running a show in real time. Free and Plus are planning tiers (0 live sessions). Pro runs 2 at once; Tour runs 5 — enough for a production with more than one thing happening at a time." },
+    { q: 'How many Smart Imports do I get?', a: "Smart Import is the AI one — drop in a CSV, spreadsheet or PDF rider and it maps the whole thing to channels. On Free, your very first Smart Import is free and doesn't count, and after that you get two per calendar month. Plus runs fifteen a month; Pro and Tour are uncapped. Monthly counts reset on the 1st. There's also Basic CSV Import, the plain no-AI reader for sheets that are already clean, included from Plus up." },
+    { q: 'Can I start on my phone?', a: "Yes. You can sign up, run a Smart Import from your phone — photograph or upload a rider and let it build the channel list — and view the finished show on the same device. Building and editing the canvas itself is a desktop job: it's a drag-and-drop tool that wants a mouse and a real screen. So get started anywhere, then sit down to build." },
     { q: 'Can I pay monthly, or is it annual?', a: "Either. Every paid tier bills monthly or annually, and annual runs about two months cheaper than paying month to month. Switch billing on the pricing table above — the plan and every feature are identical either way." },
     { q: 'What happens when I hit my venue or show limit?', a: "Nothing you've built disappears. Free covers one show in one venue; Plus runs twenty shows in one venue; Pro and Tour lift the show cap entirely and add more venues. When you need more room, you move up a tier and everything you've already made carries over." },
     { q: 'Can I change plans later?', a: "Yes. The ladder is cumulative — every higher tier includes everything below it, so you climb when you're ready without rebuilding anything you've already made." },
@@ -881,6 +894,18 @@
       '<span class="tip-pop">' + VENUE_TIP + '</span>' +
     '</span>';
 
+  /* Smart Import allowance explainer. The card shows the short count; this
+     carries the two details the number alone can't: the first one on a Free
+     account is genuinely uncounted, and the monthly figure resets on the 1st.
+     Mirrors AI_IMPORT_LIMITS in the app (free 2 + firstFree, plus 15, pro/tour
+     uncapped) — if that table moves, this string moves with it. */
+  const IMPORT_TIP = "Smart Import reads a CSV, spreadsheet or PDF rider with AI and maps it to channels. On Free your very first one is free and doesn't count against the two you get each month. Monthly counts reset on the 1st.";
+  const importTipHtml =
+    ' <span class="tip" tabindex="0" role="note" aria-label="How does the Smart Import allowance work?">' +
+      '<span class="tip-i" aria-hidden="true">i</span>' +
+      '<span class="tip-pop">' + IMPORT_TIP + '</span>' +
+    '</span>';
+
   function renderPricing() {
     const annualMode = (billing === 'annual');
     const el = document.getElementById('pricing-cards');
@@ -915,6 +940,7 @@
           '<li><span>Venues' + venueTipHtml + '</span><span>' + p.venues + '</span></li>' +
           '<li><span>Shows</span><span>' + p.shows + '</span></li>' +
           '<li><span>Live sessions</span><span>' + p.sessions + '</span></li>' +
+          '<li><span>Smart Import' + importTipHtml + '</span><span>' + p.smartImport + '</span></li>' +
         '</ul>' + cta +
       '</div>';
     }).join('');
