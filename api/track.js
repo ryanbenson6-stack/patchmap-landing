@@ -51,18 +51,34 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // §2 first-touch — write once, never overwrite. onConflict + ignoreDuplicates
-    // preserves original channel credit even on later visits.
+    // §2 first-touch — write once, never overwrite, so the original discovery
+    // keeps channel credit.
+    //
+    // A PLAIN INSERT, deliberately not an upsert. This was `.upsert(..., {
+    // onConflict, ignoreDuplicates })` and wrote nothing at all for months: the
+    // table sat at 0 rows while sales_events below it passed 9,000. Postgres
+    // requires SELECT privilege AND an UPDATE policy for INSERT ... ON CONFLICT —
+    // it checks the UPDATE policy at plan time even when DO NOTHING means no row
+    // can ever be updated — and anon has neither. Every write died 42501, and
+    // this handler logs-and-swallows so the beacon never 500s, so it was silent.
+    //
+    // The primary key already enforces write-once. A returning visitor's insert
+    // fails with 23505 and the original row survives untouched, which is exactly
+    // the upsert's intent — reached without granting anon UPDATE on a table whose
+    // whole job is to never be updated. 23505 is therefore the EXPECTED outcome on
+    // every visit after the first and is not logged; anything else still is.
     if (row.anonymous_id) {
-      const a = await supabase.from('attribution').upsert({
+      const a = await supabase.from('attribution').insert({
         anonymous_id: row.anonymous_id,
         utm_source: row.utm_source, utm_medium: row.utm_medium,
         utm_campaign: row.utm_campaign, utm_content: row.utm_content, utm_term: row.utm_term,
         channel: row.channel, referrer: row.referrer,
         landing_page: clean(attr.landing_page, 300),
         first_seen_at: attr.first_seen_at || new Date().toISOString(),
-      }, { onConflict: 'anonymous_id', ignoreDuplicates: true })
-      if (a.error) console.error('attribution upsert error:', a.error.message)
+      })
+      if (a.error && a.error.code !== '23505') {
+        console.error('attribution insert error:', a.error.code, a.error.message)
+      }
     }
 
     const e = await supabase.from('sales_events').insert(row)

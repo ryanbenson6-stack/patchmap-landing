@@ -23,20 +23,44 @@
 -- policy over a missing grant fails with 42501 and looks like an RLS problem.
 
 -- ── 1. The actual fix ───────────────────────────────────────────────────────
-GRANT INSERT, UPDATE ON public.attribution TO anon;
+-- SELECT is the one that actually matters, and it is not obvious. api/track.js
+-- writes this table with .upsert({ onConflict: 'anonymous_id', ignoreDuplicates })
+-- which Postgres executes as INSERT ... ON CONFLICT — and ON CONFLICT requires
+-- SELECT privilege on the target table. `anon` never had it, so every write died
+-- at 42501 even once INSERT was granted. Proven by probe:
+--
+--   anon → attribution  plain INSERT       → 201
+--   anon → attribution  UPSERT on_conflict → 401 42501
+--   anon → sales_events plain INSERT       → 201  (and SELECT is denied there too)
+--
+-- sales_events is the control: same role, same handler, SELECT equally denied,
+-- but it uses a plain .insert() and has always worked. The two tables differ by
+-- exactly ON CONFLICT, which is the whole bug.
+GRANT INSERT ON public.attribution TO anon;
 
--- Re-assert the policies too. If the script died before the grant, it may also
--- have died before these — and a table with RLS enabled and no policy rejects
--- everything. Drop-then-create so re-running never errors.
 DROP POLICY IF EXISTS attribution_anon_insert ON public.attribution;
 CREATE POLICY attribution_anon_insert ON public.attribution
   FOR INSERT TO anon WITH CHECK (true);
 
-DROP POLICY IF EXISTS attribution_anon_update ON public.attribution;
-CREATE POLICY attribution_anon_update ON public.attribution
-  FOR UPDATE TO anon USING (true) WITH CHECK (true);
-
 NOTIFY pgrst, 'reload schema';
+
+-- THAT IS ALL THE PRIVILEGE THIS TABLE NEEDS, because api/track.js now writes it
+-- with a plain .insert(). The upsert is gone — see the comment there. Write-once
+-- is enforced by the primary key (a repeat visitor's insert fails 23505 and the
+-- original row survives), which is what the upsert was for, so anon never needs
+-- UPDATE on a table whose entire purpose is to not be updated.
+--
+-- If anyone ever restores the upsert, it will silently stop working again unless
+-- they ALSO grant SELECT and add an anon UPDATE policy. Don't. Fix forward.
+
+-- ── Optional hygiene, not required for the fix ──────────────────────────────
+-- The live DB has anon holding UPDATE, TRUNCATE, REFERENCES and TRIGGER on this
+-- table from an earlier broad grant. None is reachable through PostgREST (it
+-- exposes no TRUNCATE verb, and nothing issues an UPDATE), so this is tidying
+-- rather than closing a hole — but anon being able to rewrite or empty the
+-- first-touch record is the wrong default for a write-once table.
+REVOKE UPDATE, TRUNCATE, REFERENCES, TRIGGER ON public.attribution FROM anon;
+DROP POLICY IF EXISTS attribution_anon_update ON public.attribution;
 
 -- ── 2. Recover the history ──────────────────────────────────────────────────
 -- Nothing was actually lost. `sales_events` denormalises the whole first-touch
