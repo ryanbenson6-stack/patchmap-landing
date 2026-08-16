@@ -672,6 +672,24 @@
     });
   }
 
+  // Short/alternate spellings of a platform, folded to one name at capture.
+  //
+  // Instagram traffic was arriving as both `instagram` and `ig`, which split the
+  // platform across two rows in every acquisition report. Only the PLATFORM is
+  // folded — utm_medium is untouched, because paid_social vs social vs bio is a
+  // real distinction and the whole reason this is safe: `ig` carried nothing that
+  // `medium` did not already say. Apply that same test before adding an entry.
+  //
+  // Insurance, not the fix — the ad links should be retagged at source, or this
+  // drifts again under a new short name. Mirrored in
+  // patch-map/supabase/normalize-channel-aliases.sql, which backfilled history.
+  var SOURCE_ALIASES = { ig: 'instagram', insta: 'instagram' };
+  function normalizeSource(s) {
+    if (!s) return s;
+    var k = String(s).trim().toLowerCase();
+    return SOURCE_ALIASES[k] || s;
+  }
+
   // Channel derived from referrer when no utm_source is present (§2). Raw
   // referrer is always kept regardless.
   function deriveChannel(ref, utmSource) {
@@ -689,7 +707,11 @@
   function resolveAttribution() {
     const params = new URLSearchParams(location.search);
     const utm = {
-      source: params.get('utm_source'), medium: params.get('utm_medium'),
+      // Normalised at the point of capture so every downstream copy — the cookie,
+      // attribution, sales_events, and the conversion stamped months later — all
+      // agree on the platform's name.
+      source: normalizeSource(params.get('utm_source')),
+      medium: params.get('utm_medium'),
       campaign: params.get('utm_campaign'), content: params.get('utm_content'),
       term: params.get('utm_term'),
     };
