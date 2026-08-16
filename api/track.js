@@ -16,6 +16,23 @@ const { createClient } = require('@supabase/supabase-js')
 
 const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY)
 
+// Short/alternate spellings of a platform, folded to one name.
+//
+// Mirrors normalizeSource() in index.html. Duplicated rather than shared because
+// that file is inline browser JS with no build step — and duplicated ON PURPOSE
+// rather than trusting the client: returning visitors keep running a CACHED copy
+// of index.html for as long as their browser holds it, so the old page will send
+// `ig` well after the fix ships. Normalising here is what makes the data correct
+// from today rather than eventually.
+//
+// PLATFORM ONLY. utm_medium is never touched — paid_social vs social vs bio is a
+// real distinction, and `ig` carried nothing that medium did not already say.
+const SOURCE_ALIASES = { ig: 'instagram', insta: 'instagram' }
+function normalizeSource(v) {
+  if (typeof v !== 'string') return v
+  return SOURCE_ALIASES[v.trim().toLowerCase()] || v
+}
+
 function clean(v, len = 300) {
   return typeof v === 'string' && v.length > 0 ? v.slice(0, len) : null
 }
@@ -40,12 +57,12 @@ module.exports = async function handler(req, res) {
     path: clean(body.path, 300),
     is_returning: !!body.is_returning,
     payload: body.payload && typeof body.payload === 'object' ? body.payload : {},
-    utm_source: clean(attr.utm_source, 120),
+    utm_source: normalizeSource(clean(attr.utm_source, 120)),
     utm_medium: clean(attr.utm_medium, 120),
     utm_campaign: clean(attr.utm_campaign, 120),
     utm_content: clean(attr.utm_content, 120),
     utm_term: clean(attr.utm_term, 120),
-    channel: clean(attr.channel, 120),
+    channel: normalizeSource(clean(attr.channel, 120)),
     referrer: clean(attr.referrer, 500),
     country: clean(req.headers['x-vercel-ip-country'], 8),
   }

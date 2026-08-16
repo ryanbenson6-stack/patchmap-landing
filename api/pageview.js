@@ -13,6 +13,23 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY
 )
 
+// Short/alternate spellings of a platform, folded to one name.
+//
+// Mirrors normalizeSource() in index.html. Duplicated rather than shared because
+// that file is inline browser JS with no build step — and duplicated ON PURPOSE
+// rather than trusting the client: returning visitors keep running a CACHED copy
+// of index.html for as long as their browser holds it, so the old page will send
+// `ig` well after the fix ships. Normalising here is what makes the data correct
+// from today rather than eventually.
+//
+// PLATFORM ONLY. utm_medium is never touched — paid_social vs social vs bio is a
+// real distinction, and `ig` carried nothing that medium did not already say.
+const SOURCE_ALIASES = { ig: 'instagram', insta: 'instagram' }
+function normalizeSource(v) {
+  if (typeof v !== 'string') return v
+  return SOURCE_ALIASES[v.trim().toLowerCase()] || v
+}
+
 function clean(v, len = 120) {
   return typeof v === 'string' && v.length > 0 ? v.slice(0, len) : null
 }
@@ -37,7 +54,7 @@ module.exports = async function handler(req, res) {
     path: clean(body.path, 300),
     visitor_id: clean(body.visitorId, 64),
     is_returning: !!body.isReturning,
-    utm_source: clean(utm.source),
+    utm_source: normalizeSource(clean(utm.source)),
     utm_medium: clean(utm.medium),
     utm_campaign: clean(utm.campaign),
     utm_content: clean(utm.content),
