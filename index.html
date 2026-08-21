@@ -121,6 +121,13 @@
       padding: 8px 16px; border-radius: 3px; text-decoration: none; transition: background .15s;
     }
     .nav-cta:hover { background: #ffc04a; }
+    .nav-right { display: flex; align-items: center; gap: 24px; }
+    .nav-link {
+      font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-dim); text-decoration: none;
+      transition: color .15s;
+    }
+    .nav-link:hover { color: var(--amber); }
 
     /* ── UNIVERSAL HERO ── */
     .u-hero { position: relative; z-index: 1; padding: 150px 0 60px; }
@@ -169,6 +176,13 @@
     .story p { font-size: 16px; line-height: 1.7; color: var(--text-dim); max-width: 720px; margin-bottom: 18px; }
     .story p strong { color: var(--text); font-weight: 500; }
     .story-note { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--story); border: 1px solid rgba(var(--story-rgb), 0.35); background: rgba(var(--story-rgb), 0.06); padding: 5px 11px; border-radius: 2px; display: inline-block; margin-top: 6px; }
+    .story-watch { margin: 18px 0 0; }
+    .story-watch a {
+      font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.04em;
+      color: var(--amber); text-decoration: none;
+      border-bottom: 1px solid rgba(245,166,35,0.35); transition: border-color .15s;
+    }
+    .story-watch a:hover { border-bottom-color: var(--amber); }
 
     /* ── PAIN SECTIONS ── compact, tier-accented running colour (rev §2) ── */
     .pains { position: relative; z-index: 1; padding: 56px 0 40px; display: flex; flex-direction: column; gap: 6px; }
@@ -336,6 +350,13 @@
     }
     .video-overlay[data-open="true"] { opacity: 1; visibility: visible; }
     .video-modal { position: relative; width: 100%; max-width: 960px; }
+    .video-more {
+      display: inline-block; margin-top: 14px;
+      font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.04em;
+      color: var(--amber); text-decoration: none;
+      border-bottom: 1px solid rgba(245,166,35,0.35); transition: border-color .15s;
+    }
+    .video-more:hover { border-bottom-color: var(--amber); }
     .video-frame {
       background: var(--black); border: 1px solid var(--border-bright);
       border-radius: 6px; overflow: hidden; box-shadow: 0 24px 80px rgba(0,0,0,0.6);
@@ -379,7 +400,10 @@
   <!-- ── NAV ─────────────────────────────────────────────────────────────── -->
   <nav>
     <a href="/" class="nav-logo">PATCHMAP</a>
-    <a href="https://app.patchmap.app" class="nav-cta" data-conversion data-track-cta="nav">Start Building</a>
+    <div class="nav-right">
+      <a href="/learn" class="nav-link" data-track-cta="nav-learn">Learn</a>
+      <a href="https://app.patchmap.app" class="nav-cta" data-conversion data-track-cta="nav">Start Building</a>
+    </div>
   </nav>
 
   <!-- ══ UNIVERSAL BLOCK (FIXED — never reacts to tier) ═══════════════════════ -->
@@ -455,6 +479,7 @@
       <p>Most "smart importers" populate a list but require you to re-patch everything by hand. <strong>We're anti-data entry.</strong></p>
       <p>If your string section starts at channel 21, PatchMap waits for channel 21 to become available and pages itself there automatically. There's no need to patch things twice — that would make it a dumb importer.</p>
       <p>You don't need a paid plan to try it. On Free, your <strong>first Smart Import is on the house</strong> and doesn't count against anything — after that you get two a month. Plus raises it to fifteen a month, and Pro and Tour lift the cap entirely.</p>
+      <p class="story-watch"><a href="/learn#smart-import" data-track-cta="story-learn-smart-import">Watch Smart Import turn a rider into a wired show — 3 min →</a></p>
       <span class="story-note">First Smart Import free · 2/mo on Free · 15/mo at Plus</span>
     </div>
   </section>
@@ -513,12 +538,13 @@
     <div class="video-modal">
       <button type="button" class="video-close" id="video-close" aria-label="Close video">&times;</button>
       <div class="video-frame" id="video-frame"></div>
+      <a class="video-more" href="/learn" data-track-cta="video-modal-learn">More walkthroughs on Learn PatchMap →</a>
     </div>
   </div>
 
   <footer>
     <p>© 2026 PatchMap — Built by <a href="https://indiesoft.app">Indiesoft.app</a></p>
-    <p class="footer-links"><a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Service</a> · <a href="mailto:hello@indiesoft.app">Contact</a></p>
+    <p class="footer-links"><a href="/learn">Learn</a> · <a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Service</a> · <a href="mailto:hello@indiesoft.app">Contact</a></p>
   </footer>
 
   <script>
