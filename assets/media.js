@@ -63,19 +63,36 @@
      DELIVERY aspects — what the box is on each viewport — and they are why the
      page has no layout shift: the box is built from these, not from the file. */
   var SLOTS = {
+    /* DRAFT 2 SHOT CHANGE. This was the import mechanic; the hero now shows a
+       COMPLETE, live show working on a phone. The hero states the premise of
+       the page (the show is scattered across people's heads) and the answer to
+       that is the finished document, not the on-ramp that produced it. */
     hero: {
       context: 'phone-native',
       aspect: ['9 / 16', '9 / 16'],
       mode: 'autoplay-loop',
       portrait: null, landscape: null, poster: null,
-      label: 'A rider dropping in and resolving into a patched show, on a phone'
+      label: 'A complete, live show being worked on a phone — patch, flags, changes landing'
+    },
+
+    /* The Foundation pair. These two are shown SIDE BY SIDE in one row, which
+       is the only reason they share a delivery aspect: 16/9 next to 9/16 in a
+       two-column row is a 300px box beside a 900px one, and the row reads as
+       broken rather than as two options. 4/5 is a crop of honest footage on
+       both sides — the source context below is still the truth about each. */
+    build: {
+      context: 'desktop-truth',
+      aspect: ['4 / 5', '4 / 5'],
+      mode: 'autoplay-loop',
+      portrait: null, landscape: null, poster: null,
+      label: 'A show built from scratch on the canvas — nodes self-labelling and auto-patching'
     },
     'import': {
       context: 'phone-native',
-      aspect: ['9 / 16', '9 / 16'],
+      aspect: ['4 / 5', '4 / 5'],
       mode: 'autoplay-loop',
       portrait: null, landscape: null, poster: null,
-      label: 'Smart Import building the channel list from a rider'
+      label: 'Smart Import building the channel list from an existing patch sheet'
     },
     liveroom: {
       context: 'phone-native',
@@ -101,13 +118,10 @@
       portrait: null, landscape: null, poster: null,
       label: 'Patch, wireless and Dante resolving under one document'
     },
-    antidata: {
-      context: 'desktop-truth',
-      aspect: ['4 / 5', '16 / 9'],
-      mode: 'autoplay-loop',
-      portrait: null, landscape: null, poster: null,
-      label: 'Nodes self-labelling across a large stage plot — no typing'
-    },
+    /* `antidata` was removed in draft 2 — the anti–data-entry section merged
+       into the Foundation, and its argument is now carried by the `build`
+       clip above. A slot with no element to render is dead config, and dead
+       config is how a future clip gets produced for a box nobody sees. */
     intelligence: {
       context: 'desktop-truth',
       aspect: ['4 / 5', '16 / 9'],
@@ -132,7 +146,7 @@
       aspect: ['9 / 16', '9 / 16'],
       mode: 'autoplay-loop',
       portrait: null, landscape: null, poster: null,
-      label: 'Reuses the hero import-to-build clip'
+      label: 'Reuses the hero clip — a complete, live show on a phone'
     }
   };
 

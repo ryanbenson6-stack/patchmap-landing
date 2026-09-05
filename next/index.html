@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>PatchMap — The show shouldn't live in anyone's head.</title>
-  <meta name="description" content="Whether your crew has run this room for years or never met before tonight, the fastest thing to go wrong is a quiet assumption nobody said out loud. PatchMap puts the whole show — patch, wireless, Dante, every change — in one live document everyone can see from their own phone." />
+  <title>PatchMap — Your show shouldn't live in one head.</title>
+  <meta name="description" content="Right now the show lives in memory — yours, and everyone else's, each a slightly different version of it. PatchMap gets the whole show — patch, wireless, Dante, every change — out of everyone's heads and into one live document the crew can see from their own phones." />
 
   <!-- ── STAGING. NOT THE LIVE PAGE. ───────────────────────────────────────
        noindex is deliberate and load-bearing: this page carries the same
@@ -66,9 +66,43 @@
     }
     .pull strong { color: var(--amber); font-weight: 500; }
 
-    /* Hero phone promise — the answer to "can I even use this right now?", and
-       on a phone that is the single most important sentence in the hero. */
-    .hero-device-note strong { color: var(--text); font-weight: 500; }
+    /* The Foundation's two on-ramps, shown side by side. One clip can only
+       show one path, and the section's whole claim is that BOTH are quick, so
+       the row is the argument. Stacked on a phone — side-by-side halves of a
+       375px screen would be two clips too small to read. */
+    .path-pair {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 26px;
+      margin-top: 44px;
+    }
+    @media (min-width: 900px) { .path-pair { grid-template-columns: 1fr 1fr; gap: 32px; } }
+    .path { margin: 0; }
+    .path figcaption {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      line-height: 1.6;
+      letter-spacing: 0.04em;
+      color: var(--text-dimmer);
+      margin-top: 12px;
+    }
+
+    /* Show Chain is a continuity beat in draft 2, not a headline section: same
+       tokens as a story, roughly half the vertical weight, an h3 instead of an
+       h2. Demoting it in CSS rather than deleting it is deliberate — it is a
+       real differentiator, just not a step in the arc. */
+    .beat { position: relative; z-index: 1; padding: 44px 0; border-top: 1px solid var(--border); }
+    .beat[data-accent="plus"] { --story: var(--tier-plus); --story-rgb: var(--tier-plus-rgb); }
+    .beat-grid { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: center; }
+    @media (min-width: 900px) { .beat-grid { grid-template-columns: 1.3fr 0.7fr; gap: 48px; } }
+    .beat h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(24px, 3.2vw, 36px);
+      line-height: 1.05; letter-spacing: 0.02em;
+      color: var(--text); margin-bottom: 12px;
+    }
+    .beat p { font-size: 15px; line-height: 1.7; color: var(--text-dim); max-width: 620px; }
+    .beat p strong { color: var(--text); font-weight: 500; }
 
     .hero-grid { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; }
     @media (min-width: 900px) { .hero-grid { grid-template-columns: 1.2fr 0.8fr; gap: 64px; } }
@@ -135,103 +169,132 @@
     </div>
   </nav>
 
-  <!-- ── HERO ────────────────────────────────────────────────────────────── -->
+  <!-- ── HERO ──────────────────────────────────────────── -->
+  <!-- DRAFT 2: the hero no longer sells import. It states the PREMISE of the
+       arc — the show lives in five people's memory — so every section under it
+       is an answer to something already asked. The old "on a phone right now?"
+       note is gone: it answered a question the visitor hadn't formed yet, and
+       the FAQ answers it properly for the people who do ask. -->
   <header class="u-hero wrap">
     <div class="hero-grid">
       <div>
         <div class="eyebrow">Built for audio engineers. Not spreadsheet users.</div>
 
-        <h1>The show shouldn&rsquo;t live in anyone&rsquo;s head.</h1>
+        <h1>Your show shouldn&rsquo;t live in one head.</h1>
 
         <p class="u-hero-sub">
-          Whether your crew has run this room for years or never met before tonight, the fastest
-          thing to go wrong is a quiet assumption nobody said out loud. PatchMap puts the whole
-          show &mdash; patch, wireless, Dante, every change &mdash; in <strong>one live document
-          everyone can see from their own phone</strong>. Still accurate at 9pm.
+          Right now the show lives in memory &mdash; yours, and everyone else&rsquo;s, each a
+          slightly different version of it. The fastest thing to go wrong is a quiet assumption
+          nobody said out loud. PatchMap gets the whole show &mdash; patch, wireless, Dante, every
+          change &mdash; out of everyone&rsquo;s heads and into <strong>one live document the crew
+          can see</strong>. Still accurate at 11pm.
         </p>
 
         <div class="cta-row">
-          <a href="https://app.patchmap.app" class="hero-cta" data-app-link data-track-cta="hero-primary">
-            Start free &mdash; import a rider, watch it patch itself
-          </a>
-          <a href="#import" class="hero-watch"><span class="play">&#9654;</span> Watch it in action</a>
+          <a href="https://app.patchmap.app" class="hero-cta" data-app-link data-track-cta="hero-primary">Start free</a>
+          <a href="#foundation" class="hero-watch"><span class="play">&#9654;</span> Watch it in action</a>
         </div>
 
-        <p class="hero-device-note">
-          <strong>On your phone right now?</strong> Sign up, drop in a rider, and see your show
-          built before you touch a thing. The canvas builder wants a desktop &mdash; everything
-          else doesn&rsquo;t.
-        </p>
+        <p class="microcopy">Free to start. No card.</p>
       </div>
 
+      <!-- Shot list changed in draft 2: this is a COMPLETE, live show working on
+           a phone &mdash; the finished thing. The import mechanic moved down into
+           the Foundation section, where it is one of two on-ramps rather than
+           the product's headline. -->
       <div data-slot="hero"></div>
     </div>
   </header>
 
-  <!-- ── START HERE: WATCH IT BUILD ──────────────────────────────────────
-       MOVED. Smart Import elevated to the first win, because it is the answer
-       to the empty-home stall: a new phone user currently lands on a blank
-       screen and most leave. This section's only job is to set intent BEFORE
-       signup, so they arrive already reaching for import. -->
-  <section class="story" id="import" data-accent="free">
-    <div class="wrap story-grid">
+  <!-- ── THE FOUNDATION ───────────────────────────────────── -->
+  <!-- MERGED in draft 2 from three separate draft-1 sections: "watch it build"
+       (import), the anti&ndash;data-entry beat, and the competitive rebuttal.
+       All three were making the same argument &mdash; you reach a clean show
+       fast &mdash; and splitting them read as three feature shouts instead of
+       one step.
+
+       Import is now ONE OF TWO on-ramps, named alongside building from scratch,
+       because draft 1 over-sold the importer to people who have nothing to
+       import. The competitive line survives as a single pull quote rather than
+       its own numbered block: it is a rebuttal, not a step in the arc. -->
+  <section class="story" id="foundation" data-accent="free">
+    <div class="wrap">
       <div class="story-copy">
         <div class="story-eyebrow">Start here</div>
-        <h2>Drop your rider in. Watch the show build itself.</h2>
+        <h2>One clean source of truth. Built in minutes.</h2>
         <p>
-          Most tools hand you a blank canvas and wish you luck. PatchMap reads your rider &mdash;
-          CSV, Excel, or PDF &mdash; and builds the show: every input placed, counted, and labeled
-          the way you already had it. <strong>If your strings start at channel 21, it waits for 21
-          and pages itself there.</strong> A minute in, on your phone, you&rsquo;re looking at a
-          real patched show &mdash; before you&rsquo;ve typed anything.
+          However your show starts &mdash; import a patch sheet, an input list, whatever
+          you&rsquo;ve already got, or build it from scratch &mdash; PatchMap makes it fast.
+          It&rsquo;s node-based, so it auto-patches and auto-labels as you go;
+          <strong>you&rsquo;re not typing your way through a 60-piece orchestra</strong>. Drop
+          gear in and it patches itself &mdash; then override, reserve or block any channel by
+          hand.
+        </p>
+        <p>
+          Starting fresh or bringing in an existing doc, either path is quick. The point
+          isn&rsquo;t how you start, it&rsquo;s that you end up with one clean, accurate show you
+          can trust &mdash; the thing everything else on this page runs on.
         </p>
 
         <p class="pull">
-          That clean show you just made? <strong>It&rsquo;s the thing everything else runs on.</strong>
-        </p>
-
-        <p>
-          Want to feel it solo first? Open a Live Room by yourself and walk your own show &mdash;
-          the same thing your crew will use, just you.
+          Every tool in this space got faster at building the wrong document.
+          <strong>PatchMap isn&rsquo;t a faster PDF. It&rsquo;s a live one.</strong>
         </p>
 
         <div class="cta-row">
-          <a href="https://app.patchmap.app" class="btn-primary" style="--accent:var(--tier-free);--accent-rgb:var(--tier-free-rgb)" data-app-link data-track-cta="import-primary">
-            Import your first rider &mdash; free
-          </a>
+          <a href="https://app.patchmap.app" class="btn-primary" style="--accent:var(--tier-free);--accent-rgb:var(--tier-free-rgb)" data-app-link data-track-cta="foundation-primary">Start free</a>
         </div>
         <p class="microcopy">First Smart Import is on the house and counts against nothing.</p>
       </div>
 
-      <div data-slot="import"></div>
+      <!-- Two clips, side by side, because the claim is "either path is easy"
+           and one clip can only ever show one path. Both slots are pinned to
+           the SAME delivery aspect in media.js &mdash; a paired row with
+           mismatched box heights reads as a broken layout, not as two options. -->
+      <div class="path-pair">
+        <figure class="path">
+          <div data-slot="build"></div>
+          <figcaption>Build from scratch &mdash; nodes label and patch themselves.</figcaption>
+        </figure>
+        <figure class="path">
+          <div data-slot="import"></div>
+          <figcaption>Or bring in what you already have.</figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
-  <!-- ── THE HOUSE: LIVE ROOM ────────────────────────────────────────────
-       MOVED up from problem-slot 04 to the emotional centre. This is what the
-       whole page climbs toward, so it gets the most room and the scroll-scrub
-       clip — the one sequence on the page worth letting the reader drive. -->
+  <!-- ── WHAT IT UNLOCKS: LIVE ROOM ──────────────────────────── -->
+  <!-- DE-JUDGED in draft 2. The old opener ("a tight crew runs on 'he knows',
+       a pickup crew runs on hope") read as telling engineers they are bad at
+       their jobs. The cause is restated as structural rather than personal
+       &mdash; everyone holds a different version &mdash; which is both truer and
+       works for a house crew and a pickup crew without picking on either. -->
   <section class="story" id="live-room" data-accent="pro">
     <div class="wrap story-grid is-flipped">
       <div class="story-copy">
         <div class="story-eyebrow">The whole point</div>
         <h2>When it&rsquo;s live, the show is in the room &mdash; not in anyone&rsquo;s head.</h2>
         <p>
-          A tight crew runs on &ldquo;he knows.&rdquo; A pickup crew runs on hope. Both break the
-          same way &mdash; an assumption nobody said out loud. Open a Live Room and everyone&rsquo;s
-          on one live document from their own phone: the stage tech sees the stage, monitors see
-          monitor world, musicians see their own channel and can ask for help.
+          When the show only lives in people&rsquo;s heads, things slip &mdash; not because
+          anyone&rsquo;s careless, but because everyone&rsquo;s working from their own version of
+          it. Open a Live Room and there&rsquo;s <strong>one version in front of everyone</strong>,
+          live on their own phone: the stage tech sees the stage, monitors see monitor world,
+          musicians see their channel and can ask for help.
         </p>
         <p>
-          Spot a problem, flag it on the exact channel &mdash; it routes to whoever can fix it and
-          moves from <strong>spotted, to seen, to resolved</strong>, right there in front of
-          everyone. Nothing gets shouted into the void. Nothing gets forgotten.
+          Flag a problem on the exact channel and it routes to whoever can fix it &mdash;
+          <strong>spotted, seen, resolved</strong>, in front of everyone.
         </p>
-        <p>Same document whether the room&rsquo;s full of friends or strangers.</p>
+        <p>
+          Whether it&rsquo;s a crew you&rsquo;ve run with for years or one you met tonight,
+          everyone&rsquo;s finally working from the same thing.
+        </p>
 
         <p class="pull">
-          It works because your show already lives here as clean data.
-          <strong>Build the show once; the room runs on it.</strong>
+          <strong>None of this works on a messy document.</strong> It works because the show
+          already lives in PatchMap as one clean source of truth &mdash; build it once, and the
+          room runs on it.
         </p>
 
         <div class="cta-row">
@@ -248,70 +311,39 @@
     </div>
   </section>
 
-  <!-- ── ONE LIVE DOCUMENT (QR) ──────────────────────────────────────────── -->
+  <!-- ── SUPPORTING THE SHARED DOCUMENT ───────────────────────── -->
+  <!-- RE-POINTED, not rewritten. These two sat as standalone feature shouts in
+       draft 1. They now read as evidence for the claim directly above them
+       &mdash; one shared live document &mdash; which is why both eyebrows
+       changed and neither headline did. -->
   <section class="story" data-accent="free">
     <div class="wrap story-grid">
       <div class="story-copy">
-        <div class="story-eyebrow">One live document</div>
+        <div class="story-eyebrow">What that looks like</div>
         <h2>One QR code on the rack. Ninety days later, still right.</h2>
         <p>
           Print it once, tape it to the case. Anyone loading in &mdash; your crew, a house tech
           who&rsquo;s never seen this show, local labor &mdash; opens it once and leaves it open.
-          <strong>Every change you make pushes live</strong>, with a timestamp showing exactly when
-          it last updated. No rescanning.
+          <strong>Every change you make pushes live</strong>, with a timestamp showing exactly
+          when it last updated. No rescanning.
         </p>
+        <p class="microcopy">Included on the free tier.</p>
       </div>
       <div data-slot="qr"></div>
     </div>
   </section>
 
-  <!-- ── ONE SOURCE OF TRUTH ─────────────────────────────────────────────── -->
   <section class="story" data-accent="plus">
     <div class="wrap story-grid is-flipped">
       <div class="story-copy">
-        <div class="story-eyebrow">One source of truth</div>
+        <div class="story-eyebrow">What that includes</div>
         <h2>Your patch, wireless, and Dante finally live in the same world.</h2>
         <p>
           Three documents, three windows, cross-referenced at showtime and hoping nothing&rsquo;s
-          out of sync. PatchMap unifies all three under <strong>one source of truth</strong>
-          &mdash; live on every crew member&rsquo;s own device.
+          out of sync &mdash; now <strong>one source of truth</strong>, live on every device.
         </p>
       </div>
       <div data-slot="unify"></div>
-    </div>
-  </section>
-
-  <!-- ── ANTI-DATA ENTRY ─────────────────────────────────────────────────── -->
-  <section class="story" data-accent="free">
-    <div class="wrap story-grid">
-      <div class="story-copy">
-        <div class="story-eyebrow">How the clean show gets built</div>
-        <h2>We&rsquo;re aggressively anti&ndash;data entry.</h2>
-        <p>
-          PatchMap is node-based at its core &mdash; the nodes already know what they are, so
-          you&rsquo;re not typing your way through a 60-piece orchestra. Templates, show imports,
-          Smart Import: the system auto-labels and self-resolves.
-          <strong>Assign your patch once and it still holds tomorrow.</strong>
-        </p>
-      </div>
-      <div data-slot="antidata"></div>
-    </div>
-  </section>
-
-  <!-- ── COMPETITIVE ─────────────────────────────────────────────────────
-       DEMOTED from the old hero. It's a real differentiator but it's a
-       tool-vs-tool argument — weak as a first impression for a visitor
-       arriving off a reel, strong as a "why not just keep doing what I do"
-       beat down here. No media slot: this one is text only, on purpose. -->
-  <section class="pains wrap">
-    <div class="pain" data-accent="tour">
-      <div class="pain-num">The wrong document</div>
-      <h2>Every tool in this space got faster at building the wrong document.</h2>
-      <p>
-        Templates, drag-and-drop, auto-routing &mdash; all racing to produce a PDF faster. None of
-        them solve what happens the second something changes after you export.
-        <strong>PatchMap isn&rsquo;t a faster document. It&rsquo;s a live one.</strong>
-      </p>
     </div>
   </section>
 
@@ -324,14 +356,16 @@
     <div class="wrap story-grid is-flipped">
       <div class="story-copy">
         <div class="story-eyebrow">The ceiling</div>
-        <h2>Stop learning the same lesson twice.</h2>
+        <h2>Once it&rsquo;s all in one place, you can finally ask it questions.</h2>
         <p>
-          Every fix, gear change, and call made under pressure becomes part of the record
-          automatically &mdash; so the next show starts smarter than the last one ended.
+          When the show lives in PatchMap and the room runs through it, everything gets kept as
+          you work &mdash; not in a creepy way, just recorded. So you can ask what you never
+          could before: where a mic keeps failing, how this run compares to last year, what
+          actually changed since last month.
         </p>
         <p>
-          <strong>One show is a record. Twenty of them is a pattern you couldn&rsquo;t see
-          before</strong> &mdash; where a mic keeps failing, how this run compares to last year.
+          <strong>One show is a record. Twenty is a pattern you couldn&rsquo;t see until
+          now.</strong>
         </p>
         <p class="microcopy">Shown with a demonstration dataset. This is what your own history becomes.</p>
       </div>
@@ -339,16 +373,18 @@
     </div>
   </section>
 
-  <!-- ── SHOW CHAIN ──────────────────────────────────────────────────────── -->
-  <section class="story" data-accent="plus">
-    <div class="wrap story-grid">
-      <div class="story-copy">
-        <div class="story-eyebrow">Next show</div>
-        <h2>Press next show. Everything comes with you.</h2>
+  <!-- ── SHOW CHAIN (continuity beat) ─────────────────────────── -->
+  <!-- DEMOTED in draft 2 from a headline section to a short beat. It is the
+       mechanic that turns "one show" into "twenty shows", so it sits directly
+       under Show Intelligence — but it is supporting evidence for the arc,
+       not a fifth step in it. -->
+  <section class="beat" data-accent="plus">
+    <div class="wrap beat-grid">
+      <div>
+        <h3>Press next show. Everything comes with you.</h3>
         <p>
-          Next stop, next week, next Sunday &mdash; hit <strong>Instance Forward</strong> and
-          PatchMap carries the show ahead. No copy-paste, no erasing last week to make room. It
-          keeps what came before and tells you what changed.
+          Hit <strong>Instance Forward</strong> and PatchMap carries the show ahead &mdash; no
+          copy-paste, no erasing last week. It keeps what came before and tells you what changed.
         </p>
       </div>
       <div data-slot="showchain"></div>
@@ -413,7 +449,7 @@
             oneline: 'When the show has a crew.' },
     tour: { monthly: '$199.99', annual: '$1,950', monthlyEq: '$162.50', savePct: 19,
             venues: '10', shows: 'Unlimited', sessions: '5 with crew', smartImport: 'Unlimited',
-            oneline: "When the production can't run on one person's memory." }
+            oneline: "When it can't run on one memory." }
   };
 
   var TIER_ORDER = ['free', 'plus', 'pro', 'tour'];
@@ -514,10 +550,10 @@
       a: "That's the case it's most useful in, and it's the least obvious. A tight crew doesn't run on documentation — it runs on \"he knows.\" That works right up until the one person who knows is on another stage, out sick, or simply didn't mention the change they made at soundcheck. The failure isn't unfamiliarity, it's an assumption nobody said out loud, and a crew that's worked together for years makes more of those, not fewer. PatchMap doesn't ask you to trust each other less. It just means the show itself is written down somewhere everyone can see, so the thing everybody assumed is the thing everybody can check." },
 
     { q: 'Do my crew need to install an app?',
-      a: "No — everyone joins from a link on their own phone. The PatchMap Live Room is a web app: one link or QR code, and each person lands on a view built for their role — stage tech, monitor engineer, musician. Nothing to download, no accounts for your crew, no app-store detour at load-in. If someone accidentally exits, rescanning the QR or re-clicking the link brings them straight back, with no re-entering data." },
+      a: "No — just a link on their own phone. The PatchMap Live Room is a web app: one link or QR code, and each person lands on a view built for their role — stage tech, monitor engineer, musician. Nothing to download, no accounts for your crew, no app-store detour at load-in. If someone accidentally exits, rescanning the QR or re-clicking the link brings them straight back, with no re-entering data." },
 
     { q: 'Can I start on my phone?',
-      a: "Yes — and it's the fastest way in. Sign up on your phone, drop in a rider (CSV, Excel or PDF, or a photo of one), and Smart Import builds the channel list for you: every input placed, counted and labeled. You'll be looking at a real patched show in about a minute without typing anything. You can view, flag and run that show from the same phone. The one job that wants a desktop is heavy canvas editing — it's a drag-and-drop tool that wants a mouse and a real screen. So start anywhere; sit down when you want to rearrange things." },
+      a: "Yes — and it's the fastest way in. Sign up on your phone and get a first show built: either drop in a patch sheet or input list you already have (CSV, Excel or PDF, or a photo of one) and let Smart Import place, count and label every input, or start from a template and add what you need. Either way you're looking at a real patched show in about a minute, and you can view, flag and run it from the same phone. The one job that wants a desktop is heavy canvas editing — it's a drag-and-drop tool that wants a mouse and a real screen. So start anywhere; sit down when you want to rearrange things." },
 
     { q: 'What’s a “venue,” and why do lower tiers include only one?',
       a: "A venue is your home base in PatchMap — it holds your gear library and the history of every show you've run there, so you're not rebuilding the same rig show after show. One venue covers an engineer working a single production environment; higher tiers add more venues for freelancers and productions moving between multiple rooms." },
@@ -526,7 +562,7 @@
       a: "A live session is a room other people can join — your crew on their own phones, seeing your show and flagging channels in real time. Pro runs 2 of those at once; Tour runs 5, for a production with more than one thing happening at a time. Working a room on your own is different and isn't capped: a solo room — your own flags and notes on your own show — is free on every tier, including Free. The line isn't the room, it's whether anyone else can see it." },
 
     { q: 'How many Smart Imports do I get?',
-      a: "Smart Import is the AI one — drop in a CSV, spreadsheet or PDF rider and it maps the whole thing to channels. On Free, your very first Smart Import is free and doesn't count, and after that you get two per calendar month. Plus runs fifteen a month; Pro and Tour are uncapped. Monthly counts reset on the 1st. There's also Basic CSV Import, the plain no-AI reader for sheets that are already clean, included from Plus up." },
+      a: "Smart Import is the AI one — drop in a CSV, spreadsheet or PDF and it maps the whole thing to channels. On Free, your very first Smart Import is free and doesn't count, and after that you get two per calendar month. Plus runs fifteen a month; Pro and Tour are uncapped. Monthly counts reset on the 1st. There's also Basic CSV Import, the plain no-AI reader for sheets that are already clean, included from Plus up." },
 
     { q: 'Can I pay monthly, or is it annual?',
       a: "Either. Every paid tier bills monthly or annually, and annual runs about two months cheaper than paying month to month. Switch billing on the pricing table above — the plan and every feature are identical either way." },

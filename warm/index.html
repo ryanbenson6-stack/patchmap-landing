@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>PatchMap — Build your own show</title>
-  <meta name="description" content="You're looking at a show someone built in PatchMap. Build your own — drop in a rider and watch it patch itself." />
+  <meta name="description" content="You already know what PatchMap looks like — you're holding one. Building your own is the fast part: import a patch sheet or start from scratch, and get a live link like the one you just opened." />
 
   <!-- Staging, and noindex for a second reason beyond duplication: this page is
        only meaningful when reached with a share token on the URL. A crawler
@@ -46,8 +46,22 @@
       line-height: 0.98; letter-spacing: 0.02em; color: var(--text);
       margin-bottom: 20px; max-width: 660px;
     }
-    .warm-sub { font-size: 17px; line-height: 1.7; color: var(--text-dim); max-width: 580px; margin-bottom: 34px; }
+    .warm-sub { font-size: 19px; line-height: 1.6; color: var(--text); max-width: 580px; margin-bottom: 18px; }
     .warm-sub strong { color: var(--text); font-weight: 500; }
+
+    /* The "what PatchMap is" nod. Set below the sub and dimmer than it, because
+       this visitor does not need convincing — they need orienting, and a
+       paragraph that competes with the headline would read as a re-pitch. */
+    .warm-house { font-size: 15px; line-height: 1.7; color: var(--text-dim); max-width: 580px; margin-bottom: 34px; }
+    .warm-house strong { color: var(--text); font-weight: 500; }
+    .warm-tour {
+      display: inline-block; margin-top: 8px;
+      font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.06em;
+      color: var(--text-dim); text-decoration: none;
+      border-bottom: 1px solid var(--border-bright);
+      transition: color .15s, border-color .15s;
+    }
+    .warm-tour:hover { color: var(--amber); border-bottom-color: rgba(245,166,35,0.5); }
 
     /* ── THE PRIMARY ACTION ──────────────────────────────────────────────
        Email first, "start now" second, and the spec is emphatic that this
@@ -151,21 +165,40 @@
     <main class="warm-main wrap">
       <div class="warm-grid">
         <div>
-          <h1>You&rsquo;re looking at a show someone built in PatchMap.</h1>
+          <!-- DRAFT 2: warmer, and it stops narrating what they can already
+               see. "Looks like you're already familiar" meets them where they
+               are; the old headline told a person holding a live show that
+               they were looking at a live show. -->
+          <h1>Looks like you&rsquo;re already familiar with PatchMap.</h1>
 
-          <!-- "Someone you work with" is load-bearing and deliberately vague.
-               We don't know whether the sharer is their boss, their peer, a
-               vendor or the house — so we don't assume a hierarchy. -->
           <p class="warm-sub">
-            Someone you work with already runs their shows here. That link stays live &mdash;
-            <strong>every change they make shows up on your screen</strong>. You could build your
-            own the same way, in about a minute.
+            It&rsquo;s easy to get started and build your own.
+          </p>
+
+          <!-- One short nod at what the product actually is, then a door out to
+               the full story. Duplicating the main page here would cost this
+               page the only thing it has going for it, which is being short. -->
+          <p class="warm-house">
+            PatchMap puts your whole show &mdash; patch, wireless, gear &mdash; in one place
+            that&rsquo;s <strong>easy to share and easy to use</strong>. The link you just opened
+            is the shareable part; building your own is the fast part. You can even try a solo
+            Live Room yourself.
+            <a href="/next" class="warm-tour">Want the full tour? See everything PatchMap does &rarr;</a>
           </p>
 
           <div class="capture">
+            <!-- The comp half of this line is GATED, per the deck's own
+                 fallback ("if the comp isn't ready, ship with the offer copy
+                 gated, but keep the email-link + token path live"). It is not
+                 ready: the comp mechanic needs "first built show" as its
+                 trigger and that trigger does not exist yet. Promising a free
+                 month we can't grant is the one thing on this page that would
+                 cost more trust than it buys. Flip COMP_LIVE in the script
+                 below once the trigger ships. -->
             <p class="capture-line">
-              We&rsquo;ll email you a link to build your own. Finish your first show and
-              <strong>your first month of Plus is on us.</strong>
+              We&rsquo;ll email you a link to build your own.<span id="comp-offer" hidden>
+              Finish your first show and <strong>your first month of Plus is on
+              us.</strong></span>
             </p>
 
             <form class="capture-form" id="capture-form" novalidate>
@@ -190,7 +223,7 @@
           <div class="warm-what">
             <div class="warm-what-label">What building your own looks like</div>
             <ul>
-              <li>Drop in a rider, watch it patch itself &mdash; no typing.</li>
+              <li>Import a patch sheet or build from scratch &mdash; minimal data entry either way.</li>
               <li>One live link, like the one you just opened.</li>
               <li>Works from your phone; the full canvas is a click away on a desktop.</li>
             </ul>
@@ -227,6 +260,17 @@
      page is patchmap.app. So on this surface the URL is the only carrier, and
      everything below treats it that way rather than assuming a fallback that
      cannot fire. */
+  /* ── THE PLUS COMP ─────────────────────────────────────────────────────
+     One switch, on purpose. The comp itself is the shared mechanic from the
+     paywall fix (lapses to free, no auto-charge, no card), but this page adds
+     a requirement that build does not have: the trigger is FIRST BUILT SHOW,
+     not arrival. Until something detects that, the offer is a promise with no
+     mechanism behind it, so the sentence stays hidden and everything else on
+     the page — the email link, the token, the attribution — ships live. */
+  var COMP_LIVE = false;
+  var comp = document.getElementById('comp-offer');
+  if (comp) comp.hidden = !COMP_LIVE;
+
   var params = new URLSearchParams(window.location.search);
 
   function cleanToken(v) {
