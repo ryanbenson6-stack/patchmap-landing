@@ -1,0 +1,132 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Media slot styling — shared by the main page and the warm page.
+
+   Uses the live site's real tokens (--surface, --border, --text-dim, --amber,
+   the tier hues). Nothing here defines a colour of its own; if the palette
+   moves in index.html, these boxes move with it.
+
+   THE NO-LAYOUT-SHIFT RULE lives in one place: .mslot-frame gets its height
+   from aspect-ratio, and aspect-ratio is fed by --aspect-p / --aspect-l which
+   media.js sets from the slot config BEFORE any source is fetched. The box is
+   therefore final-sized on first paint, empty or not.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.mslot { position: relative; width: 100%; }
+
+.mslot-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--aspect-l, 16 / 9);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--surface);
+}
+
+@media (max-width: 820px) {
+  .mslot-frame { aspect-ratio: var(--aspect-p, 4 / 5); }
+}
+
+.mslot-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  /* cover, not contain: the delivery aspect above is chosen to match the clip
+     for this viewport, so cover trims only the reframing margin rather than
+     letterboxing an honest crop. */
+  object-fit: cover;
+  display: block;
+  background: var(--black);
+}
+
+/* ── PLACEHOLDER ───────────────────────────────────────────────────────────
+   Deliberately styled, not "missing". A visitor should read an unfilled slot
+   as a panel that hasn't loaded its clip, never as a broken image — the page
+   has to be shippable in this state and may well go live in it. */
+.mslot-frame--empty {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255,255,255,0.012) 0 12px,
+      transparent 12px 24px
+    ),
+    var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mslot-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 24px;
+  max-width: 300px;
+  text-align: center;
+}
+
+.mslot-empty-mark {
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border-bright);
+  border-radius: 50%;
+  color: var(--amber);
+  font-size: 13px;
+  opacity: 0.75;
+}
+
+.mslot-empty-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  letter-spacing: 0.04em;
+  color: var(--text-dimmer);
+}
+
+/* ── PROVENANCE BADGES ─────────────────────────────────────────────────────
+   The source-context tag is rendered, not just tracked in config. If we're
+   going to insist that a canvas clip is desktop-truth, the page may as well
+   say so out loud — it costs nothing and it is the kind of small honesty this
+   audience notices. */
+.mslot-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.mslot-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dimmer);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 3px 8px;
+}
+
+/* The Intelligence slot's non-optional "demo data" mark. Amber because it is a
+   claim-limiting statement and must not be mistaken for decoration. */
+.mslot-badge--warn {
+  color: var(--amber);
+  border-color: rgba(245, 166, 35, 0.35);
+  background: var(--amber-glow);
+}
+
+/* Phone-native slots are portrait and would run absurdly tall in a desktop
+   column. Cap them and centre — the clip keeps its real aspect, the section
+   keeps its rhythm. */
+@media (min-width: 821px) {
+  .mslot[data-context="phone-native"] .mslot-frame {
+    max-width: 300px;
+    margin-inline: auto;
+  }
+  .mslot[data-context="phone-native"] .mslot-badges { justify-content: center; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mslot-video { /* poster stays; media.js never calls play() */ }
+}

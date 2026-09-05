@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>PatchMap — The show shouldn't live in anyone's head.</title>
+  <meta name="description" content="Whether your crew has run this room for years or never met before tonight, the fastest thing to go wrong is a quiet assumption nobody said out loud. PatchMap puts the whole show — patch, wireless, Dante, every change — in one live document everyone can see from their own phone." />
+
+  <!-- ── STAGING. NOT THE LIVE PAGE. ───────────────────────────────────────
+       noindex is deliberate and load-bearing: this page carries the same
+       headlines and much of the same copy as patchmap.app/, and letting a
+       crawler see both is how you hand Google a duplicate-content problem on
+       the page you actually rank. Remove this tag ONLY as part of switchover,
+       at which point this file becomes / and the canonical below flips too. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="icon" type="image/png" href="/assets/patchmap-preview.png" />
+  <link rel="apple-touch-icon" href="/assets/patchmap-preview.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <!-- Real tokens, extracted verbatim from the live page. See base.css header. -->
+  <link rel="stylesheet" href="/next/base.css" />
+  <link rel="stylesheet" href="/next/media.css" />
+
+  <style>
+    /* ── ADDITIONS ONLY ──────────────────────────────────────────────────────
+       Everything above is the live site's own stylesheet. What follows exists
+       because the re-aimed page has three shapes the current page doesn't:
+       a media column beside a story block, a "price of admission" pull-line,
+       and the tier one-liner on a pricing card. Nothing here introduces a new
+       colour — every value resolves to a token already in base.css. */
+
+    /* Story sections gain an optional media column. Text-first on a phone
+       (the visitor is reading, and a 9:16 clip above the headline would push
+       the headline off screen), side-by-side once there's width for it. */
+    .story-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (min-width: 900px) {
+      .story-grid { grid-template-columns: 1.15fr 0.85fr; gap: 56px; }
+      .story-grid > .story-copy { min-width: 0; }
+      .story-grid.is-flipped > .story-copy { order: 2; }
+      .story-grid.is-flipped > .mslot { order: 1; }
+    }
+    .story-copy > *:last-child { margin-bottom: 0; }
+
+    /* The load-bearing line from the copy deck — the hinge between the free
+       on-ramp and the paid house. Given its own treatment so it reads as the
+       page's thesis rather than another paragraph. */
+    .pull {
+      border-left: 2px solid var(--amber);
+      padding: 4px 0 4px 18px;
+      margin: 26px 0;
+      max-width: 660px;
+      font-size: 17px;
+      line-height: 1.6;
+      color: var(--text);
+      font-weight: 400;
+    }
+    .pull strong { color: var(--amber); font-weight: 500; }
+
+    /* Hero phone promise — the answer to "can I even use this right now?", and
+       on a phone that is the single most important sentence in the hero. */
+    .hero-device-note strong { color: var(--text); font-weight: 500; }
+
+    .hero-grid { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; }
+    @media (min-width: 900px) { .hero-grid { grid-template-columns: 1.2fr 0.8fr; gap: 64px; } }
+
+    .microcopy {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      color: var(--text-dimmer);
+      margin-top: 12px;
+    }
+
+    /* Tier one-liner on the pricing card. Sits under the tier name, above the
+       price, because it is the thing that tells you whether this row is you. */
+    .pcard-oneline {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-dim);
+      font-style: italic;
+      margin: -6px 0 14px;
+      min-height: 36px;
+    }
+    /* Pro is the house. The page has spent nine sections selling Live Room; the
+       card's job is only to confirm where it lives, so this is a quiet marker,
+       not a second sales pitch. */
+    .pcard[data-tier="pro"] { border-color: rgba(245,166,35,0.45); }
+    .pcard-flag {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--black); background: var(--amber);
+      padding: 3px 8px; border-radius: 2px;
+      display: inline-block; margin-bottom: 10px;
+    }
+    .pcard-spacer { height: 21px; }
+
+    .staging-bar {
+      position: relative; z-index: 101;
+      background: var(--amber); color: var(--black);
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      text-align: center; padding: 7px 16px;
+    }
+    .staging-bar a { color: var(--black); }
+    body.has-staging-bar nav { top: 31px; }
+  </style>
+</head>
+<body class="has-staging-bar">
+
+  <!-- Removed at switchover, along with the noindex above. Present so nobody
+       — Ryan included — ever mistakes this for the live page mid-review. -->
+  <div class="staging-bar">Staging preview · not indexed · live page is <a href="/">patchmap.app</a></div>
+
+  <div class="grid-bg"></div>
+
+  <!-- ── NAV ─────────────────────────────────────────────────────────────── -->
+  <nav>
+    <a href="/next" class="nav-logo">PATCHMAP</a>
+    <div class="nav-right">
+      <a href="/learn" class="nav-link">Learn</a>
+      <a href="#pricing" class="nav-link">Pricing</a>
+      <!-- RE-POINTED: was "Start Building", which promised the desktop canvas
+           only ~27% of signups ever open. The visitor is on a phone. -->
+      <a href="https://app.patchmap.app" class="nav-cta" data-app-link data-track-cta="nav">Start free</a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ────────────────────────────────────────────────────────────── -->
+  <header class="u-hero wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="eyebrow">Built for audio engineers. Not spreadsheet users.</div>
+
+        <h1>The show shouldn&rsquo;t live in anyone&rsquo;s head.</h1>
+
+        <p class="u-hero-sub">
+          Whether your crew has run this room for years or never met before tonight, the fastest
+          thing to go wrong is a quiet assumption nobody said out loud. PatchMap puts the whole
+          show &mdash; patch, wireless, Dante, every change &mdash; in <strong>one live document
+          everyone can see from their own phone</strong>. Still accurate at 9pm.
+        </p>
+
+        <div class="cta-row">
+          <a href="https://app.patchmap.app" class="hero-cta" data-app-link data-track-cta="hero-primary">
+            Start free &mdash; import a rider, watch it patch itself
+          </a>
+          <a href="#import" class="hero-watch"><span class="play">&#9654;</span> Watch it in action</a>
+        </div>
+
+        <p class="hero-device-note">
+          <strong>On your phone right now?</strong> Sign up, drop in a rider, and see your show
+          built before you touch a thing. The canvas builder wants a desktop &mdash; everything
+          else doesn&rsquo;t.
+        </p>
+      </div>
+
+      <div data-slot="hero"></div>
+    </div>
+  </header>
+
+  <!-- ── START HERE: WATCH IT BUILD ──────────────────────────────────────
+       MOVED. Smart Import elevated to the first win, because it is the answer
+       to the empty-home stall: a new phone user currently lands on a blank
+       screen and most leave. This section's only job is to set intent BEFORE
+       signup, so they arrive already reaching for import. -->
+  <section class="story" id="import" data-accent="free">
+    <div class="wrap story-grid">
+      <div class="story-copy">
+        <div class="story-eyebrow">Start here</div>
+        <h2>Drop your rider in. Watch the show build itself.</h2>
+        <p>
+          Most tools hand you a blank canvas and wish you luck. PatchMap reads your rider &mdash;
+          CSV, Excel, or PDF &mdash; and builds the show: every input placed, counted, and labeled
+          the way you already had it. <strong>If your strings start at channel 21, it waits for 21
+          and pages itself there.</strong> A minute in, on your phone, you&rsquo;re looking at a
+          real patched show &mdash; before you&rsquo;ve typed anything.
+        </p>
+
+        <p class="pull">
+          That clean show you just made? <strong>It&rsquo;s the thing everything else runs on.</strong>
+        </p>
+
+        <p>
+          Want to feel it solo first? Open a Live Room by yourself and walk your own show &mdash;
+          the same thing your crew will use, just you.
+        </p>
+
+        <div class="cta-row">
+          <a href="https://app.patchmap.app" class="btn-primary" style="--accent:var(--tier-free);--accent-rgb:var(--tier-free-rgb)" data-app-link data-track-cta="import-primary">
+            Import your first rider &mdash; free
+          </a>
+        </div>
+        <p class="microcopy">First Smart Import is on the house and counts against nothing.</p>
+      </div>
+
+      <div data-slot="import"></div>
+    </div>
+  </section>
+
+  <!-- ── THE HOUSE: LIVE ROOM ────────────────────────────────────────────
+       MOVED up from problem-slot 04 to the emotional centre. This is what the
+       whole page climbs toward, so it gets the most room and the scroll-scrub
+       clip — the one sequence on the page worth letting the reader drive. -->
+  <section class="story" id="live-room" data-accent="pro">
+    <div class="wrap story-grid is-flipped">
+      <div class="story-copy">
+        <div class="story-eyebrow">The whole point</div>
+        <h2>When it&rsquo;s live, the show is in the room &mdash; not in anyone&rsquo;s head.</h2>
+        <p>
+          A tight crew runs on &ldquo;he knows.&rdquo; A pickup crew runs on hope. Both break the
+          same way &mdash; an assumption nobody said out loud. Open a Live Room and everyone&rsquo;s
+          on one live document from their own phone: the stage tech sees the stage, monitors see
+          monitor world, musicians see their own channel and can ask for help.
+        </p>
+        <p>
+          Spot a problem, flag it on the exact channel &mdash; it routes to whoever can fix it and
+          moves from <strong>spotted, to seen, to resolved</strong>, right there in front of
+          everyone. Nothing gets shouted into the void. Nothing gets forgotten.
+        </p>
+        <p>Same document whether the room&rsquo;s full of friends or strangers.</p>
+
+        <p class="pull">
+          It works because your show already lives here as clean data.
+          <strong>Build the show once; the room runs on it.</strong>
+        </p>
+
+        <div class="cta-row">
+          <a href="#pricing" class="btn-primary" style="--accent:var(--tier-pro);--accent-rgb:var(--tier-pro-rgb)" data-track-cta="liveroom-primary">See Live Room</a>
+          <a href="https://app.patchmap.app" class="btn-secondary" style="--accent:var(--tier-pro);--accent-rgb:var(--tier-pro-rgb)" data-app-link data-track-cta="liveroom-solo">Try a solo room free</a>
+        </div>
+        <!-- Accurate as of lib/soloRoom.ts: a solo room is exempt from the
+             live-session cap on every tier. The paywall is other people
+             SEEING it, not the room itself. -->
+        <p class="microcopy">A solo room is free on every tier. Inviting your crew in is Pro.</p>
+      </div>
+
+      <div data-slot="liveroom"></div>
+    </div>
+  </section>
+
+  <!-- ── ONE LIVE DOCUMENT (QR) ──────────────────────────────────────────── -->
+  <section class="story" data-accent="free">
+    <div class="wrap story-grid">
+      <div class="story-copy">
+        <div class="story-eyebrow">One live document</div>
+        <h2>One QR code on the rack. Ninety days later, still right.</h2>
+        <p>
+          Print it once, tape it to the case. Anyone loading in &mdash; your crew, a house tech
+          who&rsquo;s never seen this show, local labor &mdash; opens it once and leaves it open.
+          <strong>Every change you make pushes live</strong>, with a timestamp showing exactly when
+          it last updated. No rescanning.
+        </p>
+      </div>
+      <div data-slot="qr"></div>
+    </div>
+  </section>
+
+  <!-- ── ONE SOURCE OF TRUTH ─────────────────────────────────────────────── -->
+  <section class="story" data-accent="plus">
+    <div class="wrap story-grid is-flipped">
+      <div class="story-copy">
+        <div class="story-eyebrow">One source of truth</div>
+        <h2>Your patch, wireless, and Dante finally live in the same world.</h2>
+        <p>
+          Three documents, three windows, cross-referenced at showtime and hoping nothing&rsquo;s
+          out of sync. PatchMap unifies all three under <strong>one source of truth</strong>
+          &mdash; live on every crew member&rsquo;s own device.
+        </p>
+      </div>
+      <div data-slot="unify"></div>
+    </div>
+  </section>
+
+  <!-- ── ANTI-DATA ENTRY ─────────────────────────────────────────────────── -->
+  <section class="story" data-accent="free">
+    <div class="wrap story-grid">
+      <div class="story-copy">
+        <div class="story-eyebrow">How the clean show gets built</div>
+        <h2>We&rsquo;re aggressively anti&ndash;data entry.</h2>
+        <p>
+          PatchMap is node-based at its core &mdash; the nodes already know what they are, so
+          you&rsquo;re not typing your way through a 60-piece orchestra. Templates, show imports,
+          Smart Import: the system auto-labels and self-resolves.
+          <strong>Assign your patch once and it still holds tomorrow.</strong>
+        </p>
+      </div>
+      <div data-slot="antidata"></div>
+    </div>
+  </section>
+
+  <!-- ── COMPETITIVE ─────────────────────────────────────────────────────
+       DEMOTED from the old hero. It's a real differentiator but it's a
+       tool-vs-tool argument — weak as a first impression for a visitor
+       arriving off a reel, strong as a "why not just keep doing what I do"
+       beat down here. No media slot: this one is text only, on purpose. -->
+  <section class="pains wrap">
+    <div class="pain" data-accent="tour">
+      <div class="pain-num">The wrong document</div>
+      <h2>Every tool in this space got faster at building the wrong document.</h2>
+      <p>
+        Templates, drag-and-drop, auto-routing &mdash; all racing to produce a PDF faster. None of
+        them solve what happens the second something changes after you export.
+        <strong>PatchMap isn&rsquo;t a faster document. It&rsquo;s a live one.</strong>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── SHOW INTELLIGENCE ───────────────────────────────────────────────
+       HONESTY-CONSTRAINED. Nobody has generated this history yet, so every
+       claim here is about the mechanic and about the reader's OWN future data.
+       No stats, no "customers found", no implied results. The media slot
+       renders a non-optional "Illustrative — demo data" badge (media.js). -->
+  <section class="story" data-accent="tour">
+    <div class="wrap story-grid is-flipped">
+      <div class="story-copy">
+        <div class="story-eyebrow">The ceiling</div>
+        <h2>Stop learning the same lesson twice.</h2>
+        <p>
+          Every fix, gear change, and call made under pressure becomes part of the record
+          automatically &mdash; so the next show starts smarter than the last one ended.
+        </p>
+        <p>
+          <strong>One show is a record. Twenty of them is a pattern you couldn&rsquo;t see
+          before</strong> &mdash; where a mic keeps failing, how this run compares to last year.
+        </p>
+        <p class="microcopy">Shown with a demonstration dataset. This is what your own history becomes.</p>
+      </div>
+      <div data-slot="intelligence"></div>
+    </div>
+  </section>
+
+  <!-- ── SHOW CHAIN ──────────────────────────────────────────────────────── -->
+  <section class="story" data-accent="plus">
+    <div class="wrap story-grid">
+      <div class="story-copy">
+        <div class="story-eyebrow">Next show</div>
+        <h2>Press next show. Everything comes with you.</h2>
+        <p>
+          Next stop, next week, next Sunday &mdash; hit <strong>Instance Forward</strong> and
+          PatchMap carries the show ahead. No copy-paste, no erasing last week to make room. It
+          keeps what came before and tells you what changed.
+        </p>
+      </div>
+      <div data-slot="showchain"></div>
+    </div>
+  </section>
+
+  <!-- ── PRICING ─────────────────────────────────────────────────────────── -->
+  <section class="pricing wrap" id="pricing">
+    <h2>Start at $0. Move up when your shows do.</h2>
+    <p class="pricing-sub">Every tier includes everything below it. Nothing is ever hidden.</p>
+
+    <div class="billing-toggle">
+      <button class="billing-opt" id="bill-annual" aria-pressed="true">Annual</button>
+      <button class="billing-opt" id="bill-monthly" aria-pressed="false">Monthly</button>
+      <span class="billing-hint" id="bill-hint">Save up to 19%</span>
+    </div>
+
+    <div class="cards" id="pricing-cards"></div>
+  </section>
+
+  <!-- ── FAQ ─────────────────────────────────────────────────────────────── -->
+  <section class="faq wrap" id="faq">
+    <h2>Questions</h2>
+    <div id="faq-list"></div>
+  </section>
+
+  <!-- ── FOOTER ──────────────────────────────────────────────────────────── -->
+  <footer>
+    <p>&copy; 2026 PatchMap &mdash; Built by <a href="https://indiesoft.app">Indiesoft.app</a></p>
+    <p class="footer-links">
+      <a href="/privacy">Privacy</a> &nbsp;&middot;&nbsp;
+      <a href="/terms">Terms</a> &nbsp;&middot;&nbsp;
+      <a href="mailto:hello@indiesoft.app">Contact</a>
+    </p>
+  </footer>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── PRICING ───────────────────────────────────────────────────────────
+     Numbers copied from the live page's `pricing` object so staging can't
+     quote a price the live site doesn't. Two things are re-pointed per the
+     copy deck:
+
+     1. `oneline` — the tier one-liner, new on this page.
+     2. `sessions` — was the raw cap ("0" for free and plus). That number is
+        accurate about CONCURRENT LIVE sessions but reads as "no room at all",
+        which stopped being true when solo rooms shipped: lib/soloRoom.ts
+        exempts them from the cap on every tier. Since this page sells a free
+        solo room in two places, leaving "0" here would have the ladder
+        contradict the pitch. Reworded to say what each tier actually gets. */
+  var pricing = {
+    free: { monthly: '$0', annual: '$0', monthlyEq: null, savePct: null,
+            venues: '1', shows: '1', sessions: 'Solo room', smartImport: '1 free, then 2/mo',
+            oneline: 'Your on-ramp.' },
+    plus: { monthly: '$12.99', annual: '$129', monthlyEq: '$10.75', savePct: 17,
+            venues: '1', shows: '20', sessions: 'Solo room', smartImport: '15/mo',
+            oneline: 'When the room is yours.' },
+    pro:  { monthly: '$29.99', annual: '$299', monthlyEq: '$24.92', savePct: 17,
+            venues: '5', shows: 'Unlimited', sessions: '2 with crew', smartImport: 'Unlimited',
+            oneline: 'When the show has a crew.' },
+    tour: { monthly: '$199.99', annual: '$1,950', monthlyEq: '$162.50', savePct: 19,
+            venues: '10', shows: 'Unlimited', sessions: '5 with crew', smartImport: 'Unlimited',
+            oneline: "When the production can't run on one person's memory." }
+  };
+
+  var TIER_ORDER = ['free', 'plus', 'pro', 'tour'];
+  var LABEL = { free: 'Free', plus: 'Plus', pro: 'Pro', tour: 'Tour' };
+  var HEX   = { free: '#4ade80', plus: '#38bdf8', pro: '#f5a623', tour: '#a78bfa' };
+  var RGB   = { free: '74,222,128', plus: '56,189,248', pro: '245,166,35', tour: '167,139,250' };
+
+  var VENUE_TIP = 'A venue holds your gear library and show history, so your rig and past shows carry over instead of being re-entered every time.';
+  var IMPORT_TIP = "Smart Import reads a CSV, spreadsheet or PDF rider with AI and maps it to channels. On Free your very first one is free and doesn't count against the two you get each month. Monthly counts reset on the 1st.";
+  var SESSION_TIP = 'A solo room is your own flags and notes on your own show — free on every tier. A live session is a room other people can join from their phones; the number is how many you can run at once.';
+
+  function tip(text, label) {
+    return ' <span class="tip" tabindex="0" role="note" aria-label="' + label + '">' +
+      '<span class="tip-i" aria-hidden="true">i</span>' +
+      '<span class="tip-pop">' + text + '</span></span>';
+  }
+
+  var billing = 'annual';
+
+  function renderPricing() {
+    var annualMode = (billing === 'annual');
+    document.getElementById('pricing-cards').innerHTML = TIER_ORDER.map(function (t) {
+      var p = pricing[t];
+      var isFree = (t === 'free');
+      var priceMain, priceUnit, priceSub;
+
+      if (isFree) {
+        priceMain = '$0'; priceUnit = ''; priceSub = 'No card, no catch.';
+      } else if (annualMode) {
+        priceMain = p.annual; priceUnit = '<small>/yr</small>';
+        priceSub = p.monthlyEq + '/mo, billed annually' +
+                   '<span class="save-badge">Save ' + p.savePct + '%</span>';
+      } else {
+        priceMain = p.monthly; priceUnit = '<small>/mo</small>';
+        priceSub = 'or ' + p.annual + '/yr';
+      }
+
+      /* Pro carries the flag because Pro is the house — the sections above
+         already sold Live Room, so the card only has to confirm where it
+         lives. The other three get a spacer so the price line stays aligned
+         across all four cards. */
+      var flag = (t === 'pro')
+        ? '<div class="pcard-flag">Live Room lives here</div>'
+        : '<div class="pcard-spacer"></div>';
+
+      var cta = isFree
+        ? '<a class="pcard-cta solid" href="https://app.patchmap.app" data-app-link data-track-cta="pricing-free">Start free</a>'
+        : '<a class="pcard-cta ghost" href="https://app.patchmap.app" data-app-link data-track-cta="pricing-' + t + '">Choose ' + LABEL[t] + '</a>';
+
+      return '<div class="pcard" data-tier="' + t + '"' +
+        ' style="--pcard-accent:' + HEX[t] + ';--pcard-accent-rgb:' + RGB[t] + '">' +
+        flag +
+        '<div class="pcard-name">' + LABEL[t] + '</div>' +
+        '<div class="pcard-oneline">' + p.oneline + '</div>' +
+        '<div class="pcard-price">' + priceMain + priceUnit + '</div>' +
+        '<div class="pcard-annual">' + priceSub + '</div>' +
+        '<ul class="pcard-specs">' +
+          '<li><span>Venues' + tip(VENUE_TIP, 'What is a venue?') + '</span><span>' + p.venues + '</span></li>' +
+          '<li><span>Shows</span><span>' + p.shows + '</span></li>' +
+          '<li><span>Live sessions' + tip(SESSION_TIP, 'Solo room vs live session') + '</span><span>' + p.sessions + '</span></li>' +
+          '<li><span>Smart Import' + tip(IMPORT_TIP, 'How does the Smart Import allowance work?') + '</span><span>' + p.smartImport + '</span></li>' +
+        '</ul>' + cta +
+      '</div>';
+    }).join('');
+    decorateAppLinks();
+  }
+
+  document.getElementById('bill-annual').addEventListener('click', function () { setBilling('annual'); });
+  document.getElementById('bill-monthly').addEventListener('click', function () { setBilling('monthly'); });
+
+  function setBilling(mode) {
+    billing = mode;
+    document.getElementById('bill-annual').setAttribute('aria-pressed', String(mode === 'annual'));
+    document.getElementById('bill-monthly').setAttribute('aria-pressed', String(mode === 'monthly'));
+    document.getElementById('bill-hint').style.visibility = (mode === 'annual') ? 'visible' : 'hidden';
+    renderPricing();
+  }
+
+  /* ── FAQ ───────────────────────────────────────────────────────────────
+     The 11 questions from the live page, carried forward as the objection
+     map they already are. Three changes, all from the copy deck:
+
+       RE-AIMED  "Do my crew need to install an app?"  — leads with the phone.
+       RE-AIMED  "Can I start on my phone?"            — emphatic yes → import.
+       ADDED     "…if my crew is always the same people?" — the assumption-is-
+                 the-enemy answer, which preempts the exact objection a stable
+                 house or church crew will raise.
+
+     A fourth was forced rather than chosen: the live answer to "What counts as
+     a concurrent live session?" says "Free and Plus are planning tiers (0 live
+     sessions)". Solo rooms made that wrong. Left unfixed it would contradict
+     the free-solo-room CTA two sections up. */
+  var faqs = [
+    { q: 'Is Free actually free, or a trial?',
+      a: "Free is the whole planning tool, not a trial of it — full canvas, auto-resolved signal flow, professional PDF export, and a live QR code. One venue, one show, no credit card, no time limit." },
+
+    { q: 'Does this even help if my crew is always the same people?',
+      a: "That's the case it's most useful in, and it's the least obvious. A tight crew doesn't run on documentation — it runs on \"he knows.\" That works right up until the one person who knows is on another stage, out sick, or simply didn't mention the change they made at soundcheck. The failure isn't unfamiliarity, it's an assumption nobody said out loud, and a crew that's worked together for years makes more of those, not fewer. PatchMap doesn't ask you to trust each other less. It just means the show itself is written down somewhere everyone can see, so the thing everybody assumed is the thing everybody can check." },
+
+    { q: 'Do my crew need to install an app?',
+      a: "No — everyone joins from a link on their own phone. The PatchMap Live Room is a web app: one link or QR code, and each person lands on a view built for their role — stage tech, monitor engineer, musician. Nothing to download, no accounts for your crew, no app-store detour at load-in. If someone accidentally exits, rescanning the QR or re-clicking the link brings them straight back, with no re-entering data." },
+
+    { q: 'Can I start on my phone?',
+      a: "Yes — and it's the fastest way in. Sign up on your phone, drop in a rider (CSV, Excel or PDF, or a photo of one), and Smart Import builds the channel list for you: every input placed, counted and labeled. You'll be looking at a real patched show in about a minute without typing anything. You can view, flag and run that show from the same phone. The one job that wants a desktop is heavy canvas editing — it's a drag-and-drop tool that wants a mouse and a real screen. So start anywhere; sit down when you want to rearrange things." },
+
+    { q: 'What’s a “venue,” and why do lower tiers include only one?',
+      a: "A venue is your home base in PatchMap — it holds your gear library and the history of every show you've run there, so you're not rebuilding the same rig show after show. One venue covers an engineer working a single production environment; higher tiers add more venues for freelancers and productions moving between multiple rooms." },
+
+    { q: 'What counts as a “concurrent live session”?',
+      a: "A live session is a room other people can join — your crew on their own phones, seeing your show and flagging channels in real time. Pro runs 2 of those at once; Tour runs 5, for a production with more than one thing happening at a time. Working a room on your own is different and isn't capped: a solo room — your own flags and notes on your own show — is free on every tier, including Free. The line isn't the room, it's whether anyone else can see it." },
+
+    { q: 'How many Smart Imports do I get?',
+      a: "Smart Import is the AI one — drop in a CSV, spreadsheet or PDF rider and it maps the whole thing to channels. On Free, your very first Smart Import is free and doesn't count, and after that you get two per calendar month. Plus runs fifteen a month; Pro and Tour are uncapped. Monthly counts reset on the 1st. There's also Basic CSV Import, the plain no-AI reader for sheets that are already clean, included from Plus up." },
+
+    { q: 'Can I pay monthly, or is it annual?',
+      a: "Either. Every paid tier bills monthly or annually, and annual runs about two months cheaper than paying month to month. Switch billing on the pricing table above — the plan and every feature are identical either way." },
+
+    { q: 'What happens when I hit my venue or show limit?',
+      a: "Nothing you've built disappears. Free covers one show in one venue; Plus runs twenty shows in one venue; Pro and Tour lift the show cap entirely and add more venues. When you need more room, you move up a tier and everything you've already made carries over." },
+
+    { q: 'Can I change plans later?',
+      a: "Yes. The ladder is cumulative — every higher tier includes everything below it, so you climb when you're ready without rebuilding anything you've already made." },
+
+    { q: 'Does it hold up at showtime?',
+      a: "The Live Room and every role view run live off one shared record, so a last-minute change reaches the whole crew at once instead of living in one person's head — and the document behind your QR code is always current when someone scans it." },
+
+    { q: 'Who owns my data?',
+      a: "You do. Your shows, your patch history, and your venue locker stay with you — that's the whole point of PatchMap collecting the record around you while you work." }
+  ];
+
+  function renderFaq() {
+    document.getElementById('faq-list').innerHTML = faqs.map(function (f, i) {
+      return '<details class="faq-item" data-faq="' + i + '">' +
+        '<summary class="faq-q">' + f.q + '<span class="chev">+</span></summary>' +
+        '<div class="faq-a">' + f.a + '</div></details>';
+    }).join('');
+  }
+
+  /* ── APP LINKS ─────────────────────────────────────────────────────────
+     Every route into the app carries whatever attribution the visitor arrived
+     with. Critically that includes a `share` visit off a viewer QR: the URL
+     params are forwarded verbatim, so a stage tech who scanned a colleague's
+     rack code and tapped through still reaches signup carrying
+     utm_source=share and the referring token in utm_content.
+
+     STAGING NOTE: the live page's full first-touch cookie + beacon rail is
+     NOT duplicated here. Two pages both writing pm_attr while only one is
+     canonical is how you corrupt the attribution table you're about to point
+     ad spend at. Forwarding is safe and reversible; capture gets wired as part
+     of switchover, when this file becomes the only front door. */
+  function decorateAppLinks() {
+    var qs = window.location.search;
+    if (!qs || qs.length < 2) return;
+    var incoming = new URLSearchParams(qs);
+    var carry = new URLSearchParams();
+    ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'ref'].forEach(function (k) {
+      var v = incoming.get(k);
+      if (v) carry.set(k, v);
+    });
+    if (!carry.toString()) return;
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-app-link]'), function (a) {
+      try {
+        var u = new URL(a.href);
+        carry.forEach(function (v, k) { if (!u.searchParams.has(k)) u.searchParams.set(k, v); });
+        a.href = u.toString();
+      } catch (e) {}
+    });
+  }
+
+  renderPricing();
+  renderFaq();
+  decorateAppLinks();
+})();
+</script>
+<script src="/next/media.js"></script>
+</body>
+</html>

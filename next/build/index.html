@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>PatchMap — Build your own show</title>
+  <meta name="description" content="You're looking at a show someone built in PatchMap. Build your own — drop in a rider and watch it patch itself." />
+
+  <!-- Staging, and noindex for a second reason beyond duplication: this page is
+       only meaningful when reached with a share token on the URL. A crawler
+       indexing the bare version would put a context-free copy into search
+       results for people who never scanned anything. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="icon" type="image/png" href="/assets/patchmap-preview.png" />
+  <link rel="apple-touch-icon" href="/assets/patchmap-preview.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/next/base.css" />
+  <link rel="stylesheet" href="/next/media.css" />
+
+  <style>
+    /* ── WARM PAGE ─────────────────────────────────────────────────────────
+       A screen to a screen and a half, and that constraint is the design.
+       This visitor is holding proof: they just scanned a colleague's QR and
+       are looking at a real, live, correct show. They are past "is this real"
+       and past "does it work". Re-selling them reads as distrust — so there is
+       no problem/solution tour here, no feature grid, no pricing table.
+       Name the moment, hand them the next step, get out of the way. */
+
+    .warm { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; }
+    .warm-main { flex: 1; padding: 104px 0 56px; }
+
+    .warm-grid { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: start; }
+    @media (min-width: 900px) {
+      .warm-grid { grid-template-columns: 1.25fr 0.75fr; gap: 64px; align-items: center; }
+    }
+
+    .warm h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(38px, 6.5vw, 68px);
+      line-height: 0.98; letter-spacing: 0.02em; color: var(--text);
+      margin-bottom: 20px; max-width: 660px;
+    }
+    .warm-sub { font-size: 17px; line-height: 1.7; color: var(--text-dim); max-width: 580px; margin-bottom: 34px; }
+    .warm-sub strong { color: var(--text); font-weight: 500; }
+
+    /* ── THE PRIMARY ACTION ──────────────────────────────────────────────
+       Email first, "start now" second, and the spec is emphatic that this
+       order must not flip. The visitor is often at a load-in — the worst
+       moment to ask them to build something. Email captures warm intent at
+       its peak and moves the actual build to when they're at a desk. */
+    .capture {
+      border: 1px solid var(--border-bright);
+      border-left: 2px solid var(--amber);
+      border-radius: 6px;
+      background: var(--surface);
+      padding: 24px;
+      max-width: 560px;
+    }
+    .capture-line { font-size: 15px; line-height: 1.65; color: var(--text); margin-bottom: 18px; }
+    .capture-line strong { color: var(--amber); font-weight: 500; }
+
+    .capture-form { display: flex; flex-wrap: wrap; gap: 10px; }
+    .capture-input {
+      flex: 1 1 220px; min-width: 0;
+      font-family: 'DM Sans', sans-serif; font-size: 15px;
+      color: var(--text); background: var(--black);
+      border: 1px solid var(--border-bright); border-radius: 3px;
+      padding: 13px 14px;
+    }
+    .capture-input::placeholder { color: var(--text-dimmer); }
+    .capture-input:focus { outline: none; border-color: var(--amber); }
+    .capture-btn {
+      font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--black); background: var(--amber);
+      border: 1px solid var(--amber); border-radius: 3px;
+      padding: 13px 22px; cursor: pointer; transition: background .15s, transform .1s;
+    }
+    .capture-btn:hover { background: #ffc04a; }
+    .capture-btn:active { transform: scale(0.98); }
+    .capture-btn[disabled] { opacity: 0.55; cursor: default; transform: none; }
+
+    .capture-msg { font-size: 14px; line-height: 1.6; color: var(--tier-free); margin-top: 14px; }
+    .capture-msg[data-state="error"] { color: #f87171; }
+    .capture-msg:empty { display: none; }
+
+    .capture-micro {
+      font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.05em;
+      color: var(--text-dimmer); margin-top: 14px; line-height: 1.6;
+    }
+
+    .warm-secondary { margin-top: 22px; font-size: 15px; color: var(--text-dim); }
+    .warm-secondary a {
+      color: var(--amber); text-decoration: none;
+      border-bottom: 1px solid rgba(245,166,35,0.35); transition: border-color .15s;
+    }
+    .warm-secondary a:hover { border-bottom-color: var(--amber); }
+
+    /* Three lines. Not a feature grid — they've seen the product working. */
+    .warm-what { margin-top: 44px; max-width: 560px; }
+    .warm-what-label {
+      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--text-dimmer); margin-bottom: 16px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .warm-what-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .warm-what ul { list-style: none; display: flex; flex-direction: column; gap: 11px; }
+    .warm-what li { font-size: 15px; line-height: 1.6; color: var(--text-dim); display: flex; gap: 12px; }
+    .warm-what li::before { content: '→'; color: var(--amber); flex-shrink: 0; }
+
+    .warm-footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 28px 48px; text-align: center; }
+    .warm-footer p { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--text-dimmer); letter-spacing: 0.06em; }
+    .warm-footer a { color: var(--text-dim); text-decoration: none; }
+    .warm-footer .footer-links { margin-top: 8px; }
+
+    .staging-bar {
+      position: relative; z-index: 101;
+      background: var(--amber); color: var(--black);
+      font-family: 'DM Mono', monospace; font-size: 11px;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      text-align: center; padding: 7px 16px;
+    }
+    .staging-bar a { color: var(--black); }
+    body.has-staging-bar nav { top: 31px; }
+
+    @media (max-width: 820px) {
+      .warm-footer { padding: 24px; }
+      .warm-main { padding: 92px 0 40px; }
+    }
+  </style>
+</head>
+<body class="has-staging-bar">
+
+  <div class="staging-bar">Staging preview · not indexed · live page is <a href="/">patchmap.app</a></div>
+
+  <div class="grid-bg"></div>
+
+  <nav>
+    <a href="/next" class="nav-logo">PATCHMAP</a>
+    <div class="nav-right">
+      <a href="https://app.patchmap.app" class="nav-cta" data-app-link data-track-cta="warm-nav">Start free</a>
+    </div>
+  </nav>
+
+  <div class="warm">
+    <main class="warm-main wrap">
+      <div class="warm-grid">
+        <div>
+          <h1>You&rsquo;re looking at a show someone built in PatchMap.</h1>
+
+          <!-- "Someone you work with" is load-bearing and deliberately vague.
+               We don't know whether the sharer is their boss, their peer, a
+               vendor or the house — so we don't assume a hierarchy. -->
+          <p class="warm-sub">
+            Someone you work with already runs their shows here. That link stays live &mdash;
+            <strong>every change they make shows up on your screen</strong>. You could build your
+            own the same way, in about a minute.
+          </p>
+
+          <div class="capture">
+            <p class="capture-line">
+              We&rsquo;ll email you a link to build your own. Finish your first show and
+              <strong>your first month of Plus is on us.</strong>
+            </p>
+
+            <form class="capture-form" id="capture-form" novalidate>
+              <label for="capture-email" class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);">Your email address</label>
+              <input class="capture-input" id="capture-email" type="email" name="email"
+                     inputmode="email" autocomplete="email" placeholder="you@example.com" required />
+              <button class="capture-btn" id="capture-btn" type="submit">Email me a build link</button>
+            </form>
+
+            <p class="capture-msg" id="capture-msg" role="status" aria-live="polite"></p>
+
+            <p class="capture-micro">
+              Free to start. No card. The show you&rsquo;re looking at is the free tier.
+            </p>
+          </div>
+
+          <p class="warm-secondary">
+            At a computer right now?
+            <a href="https://app.patchmap.app" id="start-now" data-app-link data-track-cta="warm-start-now">Start now &rarr;</a>
+          </p>
+
+          <div class="warm-what">
+            <div class="warm-what-label">What building your own looks like</div>
+            <ul>
+              <li>Drop in a rider, watch it patch itself &mdash; no typing.</li>
+              <li>One live link, like the one you just opened.</li>
+              <li>Works from your phone; the full canvas is a click away on a desktop.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Optional per the spec — the page works copy-only, and ships that
+             way until the hero clip exists. Reuses the main page's asset. -->
+        <div data-slot="warm"></div>
+      </div>
+    </main>
+
+    <footer class="warm-footer">
+      <p>&copy; 2026 PatchMap &mdash; Built by <a href="https://indiesoft.app">Indiesoft.app</a></p>
+      <p class="footer-links">
+        <a href="/privacy">Privacy</a> &nbsp;&middot;&nbsp;
+        <a href="/terms">Terms</a> &nbsp;&middot;&nbsp;
+        <a href="mailto:hello@indiesoft.app">Contact</a>
+      </p>
+    </footer>
+  </div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ── THE REFERRING TOKEN ───────────────────────────────────────────────
+     This page is the front half of the K-factor loop. The token identifying
+     WHICH shared show sent this person arrives on the URL, put there by
+     ShareCta on /view/[token] via shareCtaHref() in lib/shareRef.ts.
+
+     The app also writes a `pm_share_ref` cookie for this purpose, and that
+     cookie is NOT readable here: it is host-only on app.patchmap.app, and this
+     page is patchmap.app. So on this surface the URL is the only carrier, and
+     everything below treats it that way rather than assuming a fallback that
+     cannot fire. */
+  var params = new URLSearchParams(window.location.search);
+
+  function cleanToken(v) {
+    if (!v) return null;
+    var t = String(v).trim();
+    if (!t || t.length > 128) return null;
+    if (!/^[A-Za-z0-9._~-]+$/.test(t)) return null;
+    return t;
+  }
+
+  var TOKEN = cleanToken(params.get('utm_content'));
+  var MEDIUM = params.get('utm_medium') === 'qr' ? 'qr' : 'link';
+
+  /* Both onward routes carry the same attribution the email link will, so a
+     visitor who taps "Start now" instead of using the form is credited to the
+     same share. Otherwise the impatient half of this page's traffic would look
+     like organic direct — which is the exact miscrediting the share-attribution
+     build existed to fix. */
+  function decorateAppLinks() {
+    var carry = new URLSearchParams();
+    if (TOKEN) {
+      carry.set('utm_source', 'share');
+      carry.set('utm_medium', MEDIUM);
+      carry.set('utm_campaign', 'viewer_cta');
+      carry.set('utm_content', TOKEN);
+    } else {
+      carry.set('utm_source', 'warm_page');
+      carry.set('utm_medium', 'direct');
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('[data-app-link]'), function (a) {
+      try {
+        var u = new URL(a.href);
+        carry.forEach(function (v, k) { u.searchParams.set(k, v); });
+        a.href = u.toString();
+      } catch (e) {}
+    });
+  }
+
+  var form = document.getElementById('capture-form');
+  var input = document.getElementById('capture-email');
+  var btn = document.getElementById('capture-btn');
+  var msg = document.getElementById('capture-msg');
+
+  function say(text, state) {
+    msg.textContent = text;
+    if (state) msg.setAttribute('data-state', state);
+    else msg.removeAttribute('data-state');
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var email = input.value.trim();
+
+    if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+      say('Enter a valid email address.', 'error');
+      input.focus();
+      return;
+    }
+
+    btn.disabled = true;
+    say('');
+
+    fetch('/api/build-link', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: email, token: TOKEN, medium: MEDIUM })
+    }).then(function (r) {
+      if (!r.ok) throw new Error('bad status ' + r.status);
+      return r.json();
+    }).then(function () {
+      /* The endpoint answers identically whether it sent, hit a rate cap, or
+         swallowed an error — so this message is written to be true in all three
+         cases. "Check your inbox" would be a promise the response can't back. */
+      form.style.display = 'none';
+      say('Sent. Check your inbox — it comes from hello@indiesoft.app.');
+    })['catch'](function () {
+      btn.disabled = false;
+      say('That didn’t go through. Try again, or just tap "Start now" below.', 'error');
+    });
+  });
+
+  decorateAppLinks();
+})();
+</script>
+<script src="/next/media.js"></script>
+</body>
+</html>
