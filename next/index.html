@@ -70,22 +70,6 @@
        show one path, and the section's whole claim is that BOTH are quick, so
        the row is the argument. Stacked on a phone — side-by-side halves of a
        375px screen would be two clips too small to read. */
-    /* Show Chain is a continuity beat in draft 2, not a headline section: same
-       tokens as a story, roughly half the vertical weight, an h3 instead of an
-       h2. Demoting it in CSS rather than deleting it is deliberate — it is a
-       real differentiator, just not a step in the arc. */
-    .beat { position: relative; z-index: 1; padding: 44px 0; border-top: 1px solid var(--border); }
-    .beat[data-accent="plus"] { --story: var(--tier-plus); --story-rgb: var(--tier-plus-rgb); }
-    .beat-grid { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: center; }
-    @media (min-width: 900px) { .beat-grid { grid-template-columns: 1.3fr 0.7fr; gap: 48px; } }
-    .beat h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: clamp(24px, 3.2vw, 36px);
-      line-height: 1.05; letter-spacing: 0.02em;
-      color: var(--text); margin-bottom: 12px;
-    }
-    .beat p { font-size: 15px; line-height: 1.7; color: var(--text-dim); max-width: 620px; }
-    .beat p strong { color: var(--text); font-weight: 500; }
 
     .hero-grid { display: grid; grid-template-columns: 1fr; gap: 40px; align-items: center; }
     @media (min-width: 900px) { .hero-grid { grid-template-columns: 1.2fr 0.8fr; gap: 64px; } }
@@ -354,6 +338,48 @@
     </div>
   </section>
 
+  <!-- ── SHOW CHAIN ───────────────────────────────────────────────────────
+       MOVED AND PROMOTED in draft 3. It was a short beat sitting after Show
+       Intelligence, the last thing before Pricing, which put it in the two
+       worst possible places at once. Structurally: Intelligence asks the reader
+       to imagine twenty shows of history, and the mechanic that PRODUCES twenty
+       shows was being explained afterwards — the payoff before the cause.
+       Positionally: it read as an afterthought, a leftover feature bolted on
+       after the argument had finished.
+
+       It is now a full section immediately BEFORE Intelligence, so the arc runs
+       cause then effect: carry the show forward, accumulate a record, ask the
+       record questions. Not flipped, between two flipped sections, so three
+       Plus/Tour beats don't stack into one undifferentiated block. -->
+  <section class="story" data-accent="plus">
+    <div class="wrap story-grid">
+      <div class="story-copy">
+        <div class="story-eyebrow">Week after week</div>
+        <h2>Press next show. Everything comes with you.</h2>
+        <p>
+          Hit <strong>Instance Forward</strong> and PatchMap carries the whole show to the
+          next date &mdash; patch, gear, wireless, notes, all of it. No duplicating a file,
+          no erasing last week and hoping you remembered everything that changed.
+        </p>
+        <p>
+          It isn&rsquo;t a copy. The new date stays <strong>linked to the one before it</strong>,
+          so what you end up with is a show with a history rather than a folder full of
+          near-identical versions with dates in the filenames.
+        </p>
+        <p>
+          Which is the shape most of the work actually has. The same room every Sunday,
+          the same band every Friday, the same tour in a different building. Ninety
+          per cent of it is the same every time &mdash; and it&rsquo;s the other ten per cent
+          that bites you at soundcheck.
+        </p>
+        <p>
+          Do that a few times and you don&rsquo;t have a document any more. You have a record.
+        </p>
+      </div>
+      <div data-slot="showchain"></div>
+    </div>
+  </section>
+
   <!-- ── SHOW INTELLIGENCE ───────────────────────────────────────────────
        HONESTY-CONSTRAINED. Nobody has generated this history yet, so every
        claim here is about the mechanic and about the reader's OWN future data.
@@ -380,23 +406,6 @@
     </div>
   </section>
 
-  <!-- ── SHOW CHAIN (continuity beat) ─────────────────────────── -->
-  <!-- DEMOTED in draft 2 from a headline section to a short beat. It is the
-       mechanic that turns "one show" into "twenty shows", so it sits directly
-       under Show Intelligence — but it is supporting evidence for the arc,
-       not a fifth step in it. -->
-  <section class="beat" data-accent="plus">
-    <div class="wrap beat-grid">
-      <div>
-        <h3>Press next show. Everything comes with you.</h3>
-        <p>
-          Hit <strong>Instance Forward</strong> and PatchMap carries the show ahead &mdash; no
-          copy-paste, no erasing last week. It keeps what came before and tells you what changed.
-        </p>
-      </div>
-      <div data-slot="showchain"></div>
-    </div>
-  </section>
 
   <!-- ── PRICING ─────────────────────────────────────────────────────────── -->
   <section class="pricing wrap" id="pricing">
