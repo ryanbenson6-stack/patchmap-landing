@@ -88,16 +88,30 @@
        both sides — the source context below is still the truth about each. */
     build: {
       context: 'desktop-truth',
-      aspect: ['4 / 5', '4 / 5'],
+      /* WAS 4/5, chosen so this and `import` could share one delivery aspect in
+         the .path-pair row. The delivered files broke that premise: this one is
+         1080x1080 and import is 1080x1920. Forcing a shared aspect now means
+         cropping one of them — 20% off this clip's sides or 30% off import's
+         ends — so the pair carries its two native shapes instead. Square desktop
+         beside tall phone also happens to say "two paths" better than two
+         identical boxes did. Heights differ, so the captions no longer align. */
+      aspect: ['1 / 1', '1 / 1'],
       mode: 'autoplay-loop',
-      portrait: null, landscape: null, poster: null,
+      portrait: null,
+      landscape: '4f92c4ef-eb3f-4708-9da3-368fc42b5230',
+      poster: 'https://vz-582e6ee8-8a2.b-cdn.net/4f92c4ef-eb3f-4708-9da3-368fc42b5230/thumbnail_1.jpg',
+
       label: 'A show built from scratch on the canvas — nodes self-labelling and auto-patching'
     },
     'import': {
       context: 'phone-native',
-      aspect: ['4 / 5', '4 / 5'],
+      /* WAS 4/5 — see `build` above for why the pair no longer shares one. */
+      aspect: ['9 / 16', '9 / 16'],
       mode: 'autoplay-loop',
-      portrait: null, landscape: null, poster: null,
+      portrait: null,
+      landscape: 'da5d6c14-7e1d-4f51-aa8d-f604844afae5',
+      poster: 'https://vz-582e6ee8-8a2.b-cdn.net/da5d6c14-7e1d-4f51-aa8d-f604844afae5/thumbnail_1.jpg',
+
       label: 'Smart Import building the channel list from an existing patch sheet'
     },
     liveroom: {
@@ -130,9 +144,17 @@
     },
     unify: {
       context: 'desktop-truth',
-      aspect: ['4 / 5', '16 / 9'],
+      /* Portrait delivery WAS 4/5, on the assumption a portrait crop of this
+         shot would exist. Only the 1920x1080 master does, and object-fit:cover
+         would throw away 55% of its WIDTH to fill a 4/5 box — most of a canvas
+         is horizontal, so that is the wrong half to lose. Small-but-whole beats
+         big-but-cropped here; phones get the same 16/9 frame. */
+      aspect: ['16 / 9', '16 / 9'],
       mode: 'autoplay-loop',
-      portrait: null, landscape: null, poster: null,
+      portrait: null,
+      landscape: '678d9d8a-0e48-4bba-8102-55a922442a69',
+      poster: 'https://vz-582e6ee8-8a2.b-cdn.net/678d9d8a-0e48-4bba-8102-55a922442a69/thumbnail_1.jpg',
+
       label: 'Patch, wireless and Dante resolving under one document'
     },
     /* `antidata` was removed in draft 2 — the anti–data-entry section merged
@@ -153,9 +175,13 @@
     },
     showchain: {
       context: 'desktop-truth',
-      aspect: ['4 / 5', '16 / 9'],
+      /* 16/9 master only — same reasoning as `unify`. */
+      aspect: ['16 / 9', '16 / 9'],
       mode: 'autoplay-loop',
-      portrait: null, landscape: null, poster: null,
+      portrait: null,
+      landscape: '53fb6dc3-e0fc-4e05-bd98-1aa1eee5a42f',
+      poster: 'https://vz-582e6ee8-8a2.b-cdn.net/53fb6dc3-e0fc-4e05-bd98-1aa1eee5a42f/thumbnail_1.jpg',
+
       label: 'Instance Forward carrying a show to the next date'
     },
     warm: {
