@@ -465,7 +465,11 @@
   var RGB   = { free: '74,222,128', plus: '56,189,248', pro: '245,166,35', tour: '167,139,250' };
 
   var VENUE_TIP = 'A venue holds your gear library and show history, so your rig and past shows carry over instead of being re-entered every time.';
-  var IMPORT_TIP = "Smart Import reads a CSV, spreadsheet or PDF rider with AI and maps it to channels. On Free your very first one is free and doesn't count against the two you get each month. Monthly counts reset on the 1st.";
+  /* Accepted formats are stated in three places — here, the FAQ, and the
+     Foundation copy. The FAQ was the only one that mentioned a photo, so a
+     reader comparing tiers saw a narrower product than the reader who scrolled
+     to the questions. Kept in step with the FAQ wording deliberately. */
+  var IMPORT_TIP = "Smart Import reads a CSV, spreadsheet, PDF rider or a photo of one with AI and maps it to channels. On Free your very first one is free and doesn't count against the two you get each month. Monthly counts reset on the 1st.";
   var SESSION_TIP = 'A solo room is your own flags and notes on your own show — free on every tier. A live session is a room other people can join from their phones; the number is how many you can run at once.';
 
   function tip(text, label) {
@@ -569,7 +573,7 @@
       a: "A live session is a room other people can join — your crew on their own phones, seeing your show and flagging channels in real time. Pro runs 2 of those at once; Tour runs 5, for a production with more than one thing happening at a time. Working a room on your own is different and isn't capped: a solo room — your own flags and notes on your own show — is free on every tier, including Free. The line isn't the room, it's whether anyone else can see it." },
 
     { q: 'How many Smart Imports do I get?',
-      a: "Smart Import is the AI one — drop in a CSV, spreadsheet or PDF and it maps the whole thing to channels. On Free, your very first Smart Import is free and doesn't count, and after that you get two per calendar month. Plus runs fifteen a month; Pro and Tour are uncapped. Monthly counts reset on the 1st. There's also Basic CSV Import, the plain no-AI reader for sheets that are already clean, included from Plus up." },
+      a: "Smart Import is the AI one — drop in a CSV, spreadsheet, PDF or a photo of one and it maps the whole thing to channels. On Free, your very first Smart Import is free and doesn't count, and after that you get two per calendar month. Plus runs fifteen a month; Pro and Tour are uncapped. Monthly counts reset on the 1st. There's also Basic CSV Import, the plain no-AI reader for sheets that are already clean, included from Plus up." },
 
     { q: 'Can I pay monthly, or is it annual?',
       a: "Either. Every paid tier bills monthly or annually, and annual runs about two months cheaper than paying month to month. Switch billing on the pricing table above — the plan and every feature are identical either way." },
