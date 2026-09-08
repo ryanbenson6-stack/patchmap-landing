@@ -163,9 +163,16 @@
        config is how a future clip gets produced for a box nobody sees. */
     intelligence: {
       context: 'desktop-truth',
-      aspect: ['4 / 5', '16 / 9'],
+      /* Delivered at 2048x1080 — wider than 16/9, so the ratio is written out
+         raw rather than rounded to one. Rounding to 16/9 would letterbox it by
+         a hair on every viewport, which is the exact layout-shift-adjacent
+         sloppiness the aspect fields exist to prevent. Portrait delivery is the
+         same frame: same reasoning as `unify` and `showchain`. */
+      aspect: ['2048 / 1080', '2048 / 1080'],
       mode: 'autoplay-loop',
-      portrait: null, landscape: null, poster: null,
+      portrait: null,
+      landscape: '24e73821-36a6-47ab-a265-393f17ff795a',
+      poster: 'https://vz-582e6ee8-8a2.b-cdn.net/24e73821-36a6-47ab-a265-393f17ff795a/thumbnail_1.jpg',
       /* HONESTY CONSTRAINT, carried from the copy deck and enforced in markup:
          this slot renders an "Illustrative" badge that is NOT optional. Nobody
          has generated this history yet, so the clip is a demonstration of the
