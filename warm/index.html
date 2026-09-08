@@ -140,6 +140,9 @@
       text-align: center; padding: 7px 16px;
     }
     .staging-bar a { color: var(--black); }
+    /* Start position only. The bar is in normal flow and scrolls away, so JS
+       below retracts this offset as it goes — otherwise the fixed nav holds
+       the 31px open and you see the page sliding through the gap above it. */
     body.has-staging-bar nav { top: 31px; }
 
     @media (max-width: 820px) {
@@ -353,6 +356,30 @@
   });
 
   decorateAppLinks();
+})();
+</script>
+<script>
+/* Staging-bar offset. The nav is fixed, so it can't ride the bar up the way an
+   in-flow element would — it has to be told. Tracking the bar's bottom edge
+   (rather than snapping at a threshold) means there is no gap at ANY scroll
+   position, including mid-scroll. Whole block goes with the bar at switchover. */
+(function () {
+  var bar = document.querySelector('.staging-bar');
+  var nav = document.querySelector('nav');
+  if (!bar || !nav) return;
+  var ticking = false;
+  function apply() {
+    ticking = false;
+    nav.style.top = Math.max(0, bar.offsetHeight - window.scrollY) + 'px';
+  }
+  function sync() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(apply);
+  }
+  window.addEventListener('scroll', sync, { passive: true });
+  window.addEventListener('resize', sync);
+  apply();
 })();
 </script>
 <script src="/assets/media.js"></script>
