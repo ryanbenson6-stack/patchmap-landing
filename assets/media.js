@@ -103,10 +103,12 @@
     liveroom: {
       context: 'phone-native',
       aspect: ['9 / 16', '9 / 16'],
-      /* The one scroll-scrub slot on the page. It earns the exception because
-         the thing being shown is a SEQUENCE — flag raised, routed, resolved —
-         and letting the reader drive it is what makes the routing legible. */
-      mode: 'scroll-scrub',
+      /* Was scroll-scrub, on the theory that letting the reader drive a
+         SEQUENCE — flag raised, routed, resolved — made the routing legible.
+         In practice it just meant the clip only moved while you moved, which
+         reads as a broken video, not as a control. Plays like the others now.
+         (wireScrub below is left intact but is no longer used by any slot.) */
+      mode: 'autoplay-loop',
       portrait: null,
       landscape: 'b760754b-e0d2-4aa9-96f0-1483927e235d',
       poster: 'https://vz-582e6ee8-8a2.b-cdn.net/b760754b-e0d2-4aa9-96f0-1483927e235d/thumbnail_1.jpg',
