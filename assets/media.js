@@ -39,7 +39,7 @@
      every slot in placeholder mode, which is a shippable state on purpose. */
   var CDN = {
     library: '710517',
-    cdnBase: null,           // e.g. 'https://vz-abc12345-xyz.b-cdn.net'
+    cdnBase: 'https://vz-582e6ee8-8a2.b-cdn.net',  // library 710517's pull zone
     portraitRendition: 'play_720p.mp4',
     landscapeRendition: 'play_720p.mp4'
   };
@@ -71,7 +71,13 @@
       context: 'phone-native',
       aspect: ['9 / 16', '9 / 16'],
       mode: 'autoplay-loop',
-      portrait: null, landscape: null, poster: null,
+      /* Source is portrait-native (1080x1920) and the delivery aspect is 9/16 on
+         both viewports, so ONE file serves both. It sits in `landscape` because
+         that entry carries no media attribute and is the fallback everything
+         falls through to — including browsers that ignore media on <source>. */
+      portrait: null,
+      landscape: '235702d9-21bc-4d0f-8bf8-a5bf9d2d4a8d',
+      poster: 'https://vz-582e6ee8-8a2.b-cdn.net/235702d9-21bc-4d0f-8bf8-a5bf9d2d4a8d/thumbnail_1.jpg',
       label: 'A complete, live show being worked on a phone — patch, flags, changes landing'
     },
 
@@ -101,14 +107,23 @@
          the thing being shown is a SEQUENCE — flag raised, routed, resolved —
          and letting the reader drive it is what makes the routing legible. */
       mode: 'scroll-scrub',
-      portrait: null, landscape: null, poster: null,
+      portrait: null,
+      landscape: 'b760754b-e0d2-4aa9-96f0-1483927e235d',
+      poster: 'https://vz-582e6ee8-8a2.b-cdn.net/b760754b-e0d2-4aa9-96f0-1483927e235d/thumbnail_1.jpg',
       label: 'A flag firing on a channel and routing across several phones'
     },
     qr: {
       context: 'phone-native',
-      aspect: ['4 / 5', '4 / 5'],
+      /* WAS 4/5. The delivered clip is 1080x1920, and .mslot-video is
+         object-fit:cover — a 9/16 source in a 4/5 box loses 30% of its height,
+         15% off each end, which is where a QR code and a timestamp live. The
+         box matches the footage now. Layout-safe: this sits in .story-grid,
+         the same column `liveroom` already fills at 9/16. */
+      aspect: ['9 / 16', '9 / 16'],
       mode: 'autoplay-loop',
-      portrait: null, landscape: null, poster: null,
+      portrait: null,
+      landscape: '449b6123-b0ef-4b76-9791-6a802ccdfe73',
+      poster: 'https://vz-582e6ee8-8a2.b-cdn.net/449b6123-b0ef-4b76-9791-6a802ccdfe73/thumbnail_1.jpg',
       label: 'The viewer QR taped to a rack case, and its live timestamp updating'
     },
     unify: {
@@ -145,7 +160,12 @@
       context: 'phone-native',
       aspect: ['9 / 16', '9 / 16'],
       mode: 'autoplay-loop',
-      portrait: null, landscape: null, poster: null,
+      /* Same file as `hero` on purpose — the warm page is the hero's promise
+         repeated to someone who already clicked, so a second clip would be a
+         second thing to keep in sync for no gain. */
+      portrait: null,
+      landscape: '235702d9-21bc-4d0f-8bf8-a5bf9d2d4a8d',
+      poster: 'https://vz-582e6ee8-8a2.b-cdn.net/235702d9-21bc-4d0f-8bf8-a5bf9d2d4a8d/thumbnail_1.jpg',
       label: 'Reuses the hero clip — a complete, live show on a phone'
     }
   };
