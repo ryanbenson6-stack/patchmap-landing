@@ -222,11 +222,46 @@
       try { evicted.pause(); } catch (e) {}
     }
     playing.push(v);
+    attempt(v);
+  }
+
+  /* Videos whose play() was refused. Safari in Low Power Mode refuses every
+     autoplay until the reader touches the page, then allows it for the rest of
+     the visit — so a rejection is a "not yet", not a "never", and throwing it
+     away means the page stays full of still frames for the whole session. */
+  var blocked = [];
+  var armed = false;
+
+  function attempt(v) {
     var p = v.play();
-    /* Autoplay can still be refused (low-power mode is the common one). The
-       poster is already painted underneath, so a rejection is a no-op, not a
-       hole in the page — swallow it rather than logging noise on every phone. */
-    if (p && p['catch']) p['catch'](function () {});
+    /* The poster is already painted underneath, so a rejection is never a hole
+       in the page — park it and stay quiet rather than logging on every phone. */
+    if (p && p['catch']) {
+      p['catch'](function () {
+        if (blocked.indexOf(v) === -1) blocked.push(v);
+        arm();
+      });
+    }
+  }
+
+  /* One listener, added only once something has actually been refused, removed
+     the moment it fires. Nothing is bound on a browser that never needed it. */
+  function arm() {
+    if (armed) return;
+    armed = true;
+    function release() {
+      document.removeEventListener('touchstart', release);
+      document.removeEventListener('click', release);
+      var queue = blocked.slice();
+      blocked.length = 0;
+      queue.forEach(function (v) {
+        /* Only the ones still on screen — a video the reader scrolled past
+           should not start playing because they tapped something else. */
+        if (playing.indexOf(v) !== -1) attempt(v);
+      });
+    }
+    document.addEventListener('touchstart', release, { passive: true, once: true });
+    document.addEventListener('click', release, { once: true });
   }
 
   function releasePlay(v) {
@@ -285,7 +320,12 @@
 
     el.innerHTML =
       '<div class="mslot-frame">' +
-        '<video class="mslot-video" muted playsinline loop preload="none" ' +
+        /* NO `autoplay` attribute on purpose. WebKit permits a MUTED video to be
+           started by script, which is what requestPlay does, so the attribute
+           buys nothing — and it overrides preload="none", which would put all
+           nine clips on the wire at once on someone's phone data. */
+        '<video class="mslot-video" muted playsinline webkit-playsinline ' +
+               'loop preload="none" ' +
                'aria-label="' + esc(slot.label) + '"' +
                (poster ? ' poster="' + esc(poster) + '"' : '') + '>' +
           sources +
@@ -295,6 +335,14 @@
 
     var video = el.querySelector('video');
     if (!video) return;
+
+    /* Belt and braces, and both braces are load-bearing on Safari. The muted
+       CONTENT attribute above is not always reflected onto the property for an
+       element built via innerHTML, and WebKit gates autoplay on the property.
+       defaultMuted keeps it muted across a load()/src change. */
+    video.muted = true;
+    video.defaultMuted = true;
+    video.setAttribute('muted', '');
 
     if (REDUCED) {
       /* Poster only. preload stays 'none' so a reduced-motion reader never pays
