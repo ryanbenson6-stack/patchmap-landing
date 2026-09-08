@@ -41,7 +41,11 @@
     library: '710517',
     cdnBase: 'https://vz-582e6ee8-8a2.b-cdn.net',  // library 710517's pull zone
     portraitRendition: 'play_720p.mp4',
-    landscapeRendition: 'play_720p.mp4'
+    landscapeRendition: 'play_720p.mp4',
+    /* Desktop-truth clips are screen recordings of the canvas, so the content
+       IS small text. 720p softens it to the point where the thing being
+       demonstrated stops being readable, which defeats the clip. */
+    desktopRendition: 'play_1080p.mp4'
   };
 
   /* A bare video id resolves against the pull zone; anything that already looks
@@ -302,8 +306,21 @@
     el.style.setProperty('--aspect-p', slot.aspect[0]);
     el.style.setProperty('--aspect-l', slot.aspect[1]);
 
+    /* Rendition follows the SOURCE CONTEXT, not the viewport: a phone-native
+       clip is a phone screen and 720p is already more than the frame holds. */
+    var lRend = slot.context === 'desktop-truth' ? CDN.desktopRendition : CDN.landscapeRendition;
+
     var pSrc = resolve(slot.portrait, CDN.portraitRendition);
-    var lSrc = resolve(slot.landscape, CDN.landscapeRendition);
+    var lSrc = resolve(slot.landscape, lRend);
+
+    /* A desktop clip with no separate portrait crop still needs its own phone
+       source — the same file at the smaller rendition. Without this the media
+       query has nothing to match and a phone downloads the 1080p to display it
+       a third of the width, which is the whole cost and none of the benefit. */
+    if (!pSrc && lSrc && lRend !== CDN.portraitRendition) {
+      pSrc = resolve(slot.landscape, CDN.portraitRendition);
+    }
+
     var poster = slot.poster || null;
 
     var badges = '';
