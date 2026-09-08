@@ -212,7 +212,11 @@
      drop frames long before it runs out of bandwidth, and nine simultaneous
      decodes is the way to get there. Two is enough that a slot is never blank
      when it reaches the middle of the screen. */
-  var MAX_PLAYING = 2;
+  /* One at a time on a phone. Sections are full-width there, so two clips are
+     never usefully on screen together anyway — and Safari on iOS is far more
+     willing to start a clip when nothing else holds a decoder. Two on desktop,
+     where a wide viewport really can show two boxes at once. */
+  var MAX_PLAYING = (global.innerWidth && global.innerWidth <= 820) ? 1 : 2;
   var playing = [];
 
   function requestPlay(v) {
@@ -225,40 +229,57 @@
     attempt(v);
   }
 
-  /* Videos whose play() was refused. Safari in Low Power Mode refuses every
-     autoplay until the reader touches the page, then allows it for the rest of
-     the visit — so a rejection is a "not yet", not a "never", and throwing it
-     away means the page stays full of still frames for the whole session. */
-  var blocked = [];
   var armed = false;
 
+  /* Try to start a clip, and treat a refusal as "not yet" rather than "never".
+
+     THIS IS THE ONE THAT BROKE SAFARI. preload is 'none' until the box is near
+     the viewport, so when the play() call lands the element frequently has no
+     data yet. Chrome queues the request and honours it once data arrives.
+     WebKit REJECTS it. The first clip worked because it was already loaded at
+     page load; every later clip asked at the wrong moment and was told no, once,
+     with nothing listening for the moment it became possible.
+
+     So a refusal now waits for the two things that can make it possible: the
+     element becoming playable, and the reader touching the page (which is what
+     lifts a Low Power Mode block). Whichever happens first wins; both are
+     one-shot and clean up after themselves. */
   function attempt(v) {
-    var p = v.play();
-    /* The poster is already painted underneath, so a rejection is never a hole
-       in the page — park it and stay quiet rather than logging on every phone. */
-    if (p && p['catch']) {
-      p['catch'](function () {
-        if (blocked.indexOf(v) === -1) blocked.push(v);
-        arm();
-      });
-    }
+    var p;
+    try { p = v.play(); } catch (e) { p = null; }
+    if (!p || !p['catch']) return;
+    p['catch'](function () {
+      /* Gone from view in the meantime — nothing to retry. */
+      if (playing.indexOf(v) === -1) return;
+
+      function retry() {
+        v.removeEventListener('canplay', retry);
+        v.removeEventListener('loadeddata', retry);
+        if (playing.indexOf(v) !== -1 && v.paused) attempt(v);
+      }
+      v.addEventListener('canplay', retry, { once: true });
+      v.addEventListener('loadeddata', retry, { once: true });
+
+      /* Nudge the data along. Without this a preload='none' element that was
+         refused can sit there with readyState 0 and never fire either event. */
+      if (v.preload === 'none') { v.preload = 'auto'; try { v.load(); } catch (e) {} }
+
+      arm();
+    });
   }
 
-  /* One listener, added only once something has actually been refused, removed
-     the moment it fires. Nothing is bound on a browser that never needed it. */
+  /* A gesture lifts a Low Power Mode block for the rest of the visit. Bound
+     only once something has actually been refused, and RE-ARMABLE — the first
+     version of this latched `armed` on and never reset it, so only the first
+     refusal in a session ever got a second chance. */
   function arm() {
     if (armed) return;
     armed = true;
     function release() {
       document.removeEventListener('touchstart', release);
       document.removeEventListener('click', release);
-      var queue = blocked.slice();
-      blocked.length = 0;
-      queue.forEach(function (v) {
-        /* Only the ones still on screen — a video the reader scrolled past
-           should not start playing because they tapped something else. */
-        if (playing.indexOf(v) !== -1) attempt(v);
-      });
+      armed = false;
+      playing.forEach(function (v) { if (v.paused) attempt(v); });
     }
     document.addEventListener('touchstart', release, { passive: true, once: true });
     document.addEventListener('click', release, { once: true });
