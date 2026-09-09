@@ -12,7 +12,7 @@ every report joins on, so a stray `Instagram` or `IG` becomes its own channel ro
 |---|---|---|
 | Instagram profile bio | `https://patchmap.app/ig` | `/?utm_source=instagram&utm_medium=bio` |
 | Anywhere a raw query string reads as spam | `https://patchmap.app/ig` | as above |
-| Instagram bio → straight to the walkthrough video | `https://patchmap.app/?utm_source=instagram&utm_medium=bio&watch=true` | itself |
+| Instagram bio → straight to the walkthrough clips | `https://patchmap.app/?utm_source=instagram&utm_medium=bio&watch=true` | itself, scrolled to Foundation |
 
 ## Vanity paths
 
@@ -43,9 +43,16 @@ nothing there and one more redirect is one more thing to break.
 - `utm_medium=bio` — separates the always-on profile link from paid Meta placements,
   which carry their own `utm_medium`. Without it, bio traffic and ad traffic pool
   into one Instagram number and the ad spend can't be judged.
-- `watch=true` — optional. Auto-opens the walkthrough video modal on load
-  (`index.html`, the `TUTORIAL VIDEO MODAL` block). Use the plain URL unless the
-  bio copy is specifically promising the video.
+- `watch=true` — optional. **Behaviour changed at the 2026-09-09 landing
+  switchover.** It used to open a Bunny video modal on load; the current landing
+  page has no modal, so it now scrolls the visitor straight to the Foundation
+  section, whose clips autoplay when they come into view — the same place the
+  hero's "Watch it in action" link goes. The param is still honoured and still
+  accepts `1`/`true`/`yes`, so any link already in the wild keeps working; it
+  fires `video_deep_link` rather than the old `video_open`. Use the plain URL
+  unless the bio copy is specifically promising the video.
+  (`index.html`, `handleWatchDeepLink`. The full-modal version is preserved at
+  `/old` if you ever want it back.)
 
 ## Applying it
 

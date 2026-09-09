@@ -843,11 +843,42 @@
     track('exit', { last_section: lastSection, seconds: Math.round((Date.now() - pageLoadedAt) / 1000) });
   });
 
+  /* -- ?watch=true DEEP LINK ---------------------------------------------
+     Carried over from the page this replaced, where it opened a Bunny video
+     modal on load. It is not decoration: MARKETING_LINKS.md documents it as an
+     Instagram bio placement, so it is a live external link and dropping it
+     would have been a silent break - the URL still 200s, it just stops keeping
+     its promise, which is the kind of thing nobody notices for months.
+
+     This page has no modal. The walkthrough is inline in Foundation and the
+     clips autoplay when they scroll into view, so the honest equivalent is to
+     land the visitor there - exactly what the hero's "Watch it in action" does.
+     Same accepted values as the old page so existing links keep working. */
+  function handleWatchDeepLink() {
+    var v = new URLSearchParams(location.search).get('watch') || '';
+    if (!/^(1|true|yes)$/i.test(v)) return;
+    var target = document.getElementById('foundation');
+    if (!target) return;
+    track('video_deep_link', { source: 'watch_param', target: 'foundation' });
+    // rAF so it runs after first paint; 'auto' rather than 'smooth' because a
+    // long smooth scroll from a cold load reads as the page drifting on its own.
+    // Guarded and with a manual fallback: this runs on the FIRST paint of the
+    // front door, so anything it can throw takes the rest of boot with it.
+    requestAnimationFrame(function () {
+      try {
+        if (target.scrollIntoView) target.scrollIntoView({ behavior: 'auto', block: 'start' });
+        else window.scrollTo(0, target.getBoundingClientRect().top + window.scrollY);
+      } catch (e) {}
+      onScroll();
+    });
+  }
+
   renderPricing();
   renderFaq();
   decorateAppLinks();
   onScroll();
   track('page_view', { path: location.pathname });
+  handleWatchDeepLink();
 })();
 </script>
 <script src="/assets/media.js"></script>
