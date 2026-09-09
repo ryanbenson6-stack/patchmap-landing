@@ -4,6 +4,16 @@
       "source": "/ig",
       "destination": "/?utm_source=instagram&utm_medium=bio",
       "permanent": false
+    },
+    {
+      "source": "/next",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/next/:path*",
+      "destination": "/",
+      "permanent": false
     }
   ]
 }

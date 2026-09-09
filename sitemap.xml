@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- patchmap.app sitemap. /main is the tier-routed sales page and is intentionally
-     omitted: it duplicates the root landing's content and would compete with it. -->
+<!-- patchmap.app sitemap.
+     Omitted on purpose, all for the same reason - they duplicate the root
+     landing's copy and would compete with it for the same queries:
+       /main  the tier-routed sales page
+       /old   the previous landing page, archived 2026-09-09 (noindex)
+       /warm  the "build your own show" warm-traffic page (noindex) -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://patchmap.app/</loc>
-    <lastmod>2026-08-06</lastmod>
+    <lastmod>2026-09-09</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
