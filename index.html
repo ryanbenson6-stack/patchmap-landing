@@ -545,6 +545,7 @@
       '</div>';
     }).join('');
     decorateAppLinks();
+    observePricingCards();
   }
 
   document.getElementById('bill-annual').addEventListener('click', function () { setBilling('annual'); });
@@ -842,6 +843,37 @@
   window.addEventListener('pagehide', function () {
     track('exit', { last_section: lastSection, seconds: Math.round((Date.now() - pageLoadedAt) / 1000) });
   });
+
+  /* -- PRICING CARD VIEWS ------------------------------------------------
+     `pricing_card_view` is the event the dashboard's "Reached pricing" KPI and
+     its per-tier interest table are built on (indiesoft-dashboard
+     lib/patchmapBehavior.ts). The page it replaced fired it from an observer on
+     a one-card-at-a-time tier toggle. This page shows all four cards at once,
+     which changes nothing about what the event MEANS - "this visitor saw this
+     tier's card" - so it is emitted here with the same name and the same
+     { tier } payload, and the metric stays continuous across the switchover.
+
+     Re-armed after every render because renderPricing() rebuilds the cards, but
+     `seenCards` is outside that, so a tier still counts once per visit no matter
+     how many times they flip the billing toggle. */
+  var seenCards = {};
+  var cardObserver = null;
+  function observePricingCards() {
+    if (!('IntersectionObserver' in window)) return;
+    if (cardObserver) cardObserver.disconnect();
+    cardObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var tier = en.target.getAttribute('data-tier');
+        if (!tier || seenCards[tier]) return;
+        seenCards[tier] = true;
+        track('pricing_card_view', { tier: tier });
+      });
+    }, { threshold: 0.5 });
+    Array.prototype.forEach.call(document.querySelectorAll('#pricing-cards .pcard'), function (c) {
+      cardObserver.observe(c);
+    });
+  }
 
   /* -- ?watch=true DEEP LINK ---------------------------------------------
      Carried over from the page this replaced, where it opened a Bunny video

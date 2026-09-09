@@ -48,17 +48,43 @@ Stored in a first-party cookie `pm_attr` (400-day), written once on first load, 
 `channel` = `utm_source` if present, else derived from referrer (known search domains → `organic-search`, else `referral:<host>`, else `direct`).
 
 ### Events (§3) — every payload also carries `anonymous_id` + `user_id`
+
+**The landing page was replaced on 2026-09-09** (the old page is archived at
+`/old`). The table below is what `/` emits now. Nothing was renamed — a slug
+means the same thing either side of that date — but three events stopped firing
+and one payload key went away, so read any window that straddles it with the
+notes underneath.
+
 | event | payload keys |
 |---|---|
-| `page_view` | `path`, `tier` |
-| `tier_toggle` | `to_tier`, `from_tier` |
-| `cta_click` | `tier`, `cta_type` (`purchase`\|`watch_it_built`), `cta`, `label` |
+| `page_view` | `path` |
+| `cta_click` | `cta_type`, `cta`, `label`, `last_section` |
 | `pricing_toggle` | `value` (`monthly`\|`annual`) |
-| `pricing_card_view` | `tier` (fires once per card) |
-| `scroll_depth` | `milestone` (25/50/75/100), `tier` |
-| `tier_dwell` | `tier`, `seconds` |
+| `pricing_card_view` | `tier` (fires once per card per visit) |
+| `scroll_depth` | `milestone` (25/50/75/100) |
 | `faq_open` | `index`, `question` |
-| `exit` | `last_section`, `seconds`, `tier` |
+| `video_deep_link` | `source` (`watch_param`), `target` |
+| `exit` | `last_section`, `seconds` |
+
+**Retired at the switchover** — these appear in `sales_events` up to 2026-09-09
+and never after. They are absent, not zero, and the difference matters:
+
+| event | why it is gone |
+|---|---|
+| `tier_toggle` | The old page had a one-tier-at-a-time toggle. The current page shows all four cards at once, so there is no tier to toggle *to*. |
+| `tier_dwell` | Same cause. "Seconds spent on Pro" was observable only while Pro was the only tier on screen. The quantity no longer exists — a 0 here would read as "nobody looked at Pro", which is false. The dashboard prints `n/a` for it in any window reaching past the switchover (`lib/patchmapBehavior.ts`, `TIER_DWELL_RETIRED_ON`). |
+| `video_open` | The walkthrough was a Bunny modal. It is now inline clips that autoplay in view, so there is no open event. `?watch=true` fires `video_deep_link` instead — a different mechanic should not inherit the other one's name. |
+
+**Payload change:** the `tier` key is gone from `page_view`, `cta_click`,
+`scroll_depth` and `exit`. It recorded which tier the old page's toggle was
+showing; there is no such state now. `cta_click` gained `last_section`, which is
+the more useful version of the same idea — where in the argument they were when
+they converted.
+
+**`cta_type` values changed.** It was `purchase`\|`watch_it_built`; it is now the
+first segment of the `data-track-cta` slug (`nav`, `hero`, `foundation`,
+`liveroom`, `pricing`). Anything filtering on `cta_type='purchase'` matches
+nothing after 2026-09-09 — use `cta` prefixed `pricing-` instead.
 
 ### Chokepoint fan-out (`track()`)
 1. `/api/track` — full `{event, payload, attribution, anonymous_id, user_id, is_returning}` → `sales_events` (+ first-touch upsert into `attribution`).
@@ -96,6 +122,13 @@ Pre-computed so the dashboard reads fast and channels stay **data-derived** (nev
 - `tier_engagement_rollup` — per tier: avg dwell, toggle-in count, conversions.
 
 Funnel stage sources: visited=`page_view`, toggled=`tier_toggle`, pricing CTA=`cta_click` where `cta_type='purchase'`, signup started=`identities`/app signup event, paid=`conversions`.
+
+> **Stale since 2026-09-09.** `tier_toggle` no longer fires and `cta_type` no
+> longer takes the value `purchase` (see the events table above). On the current
+> page the equivalent stages are visited=`page_view`, reached pricing=
+> `pricing_card_view`, pricing CTA=`cta_click` where `cta` starts `pricing-`.
+> The "toggled" stage has no successor and should be dropped rather than
+> reported as zero.
 
 ### 5. Dashboard Views A–D (§6) — GUI-first, progressive disclosure
 - **A. Channel Scorecard** — channels (rows, auto from `utm_source`) × metrics; conditional per-column heatmap (best green / worst red); every cell shows its denominator; provisional cells (small sample) muted; each row → View B.
