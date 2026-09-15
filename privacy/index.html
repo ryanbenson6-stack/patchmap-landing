@@ -225,12 +225,12 @@
   <main>
     <p class="page-label">Legal</p>
     <h1>Privacy Policy</h1>
-    <p class="last-updated">Last updated: August 6, 2026</p>
+    <p class="last-updated">Last updated: September 12, 2026</p>
 
     <p>PatchMap is built and operated by IndieSoft, a product of Indie Pepper Creative LLC. This policy explains what we collect, what we do with it, and — just as importantly — what we don't do with it.</p>
 
     <div class="callout">
-      <strong>The short version:</strong> Your show data is yours. We don't sell it, we don't share it with advertisers, and we don't use it to train AI models. If you delete your account, it goes away.
+      <strong>The short version:</strong> Your show data is yours. We don't sell it, we don't share it with advertisers, and we don't use it to train AI models. If you delete your account, it goes away — Section 7 says exactly what stays behind.
     </div>
 
     <h2>1. Who we are</h2>
@@ -240,15 +240,17 @@
     <h2>2. What we collect</h2>
     <p><strong>Account information.</strong> When you create an account, we collect your email address and any name you choose to provide. If you subscribe to a paid plan, our payment processor collects your billing details — we never see or store your full card number.</p>
     <p><strong>Show data.</strong> Everything you build in PatchMap: channel lists, patch assignments, stage plots, gear lockers, wireless assignments, Dante routing, notes, flags, and show history. This is your working data. We store it so the product works.</p>
-    <p><strong>Live Room participation.</strong> When someone joins a Live Room by QR code or invite link, we record their display name, their role, the flags and notes they create, and the messages they send in that room. Live Room guests do not need a PatchMap account.</p>
-    <p><strong>Usage data.</strong> Basic technical information — pages visited, features used, browser and device type, IP address, and error logs. In the application itself these are pseudonymous product-usage events tied to your account identifier rather than your name. We use this to understand what's working and to fix what isn't.</p>
-    <p><strong>Push notification data.</strong> If you opt in to notifications, we store the push subscription details your browser or device provides so we can deliver alerts. This is optional and off by default.</p>
-    <p><strong>Marketing site analytics.</strong> Our public marketing pages use analytics and advertising pixels to measure whether our ads are working. These are on the marketing site only, not inside the application. Section 5 lists exactly what runs and what it collects.</p>
-    <p>We do not collect your phone number, precise location, contacts, full payment card details, or device sensor data.</p>
+    <p><strong>Live Room participation.</strong> When someone joins a Live Room by QR code or invite link, we record their display name, their role, the flags and notes they create, and the messages they send in that room, including direct messages to other people in the room. Live Room guests do not need a PatchMap account.</p>
+    <p><strong>The PatchMap phone app.</strong> The iOS and Android app can be used with or without an account. On first launch it creates a random identifier that is stored securely on your device and lets you rejoin rooms and keep your own history. Depending on what you use, the app also handles: your display name and role; photos you choose to take or pick for a venue or a note, which are uploaded to our storage; personal notes and the log of shows you've worked; and reports and blocks you make in a room. The camera is used only to scan QR codes and take the photos you choose to take. Face ID and fingerprint unlock are handled entirely by your device's operating system — we never receive any biometric data.</p>
+    <p><strong>Reports and blocks.</strong> If you report a message or a person, we receive the reported content, who reported it, and why, so we can review it. Blocks are private to you and are never shown to the person you blocked.</p>
+    <p><strong>Usage data.</strong> Basic technical information — pages visited, features used, browser and device type, IP address, and error logs. In the application itself these are pseudonymous product-usage events tied to your account identifier rather than your name. In the PatchMap phone app, if you use it without an account, they are tied instead to a random identifier created on your device when you first open the app; if you later sign in, we can connect that identifier to your account. We use this to understand what's working and to fix what isn't. It is not shared with advertisers or used to track you across other companies' apps or websites.</p>
+    <p><strong>Push notification data.</strong> If you opt in to notifications, we store the push subscription details or push token your browser or device provides so we can deliver alerts. Notifications are delivered through Expo's push service and then Apple's or Google's notification services, so the text of a notification (for example, which channel was flagged, or the start of a message sent to you) passes through them. This is optional, and you can turn it off at any time in the app or in your device settings.</p>
+    <p><strong>Marketing site analytics.</strong> Our public marketing pages use analytics and advertising pixels to measure whether our ads are working. The pixels themselves run on the marketing site only, not inside the application — but when you create an account on the web, we do report that signup to Meta so we can measure our ads. Section 5 lists exactly what runs, what it collects, and what that signup report contains.</p>
+    <p>We do not collect your phone number, precise location, contacts, full payment card details, or biometric data.</p>
 
     <h2>3. What we do with it</h2>
-    <p>We use your information to run the product, keep your account secure, process payments, send you transactional email about your account, respond to your support requests, and improve PatchMap.</p>
-    <p>We do not sell your personal information. We do not share your show data with advertisers, and we do not make it available to other users or customers.</p>
+    <p>We use your information to run the product, keep your account secure, process payments, send you transactional email about your account, respond to your support requests, and improve PatchMap. If you have an account, we may also send you a short series of emails about getting started and occasional emails about features you haven't tried; you can opt out of those at any time (see Section 10), and you'll still get the emails your account needs, like password resets.</p>
+    <p>We do not sell your personal information for money. We do not share your show data with advertisers, and we do not make it available to other users or customers. The one piece of account information we give an advertising platform is the signup report to Meta described in Section 5.</p>
 
     <h2>4. AI and your data</h2>
     <p>PatchMap uses AI in two specific, limited places:</p>
@@ -265,7 +267,9 @@
 
     <h2>5. Cookies, analytics, and advertising pixels</h2>
     <p>We want to be precise about this, because "we don't track you" is easy to say and often untrue. There is a real difference between our marketing site and the application, and we treat them differently.</p>
-    <p><strong>Inside the application (app.patchmap.app)</strong> we run no advertising pixels, no third-party ad SDKs, and no social-media trackers. Product-usage analytics there are first-party, pseudonymous, and stored in our own infrastructure. Your show data is never sent to an advertising platform.</p>
+    <p><strong>Inside the application (app.patchmap.app) and the phone app</strong> we run no advertising pixels, no third-party ad SDKs, no advertising identifiers, and no social-media trackers. Product-usage analytics there are first-party, pseudonymous, and stored in our own infrastructure. Your show data is never sent to an advertising platform.</p>
+    <p><strong>Signup reporting to Meta.</strong> When you create an account on the web, our server tells Meta that a signup happened so we can measure which ads work. That report contains a one-way hash of your email address (not the address itself), your IP address, your browser's user agent, and the Meta cookie identifiers set by the pixel on our marketing site, if your browser has them. It contains nothing about your shows. Accounts created in the phone app are not reported.</p>
+    <p><strong>Linking your visit to your account.</strong> When you sign up, we connect the first-party visit record from our marketing site (described below) to your new account, so we can see which campaign or shared link brought you in.</p>
     <p><strong>On the marketing site (patchmap.app)</strong> — the pages you are reading right now — we run the following:</p>
     <ul>
       <li><strong>Meta Pixel</strong> — measures whether our Facebook and Instagram ads lead to sign-ups. Sets cookies and shares page-visit events with Meta.</li>
@@ -274,8 +278,9 @@
       <li><strong>Our own visit beacon</strong> — a first-party record of the page visited, a random visitor identifier stored in your browser, the country your request came from, your browser's user agent, the site that referred you, and any campaign tags in the link. We use this to see which channels bring people to PatchMap.</li>
       <li><strong>Bunny Stream</strong> — hosts the product walkthrough video. It loads only when you open the video, and it sets its own cookies for playback.</li>
     </ul>
-    <p>These marketing-site tools are for measuring our own advertising. They do not have access to your PatchMap account or to anything you build inside the product.</p>
+    <p>These marketing-site tools are for measuring our own advertising. Meta, Reddit, Vercel and Bunny never get access to your PatchMap account or to anything you build inside the product; the only account-related information Meta receives is the signup report described above.</p>
     <p>You can block or clear these cookies in your browser at any time, and you can opt out of interest-based advertising through <a href="https://optout.aboutads.info" target="_blank" rel="noopener">the DAA opt-out tool</a> or your Meta and Reddit ad settings. Blocking them has no effect on how PatchMap works.</p>
+    <p>Some US state privacy laws treat ad pixels and conversion reports like these as "sharing" personal information for advertising. To opt out of that, block or clear the pixel cookies as described above, and email <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a> — we'll exclude your account from any further advertising measurement.</p>
 
     <h2>6. Where your data lives</h2>
     <p>PatchMap runs on third-party infrastructure. The providers that process data on our behalf:</p>
@@ -283,15 +288,20 @@
       <li><strong>Supabase</strong> — database, authentication, and file storage. <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Privacy policy →</a></li>
       <li><strong>Vercel</strong> — application hosting, delivery, and site analytics. <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy policy →</a></li>
       <li><strong>Stripe</strong> — payment processing and subscription billing. <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Privacy policy →</a></li>
-      <li><strong>Resend</strong> — transactional email. <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy policy →</a></li>
+      <li><strong>Resend</strong> — transactional and product email. <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">Privacy policy →</a></li>
       <li><strong>Anthropic</strong> — AI processing for Smart Import and Show Intelligence. <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener">Privacy policy →</a></li>
-      <li><strong>Meta, Reddit, and Bunny.net</strong> — marketing site advertising measurement and video hosting only, as described in Section 5.</li>
+      <li><strong>Expo</strong> — delivers push notifications to the phone app. <a href="https://expo.dev/privacy" target="_blank" rel="noopener">Privacy policy →</a></li>
+      <li><strong>Apple and Google</strong> — their notification services carry push notifications to your device.</li>
+      <li><strong>GitHub</strong> — stores our nightly database backups, each kept for 30 days. <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noopener">Privacy policy →</a></li>
+      <li><strong>Meta, Reddit, and Bunny.net</strong> — marketing site advertising measurement and video hosting, plus the web signup report to Meta, as described in Section 5.</li>
     </ul>
     <p>Each of these processes data only to provide their service to us. Data is stored in the United States.</p>
 
     <h2>7. How long we keep it</h2>
     <p>We keep your account and show data for as long as your account is active. When you close your account, we delete your data within 30 days, except where we're legally required to retain billing records. Content you delete inside PatchMap is removed from our servers within 30 days, subject to the same exceptions.</p>
-    <p>Live Room chat is stored with the room it belongs to, so the history remains available after the show; deleting a room deletes its messages. Data sent to our AI provider for Smart Import is deleted from their systems within 30 days under their standard commercial terms.</p>
+    <p>Live Room chat, flags and notes are stored with the room they belong to, so the history remains available after the show. Closing a room does not delete it. A room and everything in it is deleted when the account that owns it is deleted.</p>
+    <p><strong>What stays after you delete your account.</strong> Your shows, venues, gear, private notes, push tokens and the usage analytics tied to your account are deleted. Messages and flags you contributed to rooms owned by <em>other</em> people stay in those rooms' history, because they are part of someone else's show record — but your name on them is replaced with "Former crew member". Billing records are kept where the law requires. Backups containing deleted data expire within 30 days.</p>
+    <p>Data sent to our AI provider for Smart Import is deleted from their systems within 30 days under their standard commercial terms.</p>
     <p>Aggregated, non-identifying usage statistics may be retained indefinitely.</p>
 
     <h2>8. Legal basis for processing (GDPR)</h2>
@@ -309,7 +319,9 @@
 
     <h2>10. Your choices and your rights</h2>
     <p>You can access and edit your show data at any time from inside the app, export your data as CSV on any plan, and correct your account information from account settings.</p>
-    <p>To close your account and have your data deleted, email us at <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a> from the address on the account. We'll confirm and delete your data within 30 days.</p>
+    <p>To delete your account and your data, use <strong>Delete account</strong> in the Account tab of the phone app, or sign in on the web and go to <a href="https://app.patchmap.app/account/delete">app.patchmap.app/account/delete</a>. It takes effect immediately; Section 7 lists what stays. If you can't sign in, email us at <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a> from the address on the account and we'll do it for you within 30 days.</p>
+    <p>If you used a Live Room or the phone app <strong>without an account</strong>, email us with the display name you used and roughly when, and we'll delete what you contributed.</p>
+    <p>To stop getting tips and feature emails, use the unsubscribe link at the bottom of any of them, or email <a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a>. We'll stop within 10 business days. You'll still get emails your account needs, like password resets.</p>
     <p>If you're in a jurisdiction with additional rights over your personal data — such as the EU, UK, or California — those rights apply and you can exercise them by emailing us. We won't discriminate against you for doing so. Specifically, you have:</p>
     <ul>
       <li><strong>Right of access</strong> — request a copy of the personal data we hold about you.</li>
@@ -331,7 +343,7 @@
     <p>Outside of these features you choose to use, we do not sell, rent, or share your personal data with any third party for marketing or advertising purposes, and we have no commercial relationship with data brokers. We may disclose data if required by law or valid legal process; where legally permitted, we will notify you first.</p>
 
     <h2>13. Security</h2>
-    <p>Data is encrypted in transit (TLS 1.2 or higher) and at rest. Database access is enforced at the row level, so accounts can only reach their own data. Live Room access is controlled by room-scoped join tokens, and those tokens stop granting access once the room closes.</p>
+    <p>Data is encrypted in transit (TLS 1.2 or higher) and at rest. Database access is enforced at the row level, so accounts can only reach their own data. Live Room access is controlled by room-scoped join tokens, and those tokens stop granting access once the room closes. Read-only share links to a show keep working until you revoke them.</p>
     <p>No system is perfectly secure. If we ever discover a breach affecting your data, we'll tell you.</p>
 
     <h2>14. Children</h2>
