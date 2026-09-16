@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Delete your PatchMap account — PatchMap</title>
+  <meta name="description" content="How to delete your PatchMap account and everything in it, what is deleted, what is kept, and how long backups hold it." />
+  <link rel="canonical" href="https://patchmap.app/delete-account" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0a0a0a;
+      --near-black: #111113;
+      --surface: #161618;
+      --surface-2: #1e1e21;
+      --border: #2a2a2e;
+      --border-bright: #3a3a40;
+      --amber: #f5a623;
+      --amber-glow: rgba(245,166,35,0.12);
+      --text: #e8e8ea;
+      --text-dim: #888890;
+      --text-dimmer: #55555e;
+      --green: #4ade80;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(10,10,10,0.88);
+      backdrop-filter: blur(12px);
+    }
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      letter-spacing: 0.12em;
+      color: var(--amber);
+      text-decoration: none;
+    }
+    .nav-back {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-back:hover { color: var(--amber); }
+
+    /* ── MAIN ── */
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 64px 24px 96px;
+      flex: 1;
+    }
+    .page-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 64px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: 14px;
+    }
+    .last-updated {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+      margin-bottom: 48px;
+    }
+    h2 {
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text);
+      margin: 44px 0 14px;
+      letter-spacing: -0.01em;
+    }
+    p {
+      font-size: 16px;
+      font-weight: 300;
+      color: #c4c4ca;
+      margin-bottom: 16px;
+      line-height: 1.8;
+    }
+    ul {
+      margin: 0 0 16px 0;
+      padding-left: 22px;
+    }
+    ul li {
+      font-size: 16px;
+      font-weight: 300;
+      color: #c4c4ca;
+      margin-bottom: 10px;
+      line-height: 1.7;
+    }
+    strong { color: var(--text); font-weight: 500; }
+    a { color: var(--amber); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
+    a:hover { border-bottom-color: var(--amber); }
+
+    .callout {
+      background: var(--surface);
+      border: 1px solid var(--border-bright);
+      border-left: 3px solid var(--green);
+      border-radius: 8px;
+      padding: 22px 26px;
+      margin: 28px 0 8px;
+      font-size: 16px;
+      color: var(--text);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+    .callout strong { color: var(--green); }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      padding: 28px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 18px;
+      letter-spacing: 0.12em;
+      color: var(--text-dimmer);
+    }
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dimmer);
+      letter-spacing: 0.04em;
+      line-height: 2;
+      text-align: right;
+    }
+    .footer-copy a { color: inherit; border-bottom: 1px solid var(--border-bright); }
+    .footer-copy a:hover { color: var(--amber); border-bottom-color: var(--amber); }
+
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      footer { padding: 24px 20px; }
+      main { padding: 48px 20px 72px; }
+      h1 { font-size: 48px; }
+      .footer-copy { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="/" class="nav-logo">PatchMap</a>
+    <a href="/" class="nav-back">← Back</a>
+  </nav>
+
+  <main>
+    <p class="page-label">Account</p>
+    <h1>Delete your PatchMap account</h1>
+    <p class="last-updated">Last updated: September 15, 2026</p>
+
+    <div class="callout">
+      <strong>The short version:</strong> You can delete your PatchMap account yourself, from the app or from the web. It happens immediately, and it takes your shows, venues, gear, notes and history with it.
+    </div>
+
+    <p>PatchMap is made by IndieSoft, a product of Indie Pepper Creative LLC. This page explains how to delete the account you use in the PatchMap app for iPhone and Android, and in the web app at app.patchmap.app.</p>
+
+    <h2>1. Delete it in the app</h2>
+    <p>Open the <strong>Account</strong> tab, scroll to <strong>Delete account</strong>, type your own email address to confirm, then tap <strong>Delete forever</strong>. There is no waiting period — the account and its data are removed straight away.</p>
+
+    <h2>2. Or delete it on the web</h2>
+    <p>Sign in and go to <a href="https://app.patchmap.app/account/delete">app.patchmap.app/account/delete</a>. Type your email address to confirm and the account is deleted the same way.</p>
+
+    <h2>3. If you can't sign in</h2>
+    <p>Email <a href="mailto:hello@indiesoft.app?subject=Delete%20my%20PatchMap%20account">hello@indiesoft.app</a> from the address on the account and ask us to delete it. We'll confirm and delete it within 30 days.</p>
+    <p>If you used a Live Room or the phone app <strong>without an account</strong>, there is nothing to sign in to — email us the display name you used and roughly when, and we'll delete what you contributed.</p>
+
+    <h2>What is deleted</h2>
+    <ul>
+      <li>Your account and profile, including your email address and name</li>
+      <li>Your shows, venues, gear lockers, stage plots and patch sheets</li>
+      <li>Your private notes and your show log</li>
+      <li>Rooms you opened, and the flags and messages inside them</li>
+      <li>Push notification tokens, so notifications stop</li>
+      <li>Your product-usage analytics</li>
+      <li>Any subscription is cancelled</li>
+    </ul>
+
+    <h2>What is kept, and for how long</h2>
+    <ul>
+      <li><strong>Messages and flags you contributed to rooms owned by other people.</strong> Those stay in that show's record, because they are part of someone else's working history — but your name is replaced with "Former crew member".</li>
+      <li><strong>Billing records</strong>, where tax and accounting law requires us to keep them.</li>
+      <li><strong>Backups.</strong> Our database backups are kept on a rolling 30-day window, so deleted data can persist in a backup for up to 30 days before it expires.</li>
+    </ul>
+
+    <hr>
+
+    <h2>Contact</h2>
+    <p>Questions about deleting your account or your data:</p>
+    <p>
+      <strong><a href="mailto:hello@indiesoft.app">hello@indiesoft.app</a></strong><br>
+      IndieSoft — a product of Indie Pepper Creative LLC<br>
+      Texas, USA
+    </p>
+    <p><a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Service</a></p>
+  </main>
+
+  <footer>
+    <div class="footer-logo">PatchMap</div>
+    <div class="footer-copy">
+      © 2026 PatchMap — Built by <a href="https://indiesoft.app">Indiesoft.app</a><br>
+      <a href="/learn">Learn</a> · <a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Service</a> · <a href="mailto:hello@indiesoft.app">Contact</a>
+    </div>
+  </footer>
+
+</body>
+</html>
