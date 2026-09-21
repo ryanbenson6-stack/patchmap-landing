@@ -206,6 +206,50 @@
       landscape: '235702d9-21bc-4d0f-8bf8-a5bf9d2d4a8d',
       poster: 'https://vz-582e6ee8-8a2.b-cdn.net/235702d9-21bc-4d0f-8bf8-a5bf9d2d4a8d/thumbnail_1.jpg',
       label: 'Reuses the hero clip — a complete, live show on a phone'
+    },
+
+    /* ── /whats-new — the recapture page ───────────────────────────────────
+       The two clips a dormant account is being brought back FOR: getting a
+       show IN from paperwork they already have, and then working it from a
+       phone. Both are phone-native 9/16, both reuse footage the landing page
+       already carries — `import` below and `hero` above respectively.
+
+       REUSING THEM IS THE RIGHT CALL HERE, which is worth stating because the
+       instinct is that a recapture page should show something the recipient
+       has not seen. They almost certainly have not: the landing page these
+       clips live on went up on 2026-09-09, and every recipient of a "you never
+       built anything" campaign signed up before that. The footage is new TO
+       THEM, and it is already the clearest recording of the two mechanics the
+       page is arguing about. A second pair shot to say the same thing would be
+       two more files to keep in sync for no gain — the reasoning `warm` uses
+       for sharing the hero clip, applied to the same two-sided question.
+
+       If a future campaign targets accounts that signed up AFTER the
+       switchover, revisit this: for them these are the clips they already
+       declined to act on, and that argument stops working. */
+    recap_import: {
+      context: 'phone-native',
+      aspect: ['9 / 16', '9 / 16'],
+      mode: 'autoplay-loop',
+      /* Same file as the landing page's `import` slot. Portrait-native
+         (1080x1920), so one file serves both viewports — see `hero` for why
+         that sits in `landscape` rather than `portrait`. */
+      portrait: null,
+      landscape: 'da5d6c14-7e1d-4f51-aa8d-f604844afae5',
+      poster: 'https://vz-582e6ee8-8a2.b-cdn.net/da5d6c14-7e1d-4f51-aa8d-f604844afae5/thumbnail_1.jpg',
+      label: 'Smart Import building the channel list from an existing patch sheet'
+    },
+    recap_use: {
+      context: 'phone-native',
+      aspect: ['9 / 16', '9 / 16'],
+      mode: 'autoplay-loop',
+      /* Same file as `hero` and `warm` — a complete, live show being worked on
+         a phone, which is exactly the "and then you can actually use it" half
+         of this page's argument. */
+      portrait: null,
+      landscape: '235702d9-21bc-4d0f-8bf8-a5bf9d2d4a8d',
+      poster: 'https://vz-582e6ee8-8a2.b-cdn.net/235702d9-21bc-4d0f-8bf8-a5bf9d2d4a8d/thumbnail_1.jpg',
+      label: 'A complete, live show being worked on a phone — patch, flags, changes landing'
     }
   };
 

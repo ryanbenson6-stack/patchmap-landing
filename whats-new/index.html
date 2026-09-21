@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- NO viewport-fit=cover, on purpose. Without it Safari never draws page
+       content under the Dynamic Island, env(safe-area-inset-*) resolves to 0,
+       and there is nothing to compensate for. Adding it would CREATE the
+       safe-area problem this page is required not to have. The real fix for
+       the clipped-header class of bug is dvh, below. (Same reasoning as
+       patch-map v1.144.9, the Kingsland fix.) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>PatchMap — What's changed since you signed up</title>
+  <meta name="description" content="PatchMap on a phone is a different product than it was. Start a show from a spreadsheet, work it from your pocket, pick it up on your desktop." />
+
+  <!-- noindex for the same reason /warm carries it: this page is only
+       meaningful to someone who received the letter. A crawler indexing it
+       would put "a lot has changed since you signed up" in front of people who
+       never signed up. Public and unauthenticated, just not advertised. -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Keeps ?u= out of cross-origin referrers. This is the modern browser
+       default, stated explicitly because the account id on this URL is the one
+       thing here worth not leaking to a third party. -->
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+
+  <link rel="icon" type="image/png" href="/assets/patchmap-preview.png" />
+  <link rel="apple-touch-icon" href="/assets/patchmap-preview.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="/assets/base.css" />
+  <link rel="stylesheet" href="/assets/media.css" />
+
+  <style>
+    /* ── /whats-new — the recapture page ───────────────────────────────────
+       One screen and a little scroll, landing on a phone, for someone who made
+       an account months ago and never built anything. Every constraint below
+       follows from that reader.
+
+       NO PRICING, NO FEATURE GRID, NO PAYWALLED FEATURES, NO DISCOUNT. They
+       already have an account; the question is not "is this worth money", it
+       is "is it worth another ten minutes". A price on this page answers a
+       question nobody asked and reads as the reason they were emailed.
+
+       Every colour, font and control here comes from base.css. The only rules
+       in this block are layout ones that the shared sheet has no opinion on. */
+
+    /* dvh, not vh. On iOS Safari 100vh is the height with the toolbars
+       COLLAPSED, so a 100vh page is taller than the visible area with the
+       address bar expanded — the document scrolls and the header rides up
+       under the URL bar. That is exactly the bug Kingsland Baptist hit on the
+       live room screens (patch-map v1.144.9). vh is kept as the fallback for
+       anything that does not know dvh; those browsers are not the ones with
+       the collapsing toolbar. */
+    .rc { position: relative; z-index: 1; min-height: 100vh; min-height: 100dvh;
+          display: flex; flex-direction: column; }
+
+    /* The header is IN FLOW, not fixed. The main page's nav is fixed and has
+       to be told about anything above it; a static header cannot be clipped by
+       a toolbar it does not overlap, and this page has no scroll-spy or
+       anchor nav that would need one. Fewer moving parts is the fix. */
+    .rc-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 0; border-bottom: 1px solid var(--border);
+    }
+    .rc-head .rc-mark {
+      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--text-dimmer);
+    }
+
+    .rc-main { flex: 1; padding: 44px 0 56px; }
+
+    .rc h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      /* Caps well below the shared h1's 116px. That size is a landing-page
+         headline competing for a stranger's attention; this is a sentence to
+         someone who already knows what PatchMap is, and at 116px on a phone it
+         wraps to five lines and pushes the clips off the first screen. */
+      font-size: clamp(40px, 8vw, 72px);
+      line-height: 0.96; letter-spacing: 0.02em; color: var(--text);
+      max-width: 15ch; margin-bottom: 20px;
+    }
+    .rc-sub { font-size: 18px; line-height: 1.6; color: var(--text-dim); max-width: 560px; margin-bottom: 36px; }
+    .rc-sub strong { color: var(--text); font-weight: 500; }
+
+    /* ── THE MOBILE STORY ──────────────────────────────────────────────────
+       Two phone-native clips, side by side above 820px and stacked below it.
+       Both are .mslot boxes rendered by media.js, so they are final-sized on
+       first paint whether or not a clip has landed — an unfilled slot reads as
+       a panel waiting for its clip, never as a broken image. The page is
+       shippable in that state and may well go live in it. */
+    .rc-story { display: grid; grid-template-columns: 1fr; gap: 28px; margin-bottom: 40px; }
+    @media (min-width: 821px) {
+      .rc-story { grid-template-columns: 1fr 1fr; gap: 32px; max-width: 760px; }
+    }
+
+    /* THE HEIGHT BUDGET. Two 9/16 clips stacked at full phone width are ~1330px
+       of clip alone — three screens of page, when the brief's whole shape is
+       one screen and a little scroll. media.css already caps phone-native slots
+       at 300px on desktop for the mirror-image reason (a portrait clip running
+       absurdly tall in a wide column); this is that rule on the viewport that
+       actually needed it.
+
+       Capping the WIDTH rather than forcing a shorter aspect is the point: the
+       frame keeps the clip's true 9/16 shape, so nothing is cropped. A phone
+       screen recording shown 250px wide is still a legible phone screen — it is
+       the same content at the same proportions, just not edge to edge. Cropping
+       to a squarer box would have thrown away the top and bottom of the very UI
+       these clips exist to show. */
+    /* ── DO NOT PUT THESE TWO SIDE BY SIDE ON A PHONE ──────────────────────
+       It was tried, because stacking costs ~700px and the page is supposed to
+       be one screen and a little scroll. It does not work, and the reason is
+       not layout: media.js caps concurrent playback at ONE clip below 820px
+       (`MAX_PLAYING`), deliberately, because two simultaneous decodes is how a
+       mid-range Android in an in-app browser starts dropping frames — and an
+       email link is opened in an in-app browser more often than anywhere else.
+
+       Side by side, both clips are equally in view, so the cap never gets to
+       rotate between them: the second one loses the race and sits frozen on
+       its poster next to a moving one, permanently. Verified — clip 1 playing
+       at 17s while clip 2 sat at 0.
+
+       Stacked, the cap does exactly what it was written to do: each clip plays
+       as it comes into view and releases the decoder as it leaves. The width
+       cap below keeps the taller layout from running away. */
+    /* ── AND DO NOT SHRINK THEM EITHER ────────────────────────────────────
+       The obvious way to buy back the height is a max-width on the frames.
+       That was tried too, at 250px, and it reintroduces the same freeze from
+       the other direction: two SHORT clips both clear the player observer's
+       0.35 visibility threshold at once, one evicts the other under the
+       one-at-a-time cap, and because neither element crossed a threshold on
+       the way there, no new intersection entry fires to restart the loser.
+       Verified — clip 1 stuck at 1.6s with clip 2 running.
+
+       Full width is what makes the cap work. At 327px wide these frames are
+       581px tall, so when one is in view the other is at most ~23% visible and
+       never contends for the decoder. The height is the price of showing two
+       portrait clips honestly, and it buys a page whose media actually plays.
+
+       Anything that makes these frames shorter — a max-width, a squarer
+       aspect, a third clip — needs to re-check that arithmetic. */
+    @media (max-width: 820px) {
+      /* Every other block gives back what it can, since the clips cannot. */
+      .rc-main { padding: 32px 0 40px; }
+      .rc-sub { margin-bottom: 28px; }
+      .rc-story { gap: 22px; margin-bottom: 32px; }
+      .rc-points { gap: 14px; margin-bottom: 32px; }
+    }
+    .rc-shot-cap {
+      font-family: 'DM Mono', monospace; font-size: 11px; line-height: 1.6;
+      letter-spacing: 0.05em; color: var(--text-dim); margin-top: 12px;
+    }
+    .rc-shot-cap strong { color: var(--text); font-weight: 500; }
+
+    /* ── WHAT'S BETTER ── */
+    .rc-points { list-style: none; max-width: 600px; display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
+    .rc-points li { display: flex; gap: 14px; font-size: 16px; line-height: 1.6; color: var(--text-dim); }
+    .rc-points li::before { content: '→'; color: var(--amber); flex-shrink: 0; line-height: 1.6; }
+    .rc-points strong { color: var(--text); font-weight: 500; }
+
+    /* ── CTA ───────────────────────────────────────────────────────────────
+       ONE. A second route is a decision, and a reader who has already lapsed
+       once does not need another fork. */
+    .rc-cta-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+    .rc-cta { font-size: 15px; padding: 16px 32px; }
+    .rc-cta-note { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.05em; color: var(--text-dimmer); }
+
+    .rc-foot {
+      border-top: 1px solid var(--border); padding: 20px 0 28px;
+      font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.08em;
+      color: var(--text-dimmer); display: flex; gap: 18px; flex-wrap: wrap;
+    }
+    .rc-foot a { color: var(--text-dimmer); text-decoration: none; }
+    .rc-foot a:hover { color: var(--amber); }
+  </style>
+</head>
+<body>
+  <div class="grid-bg" aria-hidden="true"></div>
+
+  <div class="rc wrap">
+    <header class="rc-head">
+      <a href="https://patchmap.app" class="nav-logo">PATCHMAP</a>
+      <span class="rc-mark">What's new</span>
+    </header>
+
+    <main class="rc-main">
+      <p class="eyebrow">Since you signed up</p>
+
+      <h1>A lot has changed since you signed up.</h1>
+
+      <!-- COPY PLACEHOLDER — brief says placeholders are fine. This is written
+           to be true as it stands, so the page can ship before a copy pass. -->
+      <p class="rc-sub">
+        Most of it happened <strong>on the phone</strong>. The part of PatchMap
+        you were most likely to give up on is the part that changed most.
+      </p>
+
+      <!-- ── THE MOBILE STORY ─────────────────────────────────────────────
+           Both slots are live, configured in assets/media.js as
+           `recap_import` and `recap_use`. They reuse the landing page's
+           `import` and `hero` clips — the reasoning is on those slots; the
+           short version is that these recipients signed up before that page
+           existed, so the footage is new to them.
+
+           media.js owns everything about playback from here: muted,
+           playsinline, looping, lazy-loaded near the viewport, one clip
+           decoding at a time on a phone, paused when scrolled away, and
+           poster-only under prefers-reduced-motion. -->
+      <div class="rc-story">
+        <div>
+          <div data-slot="recap_import"></div>
+          <p class="rc-shot-cap"><strong>Start from the spreadsheet you already have.</strong> Pick the file on your phone, get a patch sheet.</p>
+        </div>
+        <div>
+          <div data-slot="recap_use"></div>
+          <p class="rc-shot-cap"><strong>Then actually work it from your pocket.</strong> Moving through a show no longer means a laptop.</p>
+        </div>
+      </div>
+
+      <!-- COPY PLACEHOLDERS — the three the brief names. -->
+      <ul class="rc-points">
+        <li><strong>The phone is a real surface now.</strong> Not a shrunken desktop you pinch around — screens built for a hand, in a dark room, in a hurry.</li>
+        <li><strong>Spreadsheet to patch sheet in one pass.</strong> Point it at the file you already keep the show in. No retyping a channel list to find out whether this is for you.</li>
+        <li><strong>Start on your phone, finish on your desktop.</strong> The same show, picked up where you left it — the handoff stopped being a re-import.</li>
+      </ul>
+
+      <div class="rc-cta-row">
+        <!--
+          THE ONE CTA. `data-app-link` is what the script below decorates: it
+          forwards `u` and whatever utm set arrived, and it fires
+          recap.cta_clicked before the navigation.
+
+          Points at /home, which is where /r/<token> would have sent them
+          anyway — the starter flow this whole campaign exists to get them
+          back into.
+        -->
+        <a href="https://app.patchmap.app/home"
+           class="btn-primary rc-cta"
+           style="--accent: var(--amber); --accent-rgb: 245,166,35;"
+           data-app-link
+           data-recap-cta>Open PatchMap</a>
+        <span class="rc-cta-note">You already have an account.</span>
+      </div>
+    </main>
+
+    <footer class="rc-foot">
+      <span>&copy; PatchMap</span>
+      <a href="https://patchmap.app">patchmap.app</a>
+      <a href="/privacy">Privacy</a>
+    </footer>
+  </div>
+
+<script src="/assets/media.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ═══════════════════════════════════════════════════════════════════════
+     RECAPTURE INSTRUMENTATION
+
+     The reason this page exists as a page and not as three images in an
+     email. The 12 Aug 2026 send went out untagged and its effect is
+     permanently unknowable; nothing here is allowed to repeat that.
+
+     ── WHERE THIS SITS IN THE FUNNEL ───────────────────────────────────────
+     sent → opened → clicked → recap.page_view → recap.cta_clicked
+          → recap.arrived → built
+
+     Steps 1-3 are rows in recap_campaigns / recap_recipients, stamped by
+     app.patchmap.app/r/<token>, which is still the link in the letter. That
+     route sets the `pm_recap` cookie on the APP domain and then forwards here.
+     The two middle steps are this file. `recap.arrived` is the app's existing
+     event (components/RecapArrival.tsx) and fires when a real signed-in
+     session appears — the cookie set in step 3 is what carries the campaign
+     through the /login bounce a dormant account is about to hit, which is why
+     the letter must keep pointing at /r and not at this page directly.
+     `built` reuses first_build / first_import / builder.session_summary. No
+     new build event: a recapture-only definition of building would measure a
+     different thing than the rest of the product does.
+
+     ── WHY NOT recap.arrived HERE ──────────────────────────────────────────
+     That slug is taken and means something stricter: a person evidenced by a
+     real session inside the app. This page is public and unauthenticated, so
+     a load of it is exactly what a mail-client link scanner can manufacture.
+     Firing `recap.arrived` from here would put "an HTTP request happened"
+     rows into the one funnel stage built to exclude them.
+
+     ── IDENTITY, AND WHAT THIS PAGE DELIBERATELY DOES NOT DO ───────────────
+     It NEVER writes pm_attr. Every recipient is an existing account whose
+     first touch happened months ago; minting a fresh first-touch row here
+     would credit their original discovery to the campaign that chased them,
+     and the attribution table is write-once precisely so that cannot happen.
+     It reads the cookie if one is already there and reuses that anonymous_id,
+     which links this visit to their real first touch. With no cookie it sends
+     no anonymous_id at all — /api/track skips the attribution insert when
+     that field is absent, so an ephemeral id can never invent a discovery.
+
+     `user_id` stays null, following the app's convention: user_id is whoever
+     is PROVEN to be here, and nobody is signed in on this page. The account
+     the letter was addressed to travels in the payload as `account_id`, and
+     is an addressed-to claim rather than an identification — a forwarded
+     letter lands here under the original recipient's id.
+     ═══════════════════════════════════════════════════════════════════════ */
+
+  var params = new URLSearchParams(location.search);
+
+  /* Both params are optional. Someone who reaches this page with a bare URL —
+     organic, a forwarded link with the query stripped, a bookmark — must get
+     the same page, just without a campaign on its events. */
+  function clean(v, max) {
+    if (!v) return null;
+    var s = String(v).trim();
+    if (!s || s.length > (max || 120)) return null;
+    /* Campaign slugs and uuids only. Anything else on these params did not
+       come from the export, and letting it through would write attacker-chosen
+       strings into the events table. */
+    if (!/^[A-Za-z0-9._:-]+$/.test(s)) return null;
+    return s;
+  }
+
+  var CAMPAIGN = clean(params.get('c'), 120);
+  var ACCOUNT = clean(params.get('u'), 64);
+
+  /* Read-only. See the header: this page never writes pm_attr. */
+  var anonId = null;
+  try {
+    var m = document.cookie.match(/(?:^|; )pm_attr=([^;]*)/);
+    if (m) {
+      var stored = JSON.parse(decodeURIComponent(m[1]) || 'null');
+      if (stored && stored.anonymous_id) anonId = stored.anonymous_id;
+    }
+  } catch (e) { /* no cookie, or unreadable — both mean "send no id" */ }
+
+  function beacon(url, obj) {
+    try {
+      var body = JSON.stringify(obj);
+      if (navigator.sendBeacon) navigator.sendBeacon(url, new Blob([body], { type: 'application/json' }));
+      else fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: body, keepalive: true })['catch'](function () {});
+    } catch (e) {}
+  }
+
+  /* The one chokepoint, same shape /api/track already takes from the main
+     page. Deliberately NOT fanned out to /api/pageview: that endpoint only
+     understands page_view / cta_click / signup, and landing_events is the
+     acquisition spine — a recapture visit is not an acquisition and must not
+     appear in it as one. */
+  function track(event, payload) {
+    var body = {
+      event: event,
+      payload: payload || {},
+      path: location.pathname,
+      user_id: null,
+      attribution: {
+        utm_source: params.get('utm_source') || null,
+        utm_medium: params.get('utm_medium') || null,
+        utm_campaign: params.get('utm_campaign') || CAMPAIGN,
+        referrer: document.referrer || null,
+        landing_page: location.pathname
+      },
+      is_returning: true,
+      ts: Date.now()
+    };
+    /* Omitted entirely rather than sent as null — see the header. */
+    if (anonId) body.anonymous_id = anonId;
+    beacon('/api/track', body);
+  }
+
+  /* ── 1. ARRIVAL ────────────────────────────────────────────────────────
+     Fires on load, once per page load, campaign or not. A row with a null
+     campaign is a direct or organic visitor and is genuinely useful as the
+     denominator — it is what the page does when nobody was mailed. */
+  track('recap.page_view', { campaign: CAMPAIGN, account_id: ACCOUNT });
+
+  /* ── 2. THE CTA ────────────────────────────────────────────────────────
+     Decorate first, at load, so the href is already correct if the reader
+     long-presses and opens in a new tab — a click handler cannot help there.
+
+     `u` is forwarded because the brief requires the return to be attributable
+     on its own terms. Note that NOTHING IN THE APP READS IT TODAY: the
+     campaign travels in the pm_recap cookie, which survives the /login bounce
+     that a query string does not. It is here as the belt to that cookie's
+     braces — if the cookie was blocked or cleared, the URL still says which
+     account was addressed, and it costs one param. */
+  var carry = new URLSearchParams();
+  ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term'].forEach(function (k) {
+    var v = params.get(k);
+    if (v) carry.set(k, v);
+  });
+  if (!carry.get('utm_campaign') && CAMPAIGN) carry.set('utm_campaign', CAMPAIGN);
+
+  Array.prototype.forEach.call(document.querySelectorAll('[data-app-link]'), function (a) {
+    try {
+      var u = new URL(a.href);
+      if (ACCOUNT) u.searchParams.set('u', ACCOUNT);
+      carry.forEach(function (v, k) { if (!u.searchParams.has(k)) u.searchParams.set(k, v); });
+      a.href = u.toString();
+    } catch (e) {}
+  });
+
+  /* Fires BEFORE the navigation, which is the whole reason this is sendBeacon
+     and not fetch: a beacon is handed to the browser and survives the document
+     being torn down. Nothing is awaited and the click is never intercepted —
+     a reader who came back must never be held up by our analytics. */
+  document.addEventListener('click', function (e) {
+    var el = (e.target && e.target.closest) ? e.target.closest('[data-recap-cta]') : null;
+    if (!el) return;
+    track('recap.cta_clicked', { campaign: CAMPAIGN, account_id: ACCOUNT });
+  });
+
+  /* ── 3. MEDIA (optional engagement signal) ─────────────────────────────
+     Fires when a clip ACTUALLY plays, not when one is on the page. media.js
+     owns playback — it starts a clip on intersection, respects
+     prefers-reduced-motion, and retries a refused play() — so the honest hook
+     is the video's own `playing` event rather than anything this file decides.
+
+     Once per page load, not once per clip: two slots that both autoplay as the
+     reader scrolls would otherwise read as twice the engagement. A slot still
+     waiting for its clip renders a placeholder with no <video> in it, so this
+     fires nothing at all until the assets land — which is correct, and is the
+     reason the event is documented as optional. */
+  var mediaFired = false;
+  function onFirstPlay() {
+    if (mediaFired) return;
+    mediaFired = true;
+    track('recap.media_played', { campaign: CAMPAIGN });
+  }
+
+  /* media.js builds its <video> elements synchronously on DOMContentLoaded,
+     and this script runs after it, so on a normal load they already exist. The
+     readyState branch covers a deferred or cached-parse ordering where they do
+     not yet. */
+  function wireMedia() {
+    Array.prototype.forEach.call(document.querySelectorAll('[data-slot] video'), function (v) {
+      v.addEventListener('playing', onFirstPlay, { once: true });
+    });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', wireMedia);
+  else wireMedia();
+})();
+</script>
+</body>
+</html>

@@ -71,3 +71,41 @@ New source = new row in every channel report, with no code change anywhere
 (channels are derived from the data, never hardcoded — see `ANALYTICS_PICKUP.md`
 §"Channels are DATA, not code"). So the only real requirement is that the spelling
 stays stable. Add the link to the table above when you create it.
+
+## Recapture emails → `/whats-new`
+
+**Never paste a bare `patchmap.app/whats-new` link into a recapture email.** It
+will work, and it will quietly cost you the funnel.
+
+| Placement | Paste this | Lands on |
+|---|---|---|
+| Recapture email, one link per recipient | `https://app.patchmap.app/r/<token>?dest=whats-new` | `patchmap.app/whats-new?c=<campaign>&u=<account_id>` |
+
+The token is minted per recipient by the dashboard's segment export
+(`indiesoft-dashboard/app/api/dashboard/recapture/export`), so the link is
+attached to a campaign and an account by construction. It is a **`/r` link on
+the app domain**, not a landing-page link, and the hop is the point:
+
+1. `/r/<token>` stamps `clicked_at` on `recap_recipients`.
+2. It sets the `pm_recap` cookie **on `app.patchmap.app`**.
+3. *Then* it forwards here, adding `c` and `u` to the URL because this page is on
+   another origin and cannot read that cookie.
+
+Step 2 is the load-bearing one. Recipients of a recapture email are dormant and
+therefore usually logged out, so the CTA on this page bounces them through
+`/login` — and a query string does not survive that bounce. The cookie does, and
+it is what lets the app fire `recap.arrived` and join the eventual build back to
+the campaign. A link that skips `/r` skips both the click stamp and the cookie,
+which is the untagged 12 Aug 2026 send all over again.
+
+`dest` is an allowlisted key, not a URL (`patch-map/app/r/[token]/route.ts`).
+To point a campaign somewhere else, add a row to `DESTS` — never a passthrough.
+
+**The page renders fine with no params at all**, so a forwarded link with the
+query stripped still shows the right page; it just records a `recap.page_view`
+with a null campaign, which is the organic denominator rather than missing data.
+Event definitions: `patch-map/docs/events.md` → *Recapture* → *The landing page
+steps*.
+
+**No holdout logic lives here.** The 15% holdout is applied at send time — those
+recipients are simply not emailed — so this page only ever sees the 85%.
